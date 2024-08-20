@@ -35,7 +35,6 @@ export const loginUser = async (req, res) => {
             res.status(400).send('Invalid password');
         }
     } catch (e) {
-        console.log(e.message)
         res.status(500).send('Server error');
     }
 };
