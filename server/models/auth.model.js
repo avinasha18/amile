@@ -1,6 +1,53 @@
+import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
+// Define the schema for a student
+const studentSchema = new mongoose.Schema({
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    name: { type: String, required: true },
+    education: String,
+    workExperience: String,
+    projects: String,
+    skills: [String],
+    achievements: String,
+    certifications: String,
+    github: String,
+    linkedin: String,
+    portfolio: String,
+});
 
-export const createUser = async (db, userData) => {
+// Define the schema for a mentor
+const mentorSchema = new mongoose.Schema({
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    name: { type: String, required: true },
+    qualifications: String,
+    certifications: String,
+    workExperience: String,
+    github: String,
+    linkedin: String,
+    portfolio: String,
+});
+
+// Define the schema for a company
+const companySchema = new mongoose.Schema({
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    companyName: { type: String, required: true },
+    crn: { type: String, required: true },
+    linkedin: String,
+    website: String,
+    address: String,
+    contactNumber: String,
+});
+
+// Create models for each schema
+const Student = mongoose.model('Student', studentSchema);
+const Mentor = mongoose.model('Mentor', mentorSchema);
+const Company = mongoose.model('Company', companySchema);
+// Function to create a new student
+
+export const createUser = async (userData) => {
     const {
         username, password, name, education, workExperience, projects,
         skills, achievements, certifications, github, linkedin, portfolio
@@ -8,7 +55,7 @@ export const createUser = async (db, userData) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = {
+    const newUser = new Student({
         username,
         name,
         password: hashedPassword,
@@ -21,13 +68,13 @@ export const createUser = async (db, userData) => {
         github,
         linkedin,
         portfolio,
-    };
+    });
 
-    await db.collection('students').insertOne(newUser);
+    await newUser.save();
 };
 
-
-export const createMentor = async (db, mentorData) => {
+// Function to create a new mentor
+export const createMentor = async (mentorData) => {
     const {
         username, password, name, qualifications, certifications,
         workExperience, github, linkedin, portfolio
@@ -35,7 +82,7 @@ export const createMentor = async (db, mentorData) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newMentor = {
+    const newMentor = new Mentor({
         username,
         name,
         password: hashedPassword,
@@ -45,13 +92,13 @@ export const createMentor = async (db, mentorData) => {
         github,
         linkedin,
         portfolio,
-    };
+    });
 
-    await db.collection('mentors').insertOne(newMentor);
+    await newMentor.save();
 };
 
-
-export const createCompany = async (db, companyData) => {
+// Function to create a new company
+export const createCompany = async (companyData) => {
     const {
         username, password, companyName, crn, linkedin, website,
         address, contactNumber
@@ -59,7 +106,7 @@ export const createCompany = async (db, companyData) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newCompany = {
+    const newCompany = new Company({
         username,
         companyName,
         password: hashedPassword,
@@ -68,12 +115,12 @@ export const createCompany = async (db, companyData) => {
         website,
         address,
         contactNumber,
-    };
+    });
 
-    await db.collection('companies').insertOne(newCompany);
+    await newCompany.save();
 };
 
-
-export const findUserByUsername = async (db, username, collection) => {
-    return await db.collection(collection).findOne({ username });
+// Function to find a user by username in a specific collection
+export const findUserByUsername = async (username, model) => {
+    return await model.findOne({ username });
 };
