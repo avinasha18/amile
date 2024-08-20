@@ -1,8 +1,7 @@
-// db.js
 import { MongoClient } from 'mongodb';
 
-const url = 'mongodb://127.0.0.1:27017'; // Replace with your MongoDB connection string
-const dbName = 'amile'; // Replace with your database name
+const url = 'mongodb://127.0.0.1:27017'; 
+const dbName = 'amile'; 
 
 let db;
 
@@ -18,7 +17,7 @@ export const connectToMongoDB = async () => {
         return db;
     } catch (err) {
         console.error('Failed to connect to MongoDB', err);
-        process.exit(1); // Exit the application if the connection fails
+        process.exit(1); 
     }
 };
 

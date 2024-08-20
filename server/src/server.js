@@ -1,4 +1,3 @@
-// server.js
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt'
@@ -68,7 +67,7 @@ app.post('/register/company', async (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
-    const { username, password, userType } = req.body; // userType should be 'student', 'mentor', or 'company'
+    const { username, password, userType } = req.body; 
 
     try {
         let collection;
