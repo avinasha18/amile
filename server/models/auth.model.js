@@ -42,9 +42,9 @@ const companySchema = new mongoose.Schema({
 });
 
 // Create models for each schema
-const Student = mongoose.model('Student', studentSchema);
-const Mentor = mongoose.model('Mentor', mentorSchema);
-const Company = mongoose.model('Company', companySchema);
+export const Student = mongoose.model('Student', studentSchema);
+export const Mentor = mongoose.model('Mentor', mentorSchema);
+export const Company = mongoose.model('Company', companySchema);
 // Function to create a new student
 
 export const createUser = async (userData) => {
