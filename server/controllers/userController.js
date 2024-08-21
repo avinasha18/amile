@@ -1,11 +1,12 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { createUser, findUserByUsername,Student,Mentor,Company } from '../models/auth.model.js';
-
+import { handleReferral } from './referalController.js';
 const JWT_SECRET = 'amile';
 
 export const registerStudent = async (req, res) => {
     const { username, password, ...otherDetails } = req.body;
+    const { refrelid } = req.query;
     try {
         const existingUser = await findUserByUsername(username, Student);
         if (existingUser) {
@@ -13,6 +14,8 @@ export const registerStudent = async (req, res) => {
         }
 
         await createUser({ username, password, ...otherDetails });
+
+        await handleReferral(refrelid,username)
         res.status(200).send('Student registered successfully');
     } catch (e) {
         res.status(500).send('Server error');
