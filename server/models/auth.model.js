@@ -5,15 +5,17 @@ const studentSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     name: { type: String, required: true },
+    email : { type: String, required: true, unique: true },
     education: String,
     workExperience: String,
-    projects: String,
+    projects: [String],
     skills: [String],
     achievements: String,
-    certifications: String,
+    certifications: [String],
     github: String,
     linkedin: String,
     portfolio: String,
+    myPortfolioPlugin: {type: String}
 });
 
 // Define the schema for a mentor
@@ -73,7 +75,48 @@ export const createUser = async (userData) => {
     await newUser.save();
 };
 
-// Function to create a new mentor
+//Function to update new student
+
+
+export const updateUser = async (userData) => {
+    const {
+        username,
+        name,
+        education,
+        workExperience,
+        projects,
+        skills,
+        achievements,
+        certifications,
+        github,
+        linkedin,
+        portfolio,
+    } = userData;
+
+    const updateData = {};
+
+    if (name) updateData.name = name;
+    if (education) updateData.education = education;
+    if (workExperience) updateData.workExperience = workExperience;
+    if (projects) updateData.projects = projects;
+    if (skills) updateData.skills = skills;
+    if (achievements) updateData.achievements = achievements;
+    if (certifications) updateData.certifications = certifications;
+    if (github) updateData.github = github;
+    if (linkedin) updateData.linkedin = linkedin;
+    if (portfolio) updateData.portfolio = portfolio;
+
+    const updatedUser = await Student.findOneAndUpdate(
+        { username },
+        { $set: updateData },
+        { new: true, runValidators: true } 
+    );
+
+    return updatedUser;
+};
+
+
+
 export const createMentor = async (mentorData) => {
     const {
         username, password, name, qualifications, certifications,
