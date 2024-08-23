@@ -1,16 +1,18 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react';
+import Navbar from './components/Navbar';
+import Sidebar from './components/Sidebar';
+import JobsPage from './components/Jobs';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-    <h1>Amile</h1>
-    </>
-  )
+    <div className="flex flex-col h-screen bg-gray-900 text-gray-100">
+      <Navbar />
+      <div className="flex flex-1 overflow-hidden  no-scrollbar">
+        <Sidebar />
+        <JobsPage />
+      </div>
+    </div>
+  );
 }
 
-export default App
+export default App;
