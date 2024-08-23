@@ -8,7 +8,6 @@ import { flask_domain } from "./actions/api";
 function InterviewApp() {
     const [question, setQuestion] = useState("");
     const [response, setResponse] = useState("");
-    const [feedback, setFeedback] = useState(0);
     const [gotQuestion, setgotQuestion] = useState(false)
     const [gotResponse, setGotResponse] = useState(false);
     const [conversationHistory, setConversationHistory] = useState([]);
