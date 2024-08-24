@@ -24,7 +24,7 @@ const Sidebar = () => {
         </a>
         </li> */}
        
-            <a href="#" className="flex items-center py-2 px-4 hover:bg-[#151515] rounded transition-colors">
+            <a href="/interview" className="flex items-center py-2 px-4 hover:bg-[#151515] rounded transition-colors">
               <FaBrain  className="w-5 h-5 mr-3"/>
             <span className='  font-bold animate-gradient bg-gradient-to-r from-yellow-500 via-pink-500 to-violet-500 bg-clip-text text-transparent'>AI Interviewer</span>
             </a>

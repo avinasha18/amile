@@ -1,0 +1,23 @@
+@keyframes moveBackground {
+    0% {
+        background-position: 0 0;
+    }
+
+    50% {
+        background-position: 100% 100%;
+    }
+
+    100% {
+        background-position: 0 0;
+    }
+}
+
+.interview-container {
+    background: url('/background.png') repeat;
+    animation: moveBackground 30s linear infinite;
+}
+
+
+.interview-container {
+    background-image: url(./assets/interview-back.jpg);
+}
