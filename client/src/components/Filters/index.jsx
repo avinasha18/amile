@@ -20,7 +20,7 @@ const JobFilters = () => {
   };
 
   return (
-    <div className="w-80 bg-[#000] p-6 overflow-y-auto border-l border-gray-700">
+    <div className="w-80 bg-[#000] p-6 overflow-y-auto border-l border-gray-700 overflow-hidden no-scrollbar">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold text-blue-400">Filters</h2>
         <button onClick={clearFilters} className="text-blue-400 hover:text-blue-300">
@@ -32,7 +32,7 @@ const JobFilters = () => {
         <select
           value={internshipType}
           onChange={(e) => setInternshipType(e.target.value)}
-          className="w-full p-2 bg-gray-700 border border-gray-600 rounded text-gray-100"
+          className="w-full p-2 bg-gray-900 border border-gray-600 rounded text-gray-400"
         >
           <option value="">Select Type</option>
           <option value="Tech">Tech</option>
@@ -44,7 +44,7 @@ const JobFilters = () => {
         <select
           value={experienceLevel}
           onChange={(e) => setExperienceLevel(e.target.value)}
-          className="w-full p-2 bg-gray-700 border border-gray-600 rounded text-gray-100"
+          className="w-full p-2 bg-gray-900 border border-gray-600 rounded text-gray-400"
         >
           <option value="">Select Level</option>
           <option value="Beginner">Beginner</option>
@@ -92,7 +92,7 @@ const JobFilters = () => {
         <select
           value={mode}
           onChange={(e) => setMode(e.target.value)}
-          className="w-full p-2 bg-gray-700 border border-gray-600 rounded text-gray-100"
+          className="w-full p-2 bg-gray-900 border border-gray-600 rounded text-gray-400"
         >
           <option value="">Select Mode</option>
           <option value="Online">Online</option>
@@ -109,13 +109,13 @@ const JobFilters = () => {
 
 const FilterSection = ({ title, children }) => (
   <div className="mb-6">
-    <h3 className="text-lg font-medium mb-2 text-gray-300">{title}</h3>
+    <h3 className="text-lg font-medium mb-2 text-gray-400">{title}</h3>
     {children}
   </div>
 );
 
 const Checkbox = ({ label, checked, onChange }) => (
-  <label className="flex items-center space-x-2 mb-2 text-gray-300">
+  <label className="flex items-center space-x-2 mb-2 text-gray-400">
     <input
       type="checkbox"
       checked={checked}

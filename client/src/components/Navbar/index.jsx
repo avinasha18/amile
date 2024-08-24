@@ -7,7 +7,7 @@ const Navbar = () => {
   return (
     <header className="bg-[#000] text-gray-100 shadow-md z-50 px-5 h-[70px] border-b border-gray-700">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-      <h1 className="text-white text-[30px] font-bold animate-gradient bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-500 bg-clip-text text-transparent">
+      <h1 className=" text-[30px] font-bold animate-gradient bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-500 bg-clip-text text-transparent">
         Amile
       </h1>
               <nav className="hidden md:flex space-x-6">
