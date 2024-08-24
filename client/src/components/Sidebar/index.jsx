@@ -1,18 +1,21 @@
 import React from 'react';
 import { FaTachometerAlt, FaUser, FaClipboardList, FaEnvelope, FaSearch, FaBrain, FaBook, FaCog } from 'react-icons/fa';
-
+import { Link } from 'react-router-dom';
 const Sidebar = () => {
   return (
     <nav className="bg-[#000] text-gray-100 w-64 flex-shrink-0 hidden md:block border-r border-gray-700">
       <div className="p-4">
         <SidebarSection title="User">
-          <SidebarItem icon={FaUser} label="Profile" />
+          <Link to='/profile'> <SidebarItem icon={FaUser} label="Profile" /></Link>
+          <Link to='/messages'><SidebarItem icon={FaEnvelope} label="Messages" /></Link>
+
+
+         
           <SidebarItem icon={FaClipboardList} label="Applied" />
-          <SidebarItem icon={FaEnvelope} label="Messages" />
         </SidebarSection>
         <SidebarSection title="Internships">
-          <SidebarItem icon={FaSearch} label="Find Internships" />
           {/* <SidebarItem icon={FaBrain} label="AI Interviews"  /> */}
+          <Link to='/'><SidebarItem icon={FaSearch} label="Find Internships" /></Link>
 
         {/* <li>
         <a href="#" className="flex items-center py-2 px-4 hover:bg-[#151515] rounded transition-colors">
