@@ -9,7 +9,7 @@ const JobList = () => {
       title: "Frontend Developer Intern",
       company: "Tech Innovators",
       location: "Remote",
-      logo: "https://example.com/logo1.png",
+      logo: "/assets/google_logo.png",
       type: "Part-time",
       tags: ["React", "JavaScript", "CSS"],
       salary: "$1000-$1500/month",
@@ -23,7 +23,21 @@ const JobList = () => {
         title: "Frontend Developer Intern",
         company: "Tech Innovators",
         location: "Remote",
-        logo: "https://example.com/logo1.png",
+        logo: "/assets/facebook.png",
+        type: "Part-time",
+        tags: ["React", "JavaScript", "CSS"],
+        salary: "$1000-$1500/month",
+        startDate: "Immediate",
+        openings: "3 openings",
+        experience: "0-1 years",
+        remote: true,
+      },
+      {
+        id: 1,
+        title: "Frontend Developer Intern",
+        company: "Tech Innovators",
+        location: "Remote",
+        logo: "/assets/google_logo.png",
         type: "Part-time",
         tags: ["React", "JavaScript", "CSS"],
         salary: "$1000-$1500/month",
@@ -51,21 +65,7 @@ const JobList = () => {
         title: "Frontend Developer Intern",
         company: "Tech Innovators",
         location: "Remote",
-        logo: "https://example.com/logo1.png",
-        type: "Part-time",
-        tags: ["React", "JavaScript", "CSS"],
-        salary: "$1000-$1500/month",
-        startDate: "Immediate",
-        openings: "3 openings",
-        experience: "0-1 years",
-        remote: true,
-      },
-      {
-        id: 1,
-        title: "Frontend Developer Intern",
-        company: "Tech Innovators",
-        location: "Remote",
-        logo: "https://example.com/logo1.png",
+        logo: "/assets/google_logo.png",
         type: "Part-time",
         tags: ["React", "JavaScript", "CSS"],
         salary: "$1000-$1500/month",
@@ -78,7 +78,8 @@ const JobList = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 overflow-hidden  no-scrollbar">
+       
       {jobs.map(job => (
         <JobCard key={job.id} job={job} />
       ))}

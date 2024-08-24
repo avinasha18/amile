@@ -3,14 +3,14 @@ import { FaMoneyBillAlt, FaCalendarAlt, FaHandPointRight, FaUser } from 'react-i
 
 const JobCard = ({ job }) => {
   return (
-    <div className="bg-[#151719] rounded-lg shadow-md overflow-hidden  no-scrollbar">
+    <div className="bg-[#0f1011] rounded-lg shadow-md overflow-hidden  no-scrollbar">
       <div className="p-6">
         <div className="flex justify-between items-start mb-4">
           <div className="flex items-center">
             <img src={job.logo} alt={`${job.company} logo`} className="w-12 h-12 rounded-full mr-4" />
             <div>
-              <h3 className="text-xl font-bold text-blue-500">{job.title}</h3>
-              <p className="text-gray-400">{job.company} | {job.location}</p>
+              <h3 className="text-xl font-bold text-gray-300">{job.title}</h3>
+              <p className="text-gray-500">{job.company} | {job.location}</p>
             </div>
           </div>
           <span className={`px-3 py-1 rounded-full text-sm ${job.remote ? 'bg-green-900 text-green-300' : 'bg-blue-900 text-blue-300'}`}>
@@ -19,12 +19,12 @@ const JobCard = ({ job }) => {
         </div>
         <div className="flex flex-wrap gap-2 mb-4">
           {job.tags.map((tag, index) => (
-            <span key={index} className="px-3 py-1 bg-gray-700 rounded-full text-sm text-gray-300">
+            <span key={index} className="px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">
               {tag}
             </span>
           ))}
         </div>
-        <div className="grid grid-cols-2 gap-4 mb-4 text-sm text-gray-400">
+        <div className="grid grid-cols-2 gap-4 mb-4 text-sm text-gray-500">
           <div className="flex items-center">
             <FaMoneyBillAlt className="mr-2" /> {job.salary}
           </div>
@@ -39,7 +39,7 @@ const JobCard = ({ job }) => {
           </div>
         </div>
         <div className="flex justify-between items-center">
-          <button className="bg-gray-700 text-gray-100 px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors">
+          <button className="bg-gray-800 text-gray-100 px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors">
             View Details
           </button>
           <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">

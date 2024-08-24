@@ -12,7 +12,7 @@ const Sidebar = () => {
         </SidebarSection>
         <SidebarSection title="Internships">
           <SidebarItem icon={FaSearch} label="Find Internships" />
-          <SidebarItem icon={FaBrain} label="AI Interviews"  />
+          {/* <SidebarItem icon={FaBrain} label="AI Interviews"  /> */}
 
         {/* <li>
         <a href="#" className="flex items-center py-2 px-4 hover:bg-[#151515] rounded transition-colors">
@@ -22,7 +22,8 @@ const Sidebar = () => {
         </li> */}
        
             <a href="#" className="flex items-center py-2 px-4 hover:bg-[#151515] rounded transition-colors">
-            <p className='text-gray-400 animate-gradient bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-500'>AI Interviewer</p>
+              <FaBrain  className="w-5 h-5 mr-3"/>
+            <span className='  font-bold animate-gradient bg-gradient-to-r from-yellow-500 via-pink-500 to-violet-500 bg-clip-text text-transparent'>AI Interviewer</span>
             </a>
         </SidebarSection>
         <SidebarSection title="Courses">
