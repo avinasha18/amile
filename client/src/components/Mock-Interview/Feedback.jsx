@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Typography, Container, Grow, Button } from '@mui/material';
 import { keyframes } from '@emotion/react';
 
@@ -21,6 +21,8 @@ function Feedback() {
     const [performanceColor, setPerformanceColor] = useState('#003262'); // Default color for label
     const location = useLocation();
     const { score } = location.state || { score: 'No score available' };
+
+    const nav = useNavigate()
 
     // Function to predict performance based on the score
     const predictPerformance = (score) => {
@@ -68,15 +70,16 @@ function Feedback() {
                 alignItems: 'center',
                 padding: '20px',
                 animation: 'backgroundShift 8s ease-in-out infinite alternate',
+                height: "100%"
             }}
+            className="interview-container"
         >
             <Container maxWidth="xl">
                 <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-                    <img
-                        src="https://madeinstone.com.au/wp-content/uploads/2023/07/envelope.webp"
-                        alt="Envelope"
-                        style={{ maxWidth: '150px', maxHeight: '150px' }}
-                    />
+                <h1 className=" text-[50px] font-bold animate-gradient bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-500 bg-clip-text text-transparent">
+                    Amile Interview Score
+                </h1>
+
                 </Box>
 
                 <Typography
@@ -88,7 +91,6 @@ function Feedback() {
                         fontFamily: "'Pacifico', sans-serif",
                         textAlign: 'center',
                         fontStyle: 'italic',
-                        color: '#1F305E'
                     }}
                 >
                     Glad that you have attended the interview
@@ -101,7 +103,6 @@ function Feedback() {
                             p: 2,
                             boxShadow: 8,
                             borderRadius: 2,
-                            backgroundColor: '#ffffff',
                             mt: 3,
                             opacity: 0.9,
                             maxWidth: 'xs',
@@ -111,11 +112,12 @@ function Feedback() {
                             justifyContent: 'center',
                             alignItems: 'center',
                         }}
+
+                        className="backdrop-blur-md"
                     >
                         <Typography
                             variant="h5"
                             component="p"
-                            color="#003262" // Static color for label
                             fontWeight="bold"
                             sx={{
                                 mt: 2,
@@ -128,14 +130,13 @@ function Feedback() {
                         </Typography>
 
                         <Typography
-                            variant="h3"
+                            variant="h5"
                             component="p"
-                            color="primary"
                             fontWeight="bold"
                             sx={{
                                 mt: 2,
                                 animation: `${scoreAnimation} 3s ease-in-out`,
-                                fontFamily: "'Roboto Slab', serif",
+                                fontFamily: "'Pacifico', sans-serif",
                                 fontStyle: 'italic',
                                 textAlign: 'center'
                             }}
@@ -154,7 +155,6 @@ function Feedback() {
                             <Typography
                                 variant="h5"
                                 component="p"
-                                color="#003262"
                                 fontWeight="bold"
                                 sx={{
                                     mt: 2,
@@ -170,7 +170,6 @@ function Feedback() {
                             <Typography
                                 variant="h5"
                                 component="p"
-                                color={performanceColor} // Dynamic color for performance value
                                 fontWeight="bold"
                                 sx={{
                                     mt: 2,
@@ -180,6 +179,7 @@ function Feedback() {
                                     textAlign: 'center',
                                     animation: `${performanceAnimation} 2s ease-in-out`,
                                 }}
+                                className="bg-gradient-to-r text-transparent bg-clip-text from-purple-500 via-pink-500 to-yellow-500"
                             >
                                 {performance}
                             </Typography>
@@ -191,7 +191,6 @@ function Feedback() {
                     <Button
                         variant="contained"
                         sx={{
-                            backgroundColor: '#ec3372',
                             color: 'white',
                             padding: '10px 20px',
                             borderRadius: '50px',
@@ -202,6 +201,7 @@ function Feedback() {
                                 backgroundColor: '#ec407a',
                             },
                         }}
+                        className='bg-yellow-500'
                     >
                         Back Home
                     </Button>

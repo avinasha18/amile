@@ -9,12 +9,11 @@ import ProfilePage from './components/Profile';
 import Messages from './components/Messages';
 import InterviewApp from './components/Mock-Interview/InterviewApp';
 import Feedback from './components/Mock-Interview/Feedback';
-import SpinningCube from './components/Animations/SpinningCube';
 function App() {
   const location = useLocation();
   
   // Determine if the sidebar should be hidden
-  const hideSidebar = location.pathname === '/interview';
+  const hideSidebar = location.pathname === '/interview' ||'/feedback';
 
   return (
     <div className="flex flex-col h-screen bg-gray-900 text-gray-100">

@@ -13,11 +13,6 @@
 }
 
 .interview-container {
-    background: url('/background.png') repeat;
-    animation: moveBackground 30s linear infinite;
-}
-
-
-.interview-container {
     background-image: url(./assets/interview-back.jpg);
+    animation: moveBackground 30s linear infinite;
 }
