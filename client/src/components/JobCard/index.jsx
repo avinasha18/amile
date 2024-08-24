@@ -1,9 +1,16 @@
 import React from "react";
 import { FaMoneyBillAlt, FaCalendarAlt, FaHandPointRight, FaUser } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 const JobCard = ({ job }) => {
+  const navigate = useNavigate();
+
+  const handleViewDetails = () => {
+    navigate('/jobDetail', { state: { job } }); // Pass the job data via state
+  };
+
   return (
-    <div className="bg-[#0f1011] rounded-lg shadow-md overflow-hidden  no-scrollbar">
+    <div className="bg-[#0f1011] rounded-lg shadow-md overflow-hidden no-scrollbar">
       <div className="p-6">
         <div className="flex justify-between items-start mb-4">
           <div className="flex items-center">
@@ -39,7 +46,7 @@ const JobCard = ({ job }) => {
           </div>
         </div>
         <div className="flex justify-between items-center">
-          <button className="bg-gray-800 text-gray-100 px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors">
+          <button onClick={handleViewDetails} className="bg-gray-800 text-gray-100 px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors">
             View Details
           </button>
           <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
