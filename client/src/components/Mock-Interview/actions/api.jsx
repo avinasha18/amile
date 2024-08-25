@@ -1,0 +1,1 @@
+export const flask_domain = 'http://localhost:5000'
