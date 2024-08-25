@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+// src/components/Messages.js
+import React, { useState, useEffect } from 'react';
 import ChatList from '../ChatList';
 import ChatWindow from '../ChatWindow';
+import { useTheme } from '../../context/ThemeContext';
 
 const initialChats = [
   { id: 1, name: 'Arpit', company: 'ZuPay', message: 'Thank you for applying fo...', time: '11:48 AM', type: 'Internship' },
@@ -13,11 +15,24 @@ const initialChats = [
 function Messages() {
   const [chats, setChats] = useState(initialChats);
   const [activeChat, setActiveChat] = useState(null);
+  const { isDarkMode } = useTheme();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize();
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const sendMessage = (message) => {
     if (activeChat) {
-      const updatedChats = chats.map(chat => 
-        chat.id === activeChat.id 
+      const updatedChats = chats.map(chat =>
+        chat.id === activeChat.id
           ? { ...chat, message: message, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }
           : chat
       );
@@ -26,9 +41,17 @@ function Messages() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      <ChatList chats={chats} setActiveChat={setActiveChat} activeChat={activeChat} />
-      <ChatWindow activeChat={activeChat} sendMessage={sendMessage} />
+    <div className={`flex h-screen ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'}`}>
+      {!activeChat || !isMobile ? (
+        <div className="flex-none w-full sm:w-1/3 border-r h-full">
+          <ChatList chats={chats} setActiveChat={setActiveChat} activeChat={activeChat} />
+        </div>
+      ) : null}
+      {(activeChat || !isMobile) && (
+        <div className="flex-grow h-full">
+          <ChatWindow activeChat={activeChat} sendMessage={sendMessage} onBack={() => setActiveChat(null)} />
+        </div>
+      )}
     </div>
   );
 }
