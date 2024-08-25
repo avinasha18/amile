@@ -22,7 +22,7 @@ const JobList = () => {
       remote: true,
     },
     {
-        id: 1,
+        id: 2,
         title: "Frontend Developer Intern",
         company: "Tech Innovators",
         location: "Remote",
@@ -36,7 +36,7 @@ const JobList = () => {
         remote: true,
       },
       {
-        id: 1,
+        id: 3,
         title: "Frontend Developer Intern",
         company: "Tech Innovators",
         location: "Remote",
@@ -50,7 +50,7 @@ const JobList = () => {
         remote: true,
       },
       {
-        id: 1,
+        id: 4,
         title: "Frontend Developer Intern",
         company: "Tech Innovators",
         location: "Remote",
@@ -64,7 +64,7 @@ const JobList = () => {
         remote: true,
       },
       {
-        id: 1,
+        id: 5,
         title: "Frontend Developer Intern",
         company: "Tech Innovators",
         location: "Remote",
@@ -77,7 +77,6 @@ const JobList = () => {
         experience: "0-1 years",
         remote: true,
       }
-    // Add more job objects here...
   ];
 
   return (
