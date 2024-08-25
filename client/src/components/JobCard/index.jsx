@@ -1,8 +1,10 @@
 import React from "react";
 import { FaMoneyBillAlt, FaCalendarAlt, FaHandPointRight, FaUser } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '../../context/ThemeContext';
 
 const JobCard = ({ job }) => {
+  const { isDarkMode } = useTheme();
   const navigate = useNavigate();
 
   const handleViewDetails = () => {
@@ -10,13 +12,13 @@ const JobCard = ({ job }) => {
   };
 
   return (
-    <div className="bg-[#0f1011] rounded-lg shadow-md overflow-hidden no-scrollbar">
+    <div className={`${isDarkMode ? 'bg-[#0f1011]' : 'bg-white'} rounded-lg shadow-md overflow-hidden`}>
       <div className="p-6">
         <div className="flex justify-between items-start mb-4">
           <div className="flex items-center">
             <img src={job.logo} alt={`${job.company} logo`} className="w-12 h-12 rounded-full mr-4" />
             <div>
-              <h3 className="text-xl font-bold text-gray-300">{job.title}</h3>
+              <h3 className={`${isDarkMode ? 'text-gray-300' : 'text-black'} text-xl font-bold `}>{job.title}</h3>
               <p className="text-gray-500">{job.company} | {job.location}</p>
             </div>
           </div>
@@ -26,7 +28,7 @@ const JobCard = ({ job }) => {
         </div>
         <div className="flex flex-wrap gap-2 mb-4">
           {job.tags.map((tag, index) => (
-            <span key={index} className="px-3 py-1 bg-gray-800 rounded-full text-sm text-gray-300">
+            <span key={index} className={`px-3 py-1 ${isDarkMode ? ' bg-gray-800' : 'bg-slate-300'}  ${isDarkMode ? ' text-gray-300' : 'text-black'} rounded-full text-sm `}>
               {tag}
             </span>
           ))}
@@ -46,7 +48,7 @@ const JobCard = ({ job }) => {
           </div>
         </div>
         <div className="flex justify-between items-center">
-          <button onClick={handleViewDetails} className="bg-gray-800 text-gray-100 px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors">
+          <button onClick={handleViewDetails} className={`${isDarkMode ? 'bg-gray-800': 'bg-gray-900'}  text-gray-100 px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors`}>
             View Details
           </button>
           <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
