@@ -8,7 +8,7 @@ import { FaStop } from "react-icons/fa";
 import { FaMicrophone } from 'react-icons/fa';
 import animationData from './animations/animation.json'; 
 
-const flask_domain = 'http://flask-backend-url'; 
+const flask_domain = 'http://localhost:5000'; 
 
 function InterviewApp() {
   const [showAnimation, setShowAnimation] = useState(true);

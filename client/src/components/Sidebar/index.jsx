@@ -14,24 +14,24 @@ const Sidebar = () => {
           <Link to='/messages'><SidebarItem icon={FaEnvelope} label="Messages" /></Link>
 
 
-         
-          <SidebarItem icon={FaClipboardList} label="Applied" isDarkMode={isDarkMode}/>
+
+          <SidebarItem icon={FaClipboardList} label="Applied" isDarkMode={isDarkMode} />
         </SidebarSection>
         <SidebarSection title="Internships">
           {/* <SidebarItem icon={FaBrain} label="AI Interviews"  /> */}
           <Link to='/'><SidebarItem icon={FaSearch} label="Find Internships" /></Link>
 
-        {/* <li>
+          {/* <li>
         <a href="#" className="flex items-center py-2 px-4 hover:bg-[#151515] rounded transition-colors">
             <Icon className="w-5 h-5 mr-3" />
             <span className="font-bold animate-gradient  bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-500">{label}</span>
         </a>
         </li> */}
-       
-            <a href="/interview" className="flex items-center py-2 px-4 hover:bg-[#151515] rounded transition-colors">
-              <FaBrain  className="w-5 h-5 mr-3"/>
+
+          <a href="/aimock" className="flex items-center py-2 px-4 hover:bg-[#151515] rounded transition-colors">
+            <FaBrain className="w-5 h-5 mr-3" />
             <span className='  font-bold animate-gradient bg-gradient-to-r from-yellow-500 via-pink-500 to-violet-500 bg-clip-text text-transparent'>AI Interviewer</span>
-            </a>
+          </a>
         </SidebarSection>
         <SidebarSection title="Courses">
           <SidebarItem icon={FaBook} label="Courses" />
@@ -51,7 +51,7 @@ const SidebarSection = ({ title, children }) => (
   </div>
 );
 
-const SidebarItem = ({ icon: Icon, label ,isDarkMode }) => (
+const SidebarItem = ({ icon: Icon, label, isDarkMode }) => (
   <li>
     <a href="#" className={`flex items-center py-2 px-4 ${isDarkMode ? 'hover:bg-[#b9b8b8]' : 'hover:bg-[#121010]'} rounded transition-colors`}>
       <Icon className="w-5 h-5 mr-3" />
