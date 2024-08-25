@@ -3,32 +3,32 @@ import Referral from "../models/referals.model.js";
 
 export const handleReferral = async (referrerUsername, newUser) => {
     try {
-        const referrer = await Referral.findOne({ username: referrerUsername });
-
-        if (referrer) {
-            if (referrer.referees.includes(newUser)) {
-                throw new Error('User already referred by this friend');
-            }
-
-            const existingUser = await Referral.findOne({ username: newUser });
-
-            if (existingUser) {
-                return { success: false, message: 'User not eligible for referral' };
-            } else {
-                referrer.referees.push(newUser);
-                await referrer.save();
-            }
+      const referrer = await Referral.findOne({ username: referrerUsername });
+  
+      if (referrer) {
+        if (referrer.referees.includes(newUser)) {
+          return { status: 'error', message: 'User already referred by this friend' };
         }
-
-        const newUserRecord = new Referral({ username: newUser });
-        await newUserRecord.save();
-
-        return { success: true, message: 'Referral handled successfully', newUser: newUserRecord };
+  
+        const existingUser = await Referral.findOne({ username: newUser });
+  
+        if (existingUser) {
+          return { status: 'error', message: 'User not eligible for referral' };
+        }
+  
+        referrer.referees.push(newUser);
+        await referrer.save();
+      }
+  
+      const newUserRecord = new Referral({ username: newUser });
+      await newUserRecord.save();
+  
+      return { status: 'success', message: 'Referral handled successfully', newUser: newUserRecord };
     } catch (error) {
-        return { success: false, message: error.message };
+      console.log(error);
+      return { status: 'error', message: error.message };
     }
-};
-
+  };
 
 
 
