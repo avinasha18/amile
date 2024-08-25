@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { FaLinkedin, FaGithub, FaGlobe, FaPencilAlt, FaPlus, FaTimes } from 'react-icons/fa';
+import { useTheme } from '../../context/ThemeContext';
 
 const ProfilePage = () => {
+  const { isDarkMode } = useTheme();
   const [activeTab, setActiveTab] = useState('Projects');
   const [isEditing, setIsEditing] = useState(false);
   const [isEditingSkills, setIsEditingSkills] = useState(false);
@@ -9,7 +11,7 @@ const ProfilePage = () => {
   const [isEditingTagline, setIsEditingTagline] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
 
-  const tabs = ['Education', 'Projects', 'Experience', 'Achievements', 'Certifications','POR'];
+  const tabs = ['Education', 'Projects', 'Experience', 'Achievements', 'Certifications', 'POR'];
 
   const [user, setUser] = useState({
     name: 'Tejassri Avinasha Ryali',
@@ -51,6 +53,19 @@ const ProfilePage = () => {
       { name: 'AWS Certified Developer', issuer: 'Amazon Web Services', year: '2023' }
     ],
   });
+
+  const themeStyles = {
+    background: isDarkMode ? 'bg-black' : 'bg-gray-100',
+    text: isDarkMode ? 'text-gray-300' : 'text-gray-800',
+    heading: isDarkMode ? 'text-white' : 'text-gray-900',
+    card: isDarkMode ? 'bg-gray-900' : 'bg-white',
+    cardBorder: isDarkMode ? 'border-gray-800' : 'border-gray-200',
+    input: isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-800',
+    button: isDarkMode ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-500 hover:bg-blue-600',
+    tabActive: isDarkMode ? 'bg-blue-600' : 'bg-blue-500',
+    tabInactive: isDarkMode ? 'bg-gray-800' : 'bg-gray-200',
+    skillTag: isDarkMode ? 'bg-gray-800 text-gray-300' : 'bg-gray-200 text-gray-700',
+  };
 
   const [newItem, setNewItem] = useState({});
 
@@ -391,11 +406,12 @@ const ProfilePage = () => {
     setIsEditingTagline(!isEditingTagline);
   };
 
-  return (
-    <div className="min-h-screen bg-black text-gray-300 p-8 overflow-auto w-full">
+ 
+   return (
+    <div className={`min-h-screen ${themeStyles.background} ${themeStyles.text} p-8 overflow-auto w-full`}>
       <div className="max-w-6xl mx-auto flex gap-1">
         {/* Profile Section */}
-        <div className="bg-[#000] rounded-lg p-6 mb-8 w-3/4 border-2 border-[#111]">
+        <div className={`${themeStyles.card} rounded-lg p-6 mb-8 w-3/4 border-2 ${themeStyles.cardBorder}`}>
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center">
               <img src="https://via.placeholder.com/100" alt="Profile" className="w-24 h-24 rounded-full mr-6" />
@@ -405,17 +421,17 @@ const ProfilePage = () => {
                     type="text"
                     value={user.name}
                     onChange={(e) => handleEdit('name', e.target.value)}
-                    className="bg-gray-800 text-white px-2 py-1 rounded mb-2"
+                    className={`${themeStyles.input} px-2 py-1 rounded mb-2`}
                   />
                 ) : (
-                  <h1 className="text-2xl font-bold text-white">{user.name}</h1>
+                  <h1 className={`text-2xl font-bold ${themeStyles.heading}`}>{user.name}</h1>
                 )}
                 {isEditing ? (
                   <input
                     type="text"
                     value={user.title}
                     onChange={(e) => handleEdit('title', e.target.value)}
-                    className="bg-gray-800 text-white px-2 py-1 rounded mb-2"
+                    className={`${themeStyles.input} px-2 py-1 rounded mb-2`}
                   />
                 ) : (
                   <p>{user.title}</p>
@@ -423,7 +439,7 @@ const ProfilePage = () => {
                 <p>{user.college}</p>
               </div>
             </div>
-            <button onClick={() => setIsEditing(!isEditing)} className="bg-blue-600 text-white px-4 py-2 rounded">
+            <button onClick={() => setIsEditing(!isEditing)} className={`${themeStyles.button} text-white px-4 py-2 rounded`}>
               {isEditing ? 'Save' : 'Edit'}
             </button>
           </div>
@@ -431,7 +447,7 @@ const ProfilePage = () => {
             <a href={user.social.linkedin} className="text-blue-400">
               <FaLinkedin size={24} />
             </a>
-            <a href={user.social.github} className="text-white">
+            <a href={user.social.github} className={themeStyles.heading}>
               <FaGithub size={24} />
             </a>
             <a href={user.social.website} className="text-green-400">
@@ -440,13 +456,13 @@ const ProfilePage = () => {
           </div>
 
           {/* Tabs */}
-          <div className="bg-[#000000] rounded-lg p-6 mb-8 mt-6">
+          <div className={`${themeStyles.card} rounded-lg p-6 mb-8 mt-6`}>
             <ul className="flex mb-4 gap-4">
               {tabs.map((tab, index) => (
                 <li key={index} className="flex items-center justify-center">
                   <button
                     onClick={() => setActiveTab(tab)}
-                    className={`px-4 py-2 rounded-full text-sm ${activeTab === tab ? 'bg-blue-600' : 'bg-gray-900'}  text-[15px] text-slate-200`}
+                    className={`px-4 py-2 rounded-full text-sm ${activeTab === tab ? themeStyles.tabActive : themeStyles.tabInactive} text-[15px] ${themeStyles.text}`}
                   >
                     {tab}
                   </button>
@@ -460,10 +476,10 @@ const ProfilePage = () => {
         </div>
 
         {/* Right Side Section */}
-        <div className="bg-[#000] rounded-lg p-6 mb-8 ml-8 w-1.5/3 border-2 border-[#111] ">
+        <div className={`${themeStyles.card} rounded-lg p-6 mb-8 ml-8 w-1.5/3 border-2 ${themeStyles.cardBorder}`}>
           {/* Social */}
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-white mb-2">Social</h3>
+            <h3 className={`text-lg font-semibold ${themeStyles.heading} mb-2`}>Social</h3>
             <div className="flex gap-4 mb-2">
               {isEditingSocial ? (
                 <>
@@ -472,21 +488,21 @@ const ProfilePage = () => {
                     placeholder="LinkedIn URL"
                     value={user.social.linkedin}
                     onChange={(e) => handleSocialEdit('linkedin', e.target.value)}
-                    className="bg-gray-800 text-white px-4 py-2 rounded w-full"
+                    className={`${themeStyles.input} px-4 py-2 rounded w-full`}
                   />
                   <input
                     type="text"
                     placeholder="GitHub URL"
                     value={user.social.github}
                     onChange={(e) => handleSocialEdit('github', e.target.value)}
-                    className="bg-gray-800 text-white px-4 py-2 rounded w-full"
+                    className={`${themeStyles.input} px-4 py-2 rounded w-full`}
                   />
                   <input
                     type="text"
                     placeholder="Website URL"
                     value={user.social.website}
                     onChange={(e) => handleSocialEdit('website', e.target.value)}
-                    className="bg-gray-800 text-white px-4 py-2 rounded w-full"
+                    className={`${themeStyles.input} px-4 py-2 rounded w-full`}
                   />
                 </>
               ) : (
@@ -494,7 +510,7 @@ const ProfilePage = () => {
                   <a href={user.social.linkedin} className="text-blue-400">
                     <FaLinkedin size={24} />
                   </a>
-                  <a href={user.social.github} className="text-white">
+                  <a href={user.social.github} className={themeStyles.heading}>
                     <FaGithub size={24} />
                   </a>
                   <a href={user.social.website} className="text-green-400">
@@ -503,39 +519,39 @@ const ProfilePage = () => {
                 </>
               )}
             </div>
-            <button onClick={() => setIsEditingSocial(!isEditingSocial)} className="bg-blue-600 text-white px-4 py-2 rounded">
+            <button onClick={() => setIsEditingSocial(!isEditingSocial)} className={`${themeStyles.button} text-white px-4 py-2 rounded`}>
               {isEditingSocial ? 'Save' : 'Edit'}
             </button>
           </div>
 
           {/* Tagline */}
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-white mb-2">Tagline</h3>
+            <h3 className={`text-lg font-semibold ${themeStyles.heading} mb-2`}>Tagline</h3>
             {isEditingTagline ? (
               <input
                 type="text"
                 placeholder="Tagline"
                 value={user.tagline}
                 onChange={(e) => handleEdit('tagline', e.target.value)}
-                className="bg-gray-800 text-white px-4 py-2 rounded w-full"
+                className={`${themeStyles.input} px-4 py-2 rounded w-full`}
               />
             ) : (
               <p>{user.tagline}</p>
             )}
-            <button onClick={handleTaglineEdit} className="bg-blue-600 text-white px-4 py-2 rounded mt-2">
+            <button onClick={handleTaglineEdit} className={`${themeStyles.button} text-white px-4 py-2 rounded mt-2`}>
               {isEditingTagline ? 'Save' : 'Edit'}
             </button>
           </div>
 
           {/* Skills */}
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-white mb-2">Skills</h3>
+            <h3 className={`text-lg font-semibold ${themeStyles.heading} mb-2`}>Skills</h3>
             {isEditingSkills ? (
               <>
                 <div className="flex flex-wrap gap-2 mb-2">
                   {user.skills.map((skill, index) => (
                     <div key={index} className="flex items-center">
-                      <span className="bg-gray-800 text-gray-300 px-2 py-1 rounded text-sm mr-2">{skill}</span>
+                      <span className={`${themeStyles.skillTag} px-2 py-1 rounded text-sm mr-2`}>{skill}</span>
                       <button onClick={() => handleRemoveSkill(index)} className="text-red-500">
                         Delete
                       </button>
@@ -545,7 +561,7 @@ const ProfilePage = () => {
                 <input
                   type="text"
                   placeholder="Add Skill"
-                  className="bg-gray-800 text-white px-4 py-2 rounded w-full mb-2"
+                  className={`${themeStyles.input} px-4 py-2 rounded w-full mb-2`}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       handleAddSkill(e.target.value);
@@ -557,11 +573,11 @@ const ProfilePage = () => {
             ) : (
               <div className="flex flex-wrap gap-2 mb-2">
                 {user.skills.map((skill, index) => (
-                  <span key={index} className="bg-gray-800 text-gray-300 px-2 py-1 rounded text-sm">{skill}</span>
+                  <span key={index} className={`${themeStyles.skillTag} px-2 py-1 rounded text-sm`}>{skill}</span>
                 ))}
               </div>
             )}
-            <button onClick={handleSkillEdit} className="bg-blue-600 text-white px-4 py-2 rounded mt-2">
+            <button onClick={handleSkillEdit} className={`${themeStyles.button} text-white px-4 py-2 rounded mt-2`}>
               {isEditingSkills ? 'Save' : 'Edit'}
             </button>
           </div>
