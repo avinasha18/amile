@@ -1,9 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { FaUserCircle } from "react-icons/fa";
-import './index.css'
 import { Link } from "react-router-dom";
+import './index.css';
+import Badge from '@mui/material/Badge';
+import MailIcon from '@mui/icons-material/Mail';
+
+
 const Navbar = () => {
   const [isMenuOpen, setMenu] = useState(false);
+  const menuRef = useRef(null);
+
+  // Close the menu when clicking outside of it
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [menuRef]);
 
   return (
     <header className="bg-[#000] text-gray-100 shadow-md z-50 px-5 h-[70px] border-b border-gray-700">
@@ -15,17 +34,21 @@ const Navbar = () => {
         </Link>
         <nav className="hidden md:flex space-x-6">
           <NavItem>Dashboard</NavItem>
-          <NavItem>Jobs</NavItem>
-          <NavItem>Messages</NavItem>
-
         </nav>
-        <div className="relative">
+        <div className="relative flex flex-row gap-10 items-center" ref={menuRef}>
+          <Link to="/messages">
+            <Badge badgeContent={4} color="primary" variant="dot" anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}>
+              <MailIcon />
+            </Badge>
+          </Link>
           <button
             onClick={() => setMenu(!isMenuOpen)}
             className="flex items-center space-x-2"
           >
-            <FaUserCircle className="text-2xl" />
-            <span className="hidden md:inline">Account</span>
+            <FaUserCircle className="text-4xl" />
           </button>
           {isMenuOpen && <UserMenu />}
         </div>
@@ -41,7 +64,7 @@ const NavItem = ({ children }) => (
 );
 
 const UserMenu = () => (
-  <div className="absolute right-0 mt-2 w-48 bg-gray-700 rounded-md shadow-lg py-1 text-gray-100">
+  <div className="absolute top-10 right-0 mt-2 w-48 bg-slate-900 rounded-md shadow-lg py-1 text-gray-100">
     <MenuItem>Your Profile</MenuItem>
     <MenuItem>Settings</MenuItem>
     <MenuItem>Sign out</MenuItem>
