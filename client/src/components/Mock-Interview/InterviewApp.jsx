@@ -6,9 +6,9 @@ import Lottie from 'react-lottie';
 import { Button, Skeleton } from '@mui/material';
 import { FaStop } from "react-icons/fa";
 import { FaMicrophone } from 'react-icons/fa';
-import animationData from './animations/animation.json'; // Replace with your Lottie file
+import animationData from './animations/animation.json'; 
 
-const flask_domain = 'http://your-flask-backend-url'; // Replace with your actual backend URL
+const flask_domain = 'http://flask-backend-url'; 
 
 function InterviewApp() {
   const [showAnimation, setShowAnimation] = useState(true);
