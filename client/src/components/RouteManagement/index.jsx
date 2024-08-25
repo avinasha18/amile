@@ -8,10 +8,7 @@ import Messages from "../Messages";
 import { Route, Routes, Navigate, useLocation } from "react-router-dom";
 
 export const RouteManagement = ({ islogin }) => {
-
-
   const location = useLocation(window.location);
-
 
   const ProtectedRoute = ({ isLogin, children, nextPath }) => {
     if (!isLogin) {
@@ -23,9 +20,9 @@ export const RouteManagement = ({ islogin }) => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-900 text-gray-100">
-      <Navbar isLogin={islogin}/>
+      <Navbar isLogin={islogin} />
       <div className={`h-screen flex flex-1 overflow-hidden no-scrollbar`}>
-        <Sidebar isLogin={islogin}/>
+        <Sidebar isLogin={islogin} />
         <Routes>
           <Route path="/" element={<JobsPage />} />
           <Route
