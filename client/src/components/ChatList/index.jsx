@@ -1,33 +1,37 @@
+// src/components/ChatList.js
 import React from 'react';
+import { useTheme } from '../../context/ThemeContext';
 
 function ChatList({ chats, setActiveChat, activeChat }) {
+  const { isDarkMode } = useTheme();
+
   return (
-    <div className="w-1/3 bg-[#000] border-r border-gray-700">
-      <div className="p-4 border-b border-gray-600">
-        <h2 className="text-lg font-semibold text-blue-600">Active Chats ({chats.length})</h2>
-        <p className="text-sm text-gray-500">Chats will be automatically removed after 90 days from the list</p>
-      </div>
-      <div className="overflow-y-auto h-[calc(100vh-70px)]">
-        {chats.map(chat => (
-          <div 
+    <div className={`h-full overflow-y-auto ${isDarkMode ? 'bg-black border-gray-700' : 'bg-white border-gray-200'}`}>
+      <h2 className={`text-2xl font-bold p-4 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>Messages</h2>
+      <ul>
+        {chats.map((chat) => (
+          <li
             key={chat.id}
-            className={`flex items-start p-4 border-b border-gray-800 cursor-pointer ${activeChat && activeChat.id === chat.id ? 'bg-[#151515]' : ''}`}
+            className={`p-4 cursor-pointer ${
+              activeChat && activeChat.id === chat.id
+                ? isDarkMode
+                  ? 'bg-gray-700'
+                  : 'bg-blue-100'
+                : isDarkMode
+                ? 'hover:bg-gray-700'
+                : 'hover:bg-gray-100'
+            }`}
             onClick={() => setActiveChat(chat)}
           >
-            <div className="flex-shrink-0 w-10 h-10 bg-orange-400 rounded-full flex items-center justify-center text-white font-bold">
-              {chat.name[0]}
+            <div className="flex justify-between items-center">
+              <h3 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>{chat.name}</h3>
+              <span className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>{chat.time}</span>
             </div>
-            <div className="ml-3 flex-grow">
-              <div className="flex justify-between items-baseline">
-                <h3 className="text-sm font-semibold">{chat.name} • {chat.company}</h3>
-                <span className="text-xs text-gray-500">{chat.time}</span>
-              </div>
-              <p className="text-sm text-gray-600 truncate">{chat.message}</p>
-            </div>
-            <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">{chat.type}</span>
-          </div>
+            <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>{chat.company}</p>
+            <p className={`text-sm truncate ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>{chat.message}</p>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 }

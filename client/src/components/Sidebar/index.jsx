@@ -1,9 +1,13 @@
 import React from 'react';
 import { FaTachometerAlt, FaUser, FaClipboardList, FaEnvelope, FaSearch, FaBrain, FaBook, FaCog } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import { useTheme } from '../../context/ThemeContext';
+
 const Sidebar = () => {
+  const { isDarkMode } = useTheme();
+
   return (
-    <nav className="bg-[#000] text-gray-100 w-64 flex-shrink-0 hidden md:block border-r border-gray-700">
+    <nav className={`${isDarkMode ? 'bg-black text-gray-100' : 'bg-white text-gray-800'} w-64 flex-shrink-0 hidden md:block border-r ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
       <div className="p-4">
         <SidebarSection title="User">
           <Link to='/profile'> <SidebarItem icon={FaUser} label="Profile" /></Link>
@@ -11,7 +15,7 @@ const Sidebar = () => {
 
 
          
-          <SidebarItem icon={FaClipboardList} label="Applied" />
+          <SidebarItem icon={FaClipboardList} label="Applied" isDarkMode={isDarkMode}/>
         </SidebarSection>
         <SidebarSection title="Internships">
           {/* <SidebarItem icon={FaBrain} label="AI Interviews"  /> */}
@@ -47,9 +51,9 @@ const SidebarSection = ({ title, children }) => (
   </div>
 );
 
-const SidebarItem = ({ icon: Icon, label }) => (
+const SidebarItem = ({ icon: Icon, label ,isDarkMode }) => (
   <li>
-    <a href="#" className="flex items-center py-2 px-4 hover:bg-[#151515] rounded transition-colors">
+    <a href="#" className={`flex items-center py-2 px-4 ${isDarkMode ? 'hover:bg-[#b9b8b8]' : 'hover:bg-[#121010]'} rounded transition-colors`}>
       <Icon className="w-5 h-5 mr-3" />
       <span className='text-gray-400'>{label}</span>
     </a>

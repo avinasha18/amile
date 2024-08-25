@@ -1,8 +1,11 @@
+
 import React from 'react';
 import JobCard from '../JobCard';
+import { useTheme } from '../../context/ThemeContext';
 
 const JobList = () => {
-  // This is a mock list of jobs. In a real application, you'd fetch this data from an API.
+  const { isDarkMode } = useTheme();
+
   const jobs = [
     {
       id: 1,
@@ -78,8 +81,7 @@ const JobList = () => {
   ];
 
   return (
-    <div className="space-y-6 overflow-hidden  no-scrollbar">
-       
+    <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 ${isDarkMode ? 'bg-black' : 'bg-gray-100'}`}>
       {jobs.map(job => (
         <JobCard key={job.id} job={job} />
       ))}

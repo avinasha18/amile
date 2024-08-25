@@ -1,58 +1,47 @@
-import React from 'react';
-import Navbar from './components/Navbar';
-import Sidebar from './components/Sidebar';
-import JobsPage from './components/Jobs';
-import './App.css'
-import { Route,Routes,useLocation } from 'react-router-dom';
-import JobDetailPage from './components/JobDetailPage';
-import ProfilePage from './components/Profile';
-import Messages from './components/Messages';
-import InterviewApp from './components/Mock-Interview/InterviewApp';
-import Feedback from './components/Mock-Interview/Feedback';
+// App.js
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Sidebar from "./components/Sidebar";
+import JobsPage from "./components/Jobs";
+import JobDetailPage from "./components/JobDetailPage";
+import ProfilePage from "./components/Profile";
+import Messages from "./components/Messages";
+import Applied from "./components/Applied";
+import InterviewApp from "./components/Mock-Interview/InterviewApp";
+import { ThemeProvider } from "./context/ThemeContext";
+import "./App.css";
+
 function App() {
   const location = useLocation();
-  
-  // Determine if the sidebar should be hidden
-  const hideSidebar = location.pathname === '/interview';
+
+  // Determine if we are on the InterviewApp route
+  const isInterviewAppRoute = location.pathname === "/aimock";
 
   return (
-    <div className="flex flex-col h-screen bg-gray-900 text-gray-100">
-      <Navbar />
-      {/* {
-        localStorage.getItem('user') ? (
-          <div className="flex h-screen">
-            <Sidebar />
-            <div className="flex-1 p-4">
-              <Routes>
-                <Route path="/" element={<JobsPage />} />
-                <Route path="/job/:id" element={<JobDetailPage />} />
-                <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/messages" element={<Messages />} />
-                <Route path="/interview" element={<InterviewApp />} />
-                <Route path="/feedback" element={<Feedback />} />
-              </Routes>
-            </div>
-            </div>
-            ) : (
-              <div className="flex h-screen justify-center items-center">
-                <h1 className="text-3xl">Please login to access the dashboard</h1>
-                </div>
-                )
-      } */}
-      <div className="h-screen flex flex-1 overflow-hidden no-scrollbar">
-        {!hideSidebar && <Sidebar />}
-          <Routes>
-            <Route exact path="/" element={<JobsPage />} />
-            <Route exact path="/messages" element={<Messages />} />
-            <Route exact path='/jobdetail' element={<JobDetailPage/>}/>
-            <Route exact path='/profile' element={<ProfilePage/>}/>
-          </Routes>
+    <ThemeProvider>
+      <div className="flex flex-col h-screen">
+        {!isInterviewAppRoute && <Navbar />}
+        <div className="flex flex-1 overflow-hidden">
+          {!isInterviewAppRoute && <Sidebar />}
+          <div className="flex-1 overflow-y-auto">
+            <Routes>
+              <Route exact path="/" element={<JobsPage />} />
+              <Route exact path="/messages" element={<Messages />} />
+              <Route exact path="/applied" element={<Applied />} />
+              <Route exact path="/jobdetail" element={<JobDetailPage />} />
+              <Route exact path="/profile" element={<ProfilePage />} />
+              <Route exact path="/aimock" element={<InterviewApp />} />
+            </Routes>
+          </div>
+        </div>
       </div>
-      <Routes>
-        <Route exact path="/interview" element={<InterviewApp />} />
-        <Route exact path="/feedback" element={<Feedback />} />
-      </Routes>
-    </div>
+    </ThemeProvider>
   );
 }
 

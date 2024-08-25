@@ -1,6 +1,8 @@
 import React from 'react';
 import { FaArrowLeft, FaBuilding, FaMapMarkerAlt, FaMoneyBillWave, FaCalendarAlt, FaClock, FaUsers, FaGraduationCap } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '../../context/ThemeContext'; // Import the theme context
+
 // Sample job data
 const sampleJob = {
   title: "Senior Frontend Developer",
@@ -31,34 +33,33 @@ const sampleJob = {
 };
 
 const JobDetailPage = () => {
-  // In a real application, you'd fetch the job data based on an ID
-  // and handle loading/error states
+  const { isDarkMode } = useTheme(); // Get the theme context
   const job = sampleJob;
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
-    <div className="bg-black min-h-screen overflow-y-auto text-gray-300">
+    <div className={`min-h-screen overflow-y-auto ${isDarkMode ? 'bg-gray-900 text-gray-300' : 'bg-gray-100 text-gray-900'}`}>
       <div className="container mx-auto px-4 py-8">
         {/* Back button */}
         <button 
-          onClick={() => navigate('/') }
-          className="flex items-center text-blue-400 hover:text-blue-300 transition-colors mb-6"
+          onClick={() => navigate('/')}
+          className={`flex items-center ${isDarkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-500'} transition-colors mb-6`}
         >
           <FaArrowLeft className="mr-2" />
           Back to Jobs
         </button>
 
         {/* Job header */}
-        <div className="bg-[#0c0b0b] rounded-lg p-6 mb-8 shadow-lg">
+        <div className={`rounded-lg p-6 mb-8 shadow-lg ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <img src={job.logo} alt={`${job.company} logo`} className="w-16 h-16 rounded-full mr-4" />
               <div>
-                <h1 className="text-2xl font-bold text-white">{job.title}</h1>
-                <p className="text-xl text-blue-400">{job.company}</p>
+                <h1 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{job.title}</h1>
+                <p className={`text-xl ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`}>{job.company}</p>
               </div>
             </div>
-            <span className={`px-4 py-2 rounded-full text-sm ${job.type === 'Full-time' ? 'bg-green-900 text-green-300' : 'bg-blue-900 text-blue-300'}`}>
+            <span className={`px-4 py-2 rounded-full text-sm ${job.type === 'Full-time' ? (isDarkMode ? 'bg-green-900 text-green-300' : 'bg-green-100 text-green-800') : (isDarkMode ? 'bg-blue-900 text-blue-300' : 'bg-blue-100 text-blue-800')}`}>
               {job.type}
             </span>
           </div>
@@ -68,44 +69,44 @@ const JobDetailPage = () => {
         <div className="flex flex-col lg:flex-row gap-8 h-auto">
           {/* Left column - Job details */}
           <div className="lg:w-2/3">
-            <section className="bg-[#0c0b0b] rounded-lg p-6 mb-8 shadow-lg">
-              <h2 className="text-xl font-semibold mb-4 text-white">Job Description</h2>
+            <section className={`rounded-lg p-6 mb-8 shadow-lg ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+              <h2 className={`text-xl font-semibold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Job Description</h2>
               <p className="mb-4">{job.description}</p>
               
-              <h3 className="text-lg font-semibold mb-2 text-white">Requirements:</h3>
-              <ul className="list-disc list-inside mb-4">
+              <h3 className={`text-lg font-semibold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Requirements:</h3>
+              <ul className={`list-disc list-inside mb-4 ${isDarkMode ? 'text-gray-300' : 'text-gray-800'}`}>
                 {job.requirements.map((req, index) => (
                   <li key={index}>{req}</li>
                 ))}
               </ul>
 
-              <h3 className="text-lg font-semibold mb-2 text-white">Responsibilities:</h3>
-              <ul className="list-disc list-inside">
+              <h3 className={`text-lg font-semibold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Responsibilities:</h3>
+              <ul className={`list-disc list-inside ${isDarkMode ? 'text-gray-300' : 'text-gray-800'}`}>
                 {job.responsibilities.map((resp, index) => (
                   <li key={index}>{resp}</li>
                 ))}
               </ul>
             </section>
 
-            <section className="bg-[#0c0b0b] rounded-lg p-6 mb-8 shadow-lg">
-              <h2 className="text-xl font-semibold mb-4 text-white">About {job.company}</h2>
-              <p>{job.companyDescription}</p>
+            <section className={`rounded-lg p-6 mb-8 shadow-lg ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+              <h2 className={`text-xl font-semibold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>About {job.company}</h2>
+              <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-800'}`}>{job.companyDescription}</p>
             </section>
           </div>
 
           {/* Right column - Application and quick info */}
           <div className="lg:w-1/3">
-            <div className="bg-[#0c0b0b] rounded-lg p-6 mb-8 shadow-lg sticky top-8">
-              <h2 className="text-xl font-semibold mb-4 text-white">Quick Info</h2>
+            <div className={`rounded-lg p-6 mb-8 shadow-lg sticky top-8 ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+              <h2 className={`text-xl font-semibold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Quick Info</h2>
               <div className="space-y-3">
-                <InfoItem icon={<FaMapMarkerAlt />} text={job.location} />
-                <InfoItem icon={<FaMoneyBillWave />} text={job.salary} />
-                <InfoItem icon={<FaCalendarAlt />} text={`Start Date: ${job.startDate}`} />
-                <InfoItem icon={<FaClock />} text={`Duration: ${job.duration}`} />
-                <InfoItem icon={<FaUsers />} text={`${job.openings} openings`} />
-                <InfoItem icon={<FaGraduationCap />} text={`Experience: ${job.experience}`} />
+                <InfoItem icon={<FaMapMarkerAlt className={`${isDarkMode ? 'text-blue-400' : 'text-blue-600'} mr-2`} />} text={job.location} />
+                <InfoItem icon={<FaMoneyBillWave className={`${isDarkMode ? 'text-blue-400' : 'text-blue-600'} mr-2`} />} text={job.salary} />
+                <InfoItem icon={<FaCalendarAlt className={`${isDarkMode ? 'text-blue-400' : 'text-blue-600'} mr-2`} />} text={`Start Date: ${job.startDate}`} />
+                <InfoItem icon={<FaClock className={`${isDarkMode ? 'text-blue-400' : 'text-blue-600'} mr-2`} />} text={`Duration: ${job.duration}`} />
+                <InfoItem icon={<FaUsers className={`${isDarkMode ? 'text-blue-400' : 'text-blue-600'} mr-2`} />} text={`${job.openings} openings`} />
+                <InfoItem icon={<FaGraduationCap className={`${isDarkMode ? 'text-blue-400' : 'text-blue-600'} mr-2`} />} text={`Experience: ${job.experience}`} />
               </div>
-              <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium mt-6 hover:bg-blue-700 transition-colors">
+              <button className={`w-full py-3 rounded-lg font-medium mt-6 ${isDarkMode ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-blue-600 text-white hover:bg-blue-500'} transition-colors`}>
                 Apply Now
               </button>
             </div>
@@ -118,7 +119,7 @@ const JobDetailPage = () => {
 
 const InfoItem = ({ icon, text }) => (
   <div className="flex items-center">
-    <span className="text-blue-400 mr-2">{icon}</span>
+    {icon}
     <span>{text}</span>
   </div>
 );
