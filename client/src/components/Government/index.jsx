@@ -4,6 +4,7 @@ import { useTheme } from '../../context/ThemeContext';
 import { Oval } from 'react-loader-spinner';
 import { motion } from 'framer-motion';
 import GovtJobCard from '../GovernmentJobCard';
+import Cookies from 'js-cookie'; // Import Cookies for managing user data
 
 const GovernmentJobsPage = () => {
   const [jobs, setJobs] = useState([]);
@@ -14,8 +15,21 @@ const GovernmentJobsPage = () => {
 
   useEffect(() => {
     const fetchJobs = async () => {
+      setLoading(true); // Set loading to true before fetching
+
+      // Retrieve user data from cookies
+      const userCookie = Cookies.get('user');
+      const user = userCookie ? JSON.parse(userCookie) : null;
+      const userId = user ? user.id : null;
+
+      if (!userId) {
+        console.error("User not logged in or user ID not available.");
+        setLoading(false);
+        return;
+      }
+
       try {
-        const response = await axios.get('http://localhost:3000/government');
+        const response = await axios.get(`http://localhost:3000/government?userId=${userId}`);
         setJobs(response.data);
         setFilteredJobs(response.data);
         setLoading(false);
@@ -74,7 +88,7 @@ const GovernmentJobsPage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <GovtJobCard job={job}  />
+              <GovtJobCard job={job} />
             </motion.div>
           ))}
         </div>

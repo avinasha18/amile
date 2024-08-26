@@ -1,10 +1,11 @@
-
 import React, { useEffect, useState } from 'react';
 import JobCard from '../JobCard';
 import { useTheme } from '../../context/ThemeContext';
 import Pagination from '@mui/material/Pagination';
 import { styled } from '@mui/material/styles';
-import {Oval} from 'react-loader-spinner'
+import { Oval } from 'react-loader-spinner';
+import Cookies from 'js-cookie';
+
 const CustomPagination = styled(Pagination)(({ theme }) => ({
   '& .MuiPaginationItem-root': {
     color: theme.palette.mode === 'dark' ? '#ffffff' : '#000000',
@@ -23,38 +24,51 @@ const JobList = ({ filters, searchQuery }) => {
   const [jobs, setJobs] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [isLoading,setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true);
+  const [currentUserId, setCurrentUserId] = useState(null);
+
+  useEffect(() => {
+    const userCookie = Cookies.get('user');
+    if (userCookie) {
+      const user = JSON.parse(userCookie);
+      setCurrentUserId(user.id);
+    }
+  }, []);
+
   const fetchInternships = async (pageNumber) => {
     const queryParams = new URLSearchParams({
       ...filters,
       page: pageNumber,
       limit: 10,
       search: searchQuery,
+      userId: currentUserId,
     });
-  
+
     try {
       const response = await fetch(`http://localhost:3000/internships?${queryParams.toString()}`);
       const data = await response.json();
       setJobs(data.internships || []);
+      setIsLoading(false)
       setTotalPages(data.totalPages || 1);
-      // setIsLoading(false)
     } catch (error) {
       console.error('Error fetching internships:', error.message);
     }
   };
-  
-  setTimeout(()=>setIsLoading(false),100)
 
   useEffect(() => {
-    fetchInternships(page);
-  }, [page, filters, searchQuery]);
+    if (currentUserId) {
+      fetchInternships(page);
+    }
+  }, [page, filters, searchQuery, currentUserId]);
 
   const handlePageChange = (event, value) => {
     setPage(value);
   };
+
   const handleApply = (appliedJobId) => {
     setJobs(prevJobs => prevJobs.filter(job => job._id !== appliedJobId));
   };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -67,13 +81,13 @@ const JobList = ({ filters, searchQuery }) => {
         />
       </div>
     );
-  
-}
+  }
+
   return (
     <div className={`bg-${isDarkMode ? 'black' : 'gray-100'} p-6`}>
       <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6`}>
         {jobs.map(job => (
-          <JobCard key={job._id} job={job} onApply={handleApply}/>
+          <JobCard key={job._id} job={job} onApply={handleApply} />
         ))}
       </div>
       <div className="mt-6 flex justify-center">

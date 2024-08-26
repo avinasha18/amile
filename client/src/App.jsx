@@ -18,6 +18,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import GovernmentJobsPage from "./components/Government";
 import GovernmentDetailedPage from "./components/GovernmentDetailed";
+import Dashboard from "./components/Dashboard";
 
 function App() {
   const islogin = useSelector((state) => state.auth.token);
@@ -33,6 +34,7 @@ function App() {
           <div className="flex-1 overflow-y-auto">
             <Routes>
               <Route exact path="/" element={<JobsPage />} />
+              <Route exact path='/dashboard' element={<Dashboard/>}/>
               <Route exact path="/messages" element={<Messages />} />
               <Route exact path="/applied" element={<AppliedInternships />} />
               <Route exact path="/jobdetail" element={<JobDetailPage />} />

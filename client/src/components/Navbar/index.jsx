@@ -50,7 +50,7 @@ const Navbar = ({ isLogin }) => {
           Amile
         </h1>
         <nav className="hidden md:flex space-x-6">
-          <NavItem to="/">Dashboard</NavItem>
+          <NavItem to="/dashboard">Dashboard</NavItem>
           <NavItem to="/jobs">Jobs</NavItem>
           <NavItem to="/messages">Messages</NavItem>
         </nav>
