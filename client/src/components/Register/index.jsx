@@ -17,46 +17,6 @@ import {
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Actions } from "../../hooks/actions";
 
-const darkTheme = createTheme({
-  palette: {
-    mode: "dark",
-    primary: {
-      main: "#90caf9",
-    },
-    secondary: {
-      main: "#f48fb1",
-    },
-    background: {
-      default: "#121212",
-      paper: "#1d1d1d",
-    },
-    text: {
-      primary: "#ffffff",
-      secondary: "#b0b0b0",
-    },
-  },
-  components: {
-    MuiTextField: {
-      styleOverrides: {
-        root: {
-          "& .MuiInputLabel-root": {
-            color: "#b0b0b0",
-          },
-          "& .MuiInputBase-input": {
-            color: "#ffffff",
-          },
-          "& .MuiInputBase-root:before": {
-            borderBottom: "1px solid #b0b0b0",
-          },
-          "& .MuiInputBase-root:after": {
-            borderBottom: "2px solid #90caf9",
-          },
-        },
-      },
-    },
-  },
-});
-
 const UserRegisterFlow = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [accountType, setAccountType] = useState("");
@@ -66,16 +26,18 @@ const UserRegisterFlow = () => {
   const [password, setPassword] = useState("");
   const [github, setGithub] = useState("");
   const [linkedin, setLinkedin] = useState("");
-  const [termsAccepted, setTermsAccepted] = useState(true);
-  const [loading, setLoading] = useState(false); // Loading state
-  const [errors, setErrors] = useState({}); // Error state for validations
-  const [params] = useSearchParams();
-  const refrelid = params.get("refrelid");
-  const nav = useNavigate();
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [searchParams] = useSearchParams();
+  const refrelid = searchParams.get("refrelid");
+  const navigate = useNavigate();
   const steps = ["Select Account Type", "Basic Information", "Additional Information"];
 
   const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    if (validate()) {
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    }
   };
 
   const handleBack = () => {
@@ -84,17 +46,22 @@ const UserRegisterFlow = () => {
 
   const validate = () => {
     const newErrors = {};
-
-    if (!accountType) newErrors.accountType = "Account type is required.";
-    if (!email) {
-      newErrors.email = "Email is required.";
-    } else if (!email.endsWith("@gmail.com")) {
-      newErrors.email = "Email must end with @gmail.com.";
+    if (activeStep === 0 && !accountType) {
+      newErrors.accountType = "Account type is required.";
     }
-    if (!username) newErrors.username = "Username is required.";
-    if (!name) newErrors.name = "Name is required.";
-    if (!password) newErrors.password = "Password is required.";
-    if (!termsAccepted) newErrors.termsAccepted = "You must accept the terms.";
+    if (activeStep === 1) {
+      if (!email) {
+        newErrors.email = "Email is required.";
+      } else if (!email.endsWith("@gmail.com")) {
+        newErrors.email = "Email must end with @gmail.com.";
+      }
+      if (!username) newErrors.username = "Username is required.";
+      if (!name) newErrors.name = "Name is required.";
+      if (!password) newErrors.password = "Password is required.";
+    }
+    if (activeStep === 2 && !termsAccepted) {
+      newErrors.termsAccepted = "You must accept the terms.";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -103,7 +70,7 @@ const UserRegisterFlow = () => {
   const handleSubmit = async () => {
     if (!validate()) return;
 
-    setLoading(true); // Start loading
+    setLoading(true);
     try {
       const response = await Actions.Register({
         email,
@@ -118,16 +85,56 @@ const UserRegisterFlow = () => {
 
       if (response.data.success) {
         console.log(response.data.message);
-        nav("/login", { replace: true });
+        navigate("/login", { replace: true });
       } else {
         console.log(response.data.message);
       }
     } catch (error) {
-      console.log(error);
+      console.error("Registration error:", error);
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);
     }
   };
+
+  const darkTheme = createTheme({
+    palette: {
+      mode: "dark",
+      primary: {
+        main: "#90caf9",
+      },
+      secondary: {
+        main: "#f48fb1",
+      },
+      background: {
+        default: "#121212",
+        paper: "#1d1d1d",
+      },
+      text: {
+        primary: "#ffffff",
+        secondary: "#b0b0b0",
+      },
+    },
+    components: {
+      MuiTextField: {
+        styleOverrides: {
+          root: {
+            "& .MuiInputLabel-root": {
+              color: "#b0b0b0",
+            },
+            "& .MuiInputBase-input": {
+              color: "#ffffff",
+            },
+            "& .MuiInputBase-root:before": {
+              borderBottom: "1px solid #b0b0b0",
+            },
+            "& .MuiInputBase-root:after": {
+              borderBottom: "2px solid #90caf9",
+            },
+          },
+        },
+      },
+    },
+  });
 
   const isFinalStep = activeStep === steps.length - 1;
 
@@ -154,11 +161,9 @@ const UserRegisterFlow = () => {
             boxShadow: 3,
           }}
         >
-          <Box>
-            <Typography variant="h4" align="center" gutterBottom>
-              AMILE SIGNUP
-            </Typography>
-          </Box>
+          <Typography variant="h4" align="center" gutterBottom>
+            AMILE SIGNUP
+          </Typography>
           <Stepper activeStep={activeStep}>
             {steps.map((label) => (
               <Step key={label}>
@@ -193,6 +198,7 @@ const UserRegisterFlow = () => {
                 github={github}
                 setGithub={setGithub}
                 linkedin={linkedin}
+                setLinkedin={setLinkedin}
                 termsAccepted={termsAccepted}
                 setTermsAccepted={setTermsAccepted}
                 error={errors.termsAccepted}
@@ -212,6 +218,7 @@ const UserRegisterFlow = () => {
                   onClick={handleNext}
                   variant="contained"
                   color="primary"
+                  disabled={loading}
                 >
                   Next
                 </Button>
@@ -220,9 +227,9 @@ const UserRegisterFlow = () => {
                   onClick={handleSubmit}
                   variant="contained"
                   color="primary"
-                  disabled={loading} // Disable button when loading
+                  disabled={loading}
                 >
-                  {loading ? "Registering..." : "Signup"} {/* Change button text */}
+                  {loading ? "Registering..." : "Signup"}
                 </Button>
               )}
             </Box>
@@ -301,7 +308,6 @@ const BasicInfoStep = ({
         onChange={(e) => setEmail(e.target.value)}
         error={!!errors.email}
         helperText={errors.email}
-        required
       />
     </Grid>
     <Grid item xs={12}>
@@ -312,7 +318,6 @@ const BasicInfoStep = ({
         onChange={(e) => setUsername(e.target.value)}
         error={!!errors.username}
         helperText={errors.username}
-        required
       />
     </Grid>
     <Grid item xs={12}>
@@ -323,7 +328,6 @@ const BasicInfoStep = ({
         onChange={(e) => setName(e.target.value)}
         error={!!errors.name}
         helperText={errors.name}
-        required
       />
     </Grid>
     <Grid item xs={12}>
@@ -335,16 +339,6 @@ const BasicInfoStep = ({
         onChange={(e) => setPassword(e.target.value)}
         error={!!errors.password}
         helperText={errors.password}
-        required
-      />
-    </Grid>
-    <Grid item xs={12}>
-      <TextField
-        fullWidth
-        label={refrelid ? "Referral Code" : "You are not eligible for referral"}
-        value={refrelid || ""}
-        disabled
-        required
       />
     </Grid>
   </Grid>
@@ -357,43 +351,32 @@ const AdditionalInfoStep = ({
   setLinkedin,
   termsAccepted,
   setTermsAccepted,
-  error
+  error,
 }) => (
-  <Grid container spacing={2}>
-    <Grid item xs={12}>
-      <TextField
-        fullWidth
-        label="GitHub"
-        value={github}
-        onChange={(e) => setGithub(e.target.value)}
-        placeholder="Enter your GitHub (optional)"
-      />
-    </Grid>
-    <Grid item xs={12}>
-      <TextField
-        fullWidth
-        label="LinkedIn"
-        value={linkedin}
-        onChange={(e) => setLinkedin(e.target.value)}
-        placeholder="Enter your LinkedIn (optional)"
-      />
-    </Grid>
-    <Grid item xs={12}>
-      <FormControlLabel
-        control={
-          <Checkbox
-            checked={termsAccepted}
-            onChange={() => setTermsAccepted(!termsAccepted)}
-          />
-        }
-        label="I agree to the terms and conditions"
-      />
-      {error && <Typography color="error">{error}</Typography>}
-    </Grid>
-  </Grid>
+  <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+    <TextField
+      fullWidth
+      label="GitHub Profile"
+      value={github}
+      onChange={(e) => setGithub(e.target.value)}
+    />
+    <TextField
+      fullWidth
+      label="LinkedIn Profile"
+      value={linkedin}
+      onChange={(e) => setLinkedin(e.target.value)}
+    />
+    <FormControlLabel
+      control={
+        <Checkbox
+          checked={termsAccepted}
+          onChange={(e) => setTermsAccepted(e.target.checked)}
+        />
+      }
+      label="I accept the terms and conditions"
+    />
+    {error && <Typography color="error">{error}</Typography>}
+  </Box>
 );
 
-
-
 export default UserRegisterFlow;
-

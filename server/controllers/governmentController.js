@@ -92,8 +92,6 @@ export const getJobPostingById = async (req, res) => {
   
   export const createGovtApplicationController = async (req, res) => {
     const { internshipId, studentId, companyId } = req.body;
-    console.log(req.body)
-    console.log(internshipId,"job id from body")
   
     try {
       // Check if an application already exists

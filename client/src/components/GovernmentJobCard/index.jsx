@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaMoneyBillAlt, FaCalendarAlt, FaHandPointRight, FaUser } from 'react-icons/fa';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -13,7 +13,6 @@ const GovtJobCard = ({ job, onApply }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isApplied, setIsApplied] = useState(false);
   const currentUser = JSON.parse(Cookies.get('user') || '{}');
-  const location = useLocation();
 
   useEffect(() => {
     const checkApplication = async () => {
@@ -23,6 +22,8 @@ const GovtJobCard = ({ job, onApply }) => {
         setIsApplied(appliedJobs.includes(job._id));
       } catch (error) {
         console.error("Error checking application status:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -30,10 +31,8 @@ const GovtJobCard = ({ job, onApply }) => {
   }, [job._id, currentUser.id]);
 
   const handleViewDetails = () => {
-    navigate(`/governmentDetailed/${job.jobId}`);
+    navigate(`/governmentDetailed/${job._id}`);
   };
-
-  setTimeout(() => setIsLoading(false), 1000);
 
   const handleApply = async () => {
     try {
@@ -48,7 +47,7 @@ const GovtJobCard = ({ job, onApply }) => {
           position: "bottom-center",
         });
         setIsApplied(true);
-        onApply(job._id); // Notify parent component about the application
+        // onApply(job._id); // Notify parent component about the application
       }
     } catch (error) {
       if (error.response && error.response.status === 400) {
@@ -91,7 +90,7 @@ const GovtJobCard = ({ job, onApply }) => {
             </div>
           </div>
           <span className={`px-3 py-1 rounded-full text-md ${job.jobType === 'Full Time' ? 'bg-blue-500 text-blue-100' : 'bg-green-500 text-green-100'}`}>
-            {job.type}
+            {job.jobType}
           </span>
         </div>
         <div className="flex flex-wrap gap-2 mb-4">
