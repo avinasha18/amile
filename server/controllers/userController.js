@@ -120,8 +120,15 @@ export const loginUser = async (req, res) => {
         const token = jwt.sign({ username, userType }, JWT_SECRET, {
           expiresIn: "1d",
         });
-        res.json({ success: true, token, user: user.username });
-      } else {
+        // console.log(user)
+        res.json({
+          success: true,
+          token,
+          user: {
+            id: user._id, 
+            username: user.username
+          }
+        });      } else {
         return res.json({ success: false, message: "Invalid password" });
       }
     } catch (e) {

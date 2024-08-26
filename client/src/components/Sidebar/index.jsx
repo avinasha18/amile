@@ -1,6 +1,8 @@
 import React from 'react';
 import { FaTachometerAlt, FaUser, FaClipboardList, FaEnvelope, FaSearch, FaBrain, FaBook, FaCog } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import { GoVerified } from "react-icons/go";
+
 import { useTheme } from '../../context/ThemeContext';
 
 const Sidebar = () => {
@@ -12,11 +14,12 @@ const Sidebar = () => {
       <SidebarSection title="User">
   <SidebarItem icon={FaUser} label="Profile" to="/profile" />
   <SidebarItem icon={FaEnvelope} label="Messages" to="/messages" />
-  <SidebarItem icon={FaClipboardList} label="Applied" isDarkMode={isDarkMode} />
+  <SidebarItem icon={FaClipboardList} label="Applied" isDarkMode={isDarkMode} to='/applied' />
 </SidebarSection>
         <SidebarSection title="Internships">
           {/* <SidebarItem icon={FaBrain} label="AI Interviews"  /> */}
           <Link to='/'><SidebarItem icon={FaSearch} label="Find Internships" /></Link>
+          <Link to='/government'><SidebarItem icon={GoVerified} label="Public Internships" /></Link>
 
         {/* <li>
         <a href="#" className="flex items-center py-2 px-4 hover:bg-[#151515] rounded transition-colors">

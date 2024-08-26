@@ -22,6 +22,16 @@ const internshipSchema = new mongoose.Schema({
     isActive: { type: Boolean, default: true },           
 });
 
+const applicationSchema = new mongoose.Schema({
+    internshipId: { type: mongoose.Schema.Types.ObjectId, ref: 'Internship', required: true },
+    studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Student', required: true },
+    companyId: { type: mongoose.Schema.Types.ObjectId, ref: 'Company', required: true },
+    status: { type: String, default: 'pending', enum: ['pending', 'selected', 'rejected', 'next round'] },
+    appliedAt: { type: Date, default: Date.now },
+  });
+  
+  export const Application = mongoose.model('Application', applicationSchema);
+  
 
 export const Internship = mongoose.model('Internship', internshipSchema);
 
@@ -33,6 +43,9 @@ export const createInternship = async (data) => {
 export const findInternshipById = async (id) => {
     return await Internship.findById(id);
 };
+export const findInternshipByUserName = async (username)=> {
+    return await Internship.find({username})
+}
 
 export const getAllInternships = async (query, skip, limit) => {
     return await Internship.find(query)

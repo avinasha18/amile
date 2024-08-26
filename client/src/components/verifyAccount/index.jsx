@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Actions } from "../../hooks/actions";
-import { Snackbar, CircularProgress, Box } from "@material-ui/core";
+import { Snackbar, CircularProgress, Box } from "@mui/material";
 
 export const VerifyAccount = () => {
   const [loading, setLoading] = useState(true);

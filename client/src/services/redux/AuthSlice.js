@@ -14,11 +14,13 @@ const authSlice = createSlice({
       state.token = token;
       state.user = user;
       Cookies.set('token', token, { expires: action.payload.cookieExpires || 1}); 
+      Cookies.set('user', JSON.stringify(user), { expires: action.payload.cookieExpires || 1 });
     },
     logout: (state) => {
       state.token = null;
       state.user = null;
       Cookies.remove('token');
+      Cookies.remove('user')
     },
     setUser: (state, action) => {
       state.user = action.payload;

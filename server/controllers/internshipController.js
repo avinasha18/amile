@@ -4,7 +4,8 @@ import {
   getAllInternships,
   updateInternship,
   deleteInternship,
-  Internship
+  Internship,
+  findInternshipByUserName
 } from '../models/intern.model.js';
 export const getAllInternshipsController = async (req, res) => {
   const { page = 1, limit = 10, search, ...query } = req.query;
@@ -47,11 +48,9 @@ export const getAllInternshipsController = async (req, res) => {
   }
   
   try {
-    console.log(filterQuery)
     const totalInternships = await Internship.countDocuments(filterQuery);
     const internships = await getAllInternships(filterQuery, skip, limitNumber);
     const totalPages = Math.ceil(totalInternships / limitNumber);
-    console.log(totalInternships)
     res.status(200).json({ internships, totalPages });
   } catch (error) {
     console.error('Error fetching internships:', error.message);
@@ -61,7 +60,8 @@ export const getAllInternshipsController = async (req, res) => {
 
 export const getInternshipByIdController = async (req, res) => {
   try {
-    const internship = await findInternshipById(req.params.id);
+    console.log(req.params.id)
+    const internship = await findInternshipByUserName(req.params.id);
     if (!internship) return res.status(404).send("Internship not found");
     res.status(200).json(internship);
   } catch (error) {

@@ -4,7 +4,7 @@ import { useTheme } from "../../context/ThemeContext";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "../../services/redux/AuthSlice";
-import { Button } from "@material-ui/core";
+import { Button } from "@mui/material";
 import "./index.css";
 
 const Navbar = ({ isLogin }) => {

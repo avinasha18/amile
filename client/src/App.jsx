@@ -11,9 +11,13 @@ import { VerifyAccount } from './components/verifyAccount';
 import JobDetailPage from './components/JobDetailPage';
 import ProfilePage from './components/Profile';
 import Messages from './components/Messages';
-import Applied from './components/Applied';
 import InterviewApp from "./components/Mock-Interview/InterviewApp";
 import Feedback from "./components/Mock-Interview/Feedback";
+import AppliedInternships from "./components/Applied";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import GovernmentJobsPage from "./components/Government";
+import GovernmentDetailedPage from "./components/GovernmentDetailed";
 
 function App() {
   const islogin = useSelector((state) => state.auth.token);
@@ -30,7 +34,7 @@ function App() {
             <Routes>
               <Route exact path="/" element={<JobsPage />} />
               <Route exact path="/messages" element={<Messages />} />
-              <Route exact path="/applied" element={<Applied />} />
+              <Route exact path="/applied" element={<AppliedInternships />} />
               <Route exact path="/jobdetail" element={<JobDetailPage />} />
               <Route exact path="/profile" element={<ProfilePage />} />
               <Route path="/verifyaccount" element={<VerifyAccount />} />
@@ -39,9 +43,23 @@ function App() {
               <Route path="/*" element={<RouteManagement islogin={islogin} />} />
               <Route path="/aimock" element={<InterviewApp />} />
               <Route path="/feedback" element={<Feedback/>}/>
+              <Route path='/government' element={<GovernmentJobsPage/>}/>
+              <Route path='/governmentDetailed/:id' element={<GovernmentDetailedPage/>}/>
+
             </Routes>
           </div>
         </div>
+        <ToastContainer
+          position="bottom-center"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
       </div>
     </ThemeProvider>
   );
