@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -13,9 +13,31 @@ import {
   createTheme,
   CssBaseline,
   Typography,
+  Alert,
 } from "@mui/material";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Actions } from "../../hooks/actions";
+import { useSelector } from "react-redux";
+
+const lightTheme = createTheme({
+  palette: {
+    mode: "light",
+    primary: {
+      main: "#007bff",
+    },
+    secondary: {
+      main: "#f48fb1",
+    },
+    background: {
+      default: "#f5f5f5",
+      paper: "#fff",
+    },
+    text: {
+      primary: "#000",
+      secondary: "#555",
+    },
+  },
+});
 
 const darkTheme = createTheme({
   palette: {
@@ -69,7 +91,12 @@ const UserRegisterFlow = () => {
   const [termsAccepted, setTermsAccepted] = useState(true);
   const [params] = useSearchParams();
   const refrelid = params.get("refrelid");
-  const nav = useNavigate()
+  const nav = useNavigate();
+  const isDarkMode = useSelector((state) => state.theme.isDarkMode);
+  const [alert,setAlert] = useState({})
+
+  const theme = isDarkMode ? darkTheme : lightTheme;
+
   const steps = [
     "Select Account Type",
     "Basic Information",
@@ -77,8 +104,35 @@ const UserRegisterFlow = () => {
   ];
 
   const handleNext = () => {
+    if (activeStep === 0) {
+      // Validate account type selection
+      if (!accountType) {
+        setAlert({visible: true,message:"Please select an account type."});
+
+        return;
+      }
+    } else if (activeStep === 1) {
+      if (!email || !username || !name || !password) {
+        setAlert({visible: true,message:"Please fill in all required fields"});
+        return;
+      }
+    } else if (activeStep === 2) {
+      if ( !termsAccepted) {
+        setAlert({visible: true,message:"Please fill in all required fields and accept the terms."});
+        return;
+      }
+    }
+
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAlert({ visible: false, message: "" });
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [alert.visible])
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
@@ -94,14 +148,15 @@ const UserRegisterFlow = () => {
         github,
         linkedin,
         accountType,
-        refrelid
+        refrelid,
       });
 
       if (response.data.success) {
-        console.log(response.data.message);
-        nav("/login",{replace: true})
-      }else{
-        console.log(response.data.message);
+        setAlert({ visible: false, message:response.data.message  });
+
+        nav("/login", { replace: true });
+      } else {
+        setAlert({ visible: false, message:response.data.message  });
       }
     } catch (error) {
       console.log(error);
@@ -111,7 +166,7 @@ const UserRegisterFlow = () => {
   const isFinalStep = activeStep === steps.length - 1;
 
   return (
-    <ThemeProvider theme={darkTheme}>
+    <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box
         sx={{
@@ -138,6 +193,7 @@ const UserRegisterFlow = () => {
               AMILE SIGNUP
             </Typography>
           </Box>
+
           <Stepper activeStep={activeStep}>
             {steps.map((label) => (
               <Step key={label}>
@@ -205,6 +261,10 @@ const UserRegisterFlow = () => {
               )}
             </Box>
           </Box>
+       { alert?.visible && <Alert severity="error" sx={{margin:"10px"}}>{alert.message}</Alert>}
+          <Link to={"/login"} style={{ textDecoration: 'none', color: theme.palette.primary.main }}>
+            Already Have An Account? Login!
+          </Link>
         </Box>
       </Box>
     </ThemeProvider>
@@ -309,12 +369,14 @@ const BasicInfoStep = ({
     <Grid item xs={12}>
       <TextField
         fullWidth
-        label={refrelid ? "Referral Code" : "You are not eligible for referral"}
-        value={refrelid || ""}
-        disabled
+        label="Refrel Id"
+        type={refrelid?"password":"text"}
+        value={refrelid || "You are Not Eligible"}
         required
+        disabled
       />
     </Grid>
+
   </Grid>
 );
 
@@ -326,34 +388,31 @@ const AdditionalInfoStep = ({
   termsAccepted,
   setTermsAccepted,
 }) => (
-  <Grid container spacing={2}>
-    {["github", "linkedin"].map((field) => (
-      <Grid item xs={12} key={field}>
-        <TextField
-          fullWidth
-          label={field.charAt(0).toUpperCase() + field.slice(1)}
-          value={field === "github" ? github : linkedin}
-          onChange={(e) =>
-            field === "github"
-              ? setGithub(e.target.value)
-              : setLinkedin(e.target.value)
-          }
-          placeholder={`Enter your ${field} (optional)`}
+  <Box>
+    <TextField
+      fullWidth
+      label="Github URL"
+      value={github}
+      onChange={(e) => setGithub(e.target.value)}
+      sx={{ mb: 2 }}
+    />
+    <TextField
+      fullWidth
+      label="LinkedIn URL"
+      value={linkedin}
+      onChange={(e) => setLinkedin(e.target.value)}
+      sx={{ mb: 2 }}
+    />
+    <FormControlLabel
+      control={
+        <Checkbox
+          checked={termsAccepted}
+          onChange={(e) => setTermsAccepted(e.target.checked)}
         />
-      </Grid>
-    ))}
-    <Grid item xs={12}>
-      <FormControlLabel
-        control={
-          <Checkbox
-            checked={termsAccepted}
-            onChange={() => setTermsAccepted(!termsAccepted)}
-          />
-        }
-        label="I agree to the terms and conditions"
-      />
-    </Grid>
-  </Grid>
+      }
+      label="I accept the terms and conditions"
+    />
+  </Box>
 );
 
 export default UserRegisterFlow;

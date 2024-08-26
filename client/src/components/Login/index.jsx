@@ -10,37 +10,56 @@ import {
   Radio as MuiRadio,
   Snackbar,
   Checkbox,
-  FormControlLabel as MuiFormControlLabel,
 } from "@material-ui/core";
 import MuiAlert from "@material-ui/lab/Alert";
-import Cookies from "js-cookie"; // Import js-cookie
 import { Actions } from "../../hooks/actions";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess } from "../../services/redux/AuthSlice";
+import { setAuthToken } from "../../hooks/golbalAuth";
+import { Box, IconButton } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+const Alert = (props) => {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+};
+
+import { keyframes } from "@emotion/react";
+
+const bounce = keyframes`
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateX(-8px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+`;
+
 const useStyles = makeStyles((theme) => ({
-  root: {
+  root: (props) => ({
     height: "100vh",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#000",
-  },
-  paper: {
+    backgroundColor: props.isDarkMode ? "#000" : "#fff",
+  }),
+  paper: (props) => ({
     padding: theme.spacing(4),
     maxWidth: 400,
     width: "100%",
     textAlign: "center",
-    backgroundColor: "#000",
-    color: "white",
-    borderColor: "white",
+    backgroundColor: props.isDarkMode ? "#000" : "#fff",
+    color: props.isDarkMode ? "#fff" : "#000",
+    borderColor: props.isDarkMode ? "#fff" : "#000",
     borderWidth: "2px",
-    borderRadius: "25px",
-  },
+    borderRadius: "2px",
+  }),
   form: {
     "& .MuiTextField-root": {
       margin: theme.spacing(2, 0),
-      backgroundColor: "white",
+      backgroundColor: (props) => (props.isDarkMode ? "#fff" : ""),
       borderRadius: theme.shape.borderRadius,
     },
   },
@@ -48,30 +67,27 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(2),
     fontWeight: "bold",
     background: "linear-gradient(to right, #ffdd00, #ff6b6b, #9b51e0)",
-    color: "white",
+    color: "#fff",
     padding: theme.spacing(1.5),
     "&:hover": {
       background: "linear-gradient(to right, #ffdd00, #ff6b6b, #9b51e0)",
     },
   },
   radioLabel: {
-    color: "#fff",
+    color: (props) => (props.isDarkMode ? "#fff" : "#000"),
   },
   inputLabel: {
-    color: "#fff",
+    color: (props) => (props.isDarkMode ? "#fff" : "#000"),
   },
   checkboxLabel: {
-    color: "#fff",
+    color: (props) => (props.isDarkMode ? "#fff" : "#000"),
     marginLeft: theme.spacing(1),
   },
 }));
 
-const Alert = (props) => {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-};
-
 const Login = () => {
-  const classes = useStyles();
+  const isDarkMode = useSelector((state) => state.theme.isDarkMode);
+  const classes = useStyles({ isDarkMode });
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userType, setUserType] = useState("student");
@@ -80,9 +96,8 @@ const Login = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("error");
   const nav = useNavigate();
-  const dispath = useDispatch();
+  const dispatch = useDispatch();
   const [params] = useSearchParams();
-
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -103,15 +118,17 @@ const Login = () => {
       if (response.data.success) {
         const cookieExpires = rememberMe ? 10 : 1;
 
-        dispath(
+        dispatch(
           loginSuccess({
             token: response.data.token,
             user: response.data.user,
             cookieExpires,
           })
         );
+        setAuthToken(response.data.token);
 
         const isnext = params.get("nextpath");
+        console.log(isnext);
 
         if (isnext) {
           nav(isnext, { replace: true });
@@ -122,6 +139,14 @@ const Login = () => {
         setSnackbarMessage("Login successful");
         setSnackbarSeverity("success");
       } else {
+        if (response.data.message === "verify your account") {
+          nav("/resendverify", { replace: true });
+          setSnackbarSeverity("error");
+        } else {
+          setSnackbarMessage(response.data.message || "Login failed");
+          setSnackbarSeverity("error");
+        }
+
         setSnackbarMessage(response.data.message || "Login failed");
         setSnackbarSeverity("error");
       }
@@ -145,13 +170,33 @@ const Login = () => {
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
+  const handleBackClick = () => {
+    nav(-1, { replace: true });
+  };
 
   return (
     <div className={classes.root}>
       <Paper elevation={3} className={classes.paper}>
-        <Typography variant="h4" gutterBottom>
-          Login
-        </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+          }}
+        >
+          <IconButton
+            size="large"
+            onClick={handleBackClick}
+            sx={{
+              "&:hover": {
+                animation: `${bounce} 2s infinite`,
+              },
+            }}
+          >
+            <ArrowBackIcon color="secondary" />
+          </IconButton>
+          <Typography variant="h4">Login</Typography>
+        </Box>
         <form onSubmit={handleSubmit} className={classes.form}>
           <TextField
             label="Email or Username"
@@ -170,6 +215,9 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
             className={classes.inputLabel}
           />
+          <Link to={"/forgotpassword"} color="primary">
+            Forgot Password Reset it!
+          </Link>
           <RadioGroup
             aria-label="user-type"
             name="user-type"
@@ -190,29 +238,22 @@ const Login = () => {
               className={classes.radioLabel}
             />
           </RadioGroup>
-          <MuiFormControlLabel
-            control={
-              <Checkbox
-                checked={rememberMe}
-                onChange={handleRememberMeChange}
-                color="success"
-                sx={{
-                  color: "#fff",
-                  "&.Mui-checked": {
-                    color: "white",
-                  },
-                  ".MuiCheckbox-root": {
-                    color: "white",
-                  },
-                }}
-              />
-            }
-            label={
-              <Typography className={classes.checkboxLabel}>
-                Remember Me
-              </Typography>
-            }
-          />
+          <Box sx={{ display: "flex" }}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={rememberMe}
+                  onChange={handleRememberMeChange}
+                  color="primary"
+                />
+              }
+              label={
+                <Typography className={classes.checkboxLabel}>
+                  Remember Me
+                </Typography>
+              }
+            />
+          </Box>
           <Button
             type="submit"
             variant="contained"
@@ -222,6 +263,9 @@ const Login = () => {
             Login
           </Button>
         </form>
+        <Link to={"/signup"} style={{ color: isDarkMode ? "#fff" : "#000" }}>
+          Don't Have An Account? Signup!
+        </Link>
       </Paper>
       <Snackbar
         open={snackbarOpen}

@@ -1,4 +1,3 @@
-// src/components/Messages.js
 import React, { useState, useEffect } from 'react';
 import ChatList from '../ChatList';
 import ChatWindow from '../ChatWindow';
@@ -16,7 +15,7 @@ function Messages() {
   const [chats, setChats] = useState(initialChats);
   const [activeChat, setActiveChat] = useState(null);
   const { isDarkMode } = useTheme();
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   useEffect(() => {
     const handleResize = () => {
@@ -24,8 +23,6 @@ function Messages() {
     };
 
     window.addEventListener('resize', handleResize);
-    handleResize();
-
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
@@ -41,14 +38,17 @@ function Messages() {
   };
 
   return (
-    <div className={`flex h-screen ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'}`}>
+    <div className={`flex h-screen w-screen ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'}`}>
+      {/* Chat List */}
       {!activeChat || !isMobile ? (
-        <div className="flex-none w-full sm:w-1/3 border-r h-full">
+        <div className={`flex-none h-full ${isMobile ? 'w-full' : 'w-2/6'} border-r`}>
           <ChatList chats={chats} setActiveChat={setActiveChat} activeChat={activeChat} />
         </div>
       ) : null}
+
+      {/* Chat Window */}
       {(activeChat || !isMobile) && (
-        <div className="flex-grow h-full">
+        <div className={`flex-grow h-full ${isMobile ? 'w-full' : 'w-4/6'}`}>
           <ChatWindow activeChat={activeChat} sendMessage={sendMessage} onBack={() => setActiveChat(null)} />
         </div>
       )}

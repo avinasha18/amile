@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { logout } from "../../services/redux/AuthSlice";
 import { Button } from "@material-ui/core";
 import "./index.css";
+import { setAuthToken } from "../../hooks/golbalAuth";
 
 const Navbar = ({ isLogin }) => {
   const dispatch = useDispatch();
@@ -15,6 +16,7 @@ const Navbar = ({ isLogin }) => {
 
   const handleLogout = () => {
     dispatch(logout());
+    setAuthToken()
     navigate("/login");
   };
 
@@ -120,6 +122,7 @@ const UserMenu = ({ onLogout, isDarkMode }) => (
   >
     <MenuItem to="/profile">Your Profile</MenuItem>
     <MenuItem to="/settings">Settings</MenuItem>
+    <MenuItem to="/myreferals">My Referals</MenuItem>
     <MenuItem onClick={onLogout}>Sign out</MenuItem>
   </div>
 );

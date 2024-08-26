@@ -6,6 +6,7 @@ import JobDetailPage from "../JobDetailPage";
 import ProfilePage from "../Profile";
 import Messages from "../Messages";
 import { Route, Routes, Navigate, useLocation } from "react-router-dom";
+import MyReferals from "../MyReferals";
 
 export const RouteManagement = ({ islogin }) => {
   const location = useLocation(window.location);
@@ -46,6 +47,14 @@ export const RouteManagement = ({ islogin }) => {
             element={
               <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
                 <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+              <Route
+            path="/myreferals"
+            element={
+              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+                <MyReferals />
               </ProtectedRoute>
             }
           />

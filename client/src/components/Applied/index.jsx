@@ -5,7 +5,6 @@ const Applied = () => {
 
   const applications = [
     { company: 'Cohesyve', profile: 'Full Stack Development Internship', appliedOn: '9 Aug \'24', applicants: 1277, status: 'Applied', review: 'Missing skill' },
-    // Add more application objects here
   ];
 
   const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
