@@ -3,7 +3,6 @@ import Login from "./components/Login";
 import { RouteManagement } from "./components/RouteManagement";
 import {  Route, Routes } from "react-router-dom";
 import UserRegisterFlow from "./components/Register";
-import { VerifyAccount } from "./components/verifyAccount";
 import { ThemeProvider } from "./context/ThemeContext";
 import { setAuthToken } from "./hooks/golbalAuth";
 import PageNotFound from "./components/noinfopage"

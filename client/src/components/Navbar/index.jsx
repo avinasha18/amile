@@ -4,7 +4,7 @@ import { useTheme } from "../../context/ThemeContext";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "../../services/redux/AuthSlice";
-import { Button } from "@material-ui/core";
+import { Button } from "@mui/material";
 import "./index.css";
 import { setAuthToken } from "../../hooks/golbalAuth";
 
@@ -13,7 +13,6 @@ const Navbar = ({ isLogin }) => {
   const navigate = useNavigate();
   const [isMenuOpen, setMenu] = useState(false);
   const { isDarkMode, toggleTheme } = useTheme();
-
   const handleLogout = () => {
     dispatch(logout());
     setAuthToken()
@@ -53,7 +52,7 @@ const Navbar = ({ isLogin }) => {
           Amile
         </h1>
         <nav className="hidden md:flex space-x-6">
-          <NavItem to="/">Dashboard</NavItem>
+          <NavItem to="/dashboard">Dashboard</NavItem>
           <NavItem to="/jobs">Jobs</NavItem>
           <NavItem to="/messages">Messages</NavItem>
         </nav>

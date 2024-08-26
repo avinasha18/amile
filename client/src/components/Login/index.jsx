@@ -70,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
     color: "#fff",
     padding: theme.spacing(1.5),
     "&:hover": {
-      background: "linear-gradient(to right, #ffdd00, #ff6b6b, #9b51e0)",
+      background: theme.palette.primary.dark,
     },
   },
   radioLabel: {
@@ -92,19 +92,17 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [userType, setUserType] = useState("student");
   const [rememberMe, setRememberMe] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState("error");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // State for show/hide password
   const nav = useNavigate();
+  const dispatch = useDispatch();
   const dispatch = useDispatch();
   const [params] = useSearchParams();
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!email || !password) {
-      setSnackbarMessage("Please fill in all fields.");
-      setSnackbarSeverity("error");
-      setSnackbarOpen(true);
+    if (!validateForm()) {
       return;
     }
 
@@ -136,8 +134,7 @@ const Login = () => {
           nav("/", { replace: true });
         }
 
-        setSnackbarMessage("Login successful");
-        setSnackbarSeverity("success");
+        toast.success("Login successful");
       } else {
         if (response.data.message === "verify your account") {
           nav("/resendverify", { replace: true });
@@ -151,8 +148,7 @@ const Login = () => {
         setSnackbarSeverity("error");
       }
     } catch (err) {
-      setSnackbarMessage("An error occurred. Please try again.");
-      setSnackbarSeverity("error");
+      toast.error("An error occurred. Please try again.");
       console.error(err);
     } finally {
       setSnackbarOpen(true);

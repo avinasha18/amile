@@ -1,89 +1,103 @@
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import JobCard from '../JobCard';
 import { useTheme } from '../../context/ThemeContext';
+import Pagination from '@mui/material/Pagination';
+import { styled } from '@mui/material/styles';
+import { Oval } from 'react-loader-spinner';
+import Cookies from 'js-cookie';
 
-const JobList = () => {
+const CustomPagination = styled(Pagination)(({ theme }) => ({
+  '& .MuiPaginationItem-root': {
+    color: theme.palette.mode === 'dark' ? '#ffffff' : '#000000',
+  },
+  '& .MuiPaginationItem-root.Mui-selected': {
+    backgroundColor: theme.palette.mode === 'dark' ? '#444444' : '#dddddd',
+    color: theme.palette.mode === 'dark' ? '#ffffff' : '#000000',
+  },
+  '& .MuiPaginationItem-root:hover': {
+    backgroundColor: theme.palette.mode === 'dark' ? '#555555' : '#cccccc',
+  },
+}));
+
+const JobList = ({ filters, searchQuery }) => {
   const { isDarkMode } = useTheme();
+  const [jobs, setJobs] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
+  const [currentUserId, setCurrentUserId] = useState(null);
 
-  const jobs = [
-    {
-      id: 1,
-      title: "Frontend Developer Intern",
-      company: "Tech Innovators",
-      location: "Remote",
-      logo: "/assets/google_logo.png",
-      type: "Part-time",
-      tags: ["React", "JavaScript", "CSS"],
-      salary: "$1000-$1500/month",
-      startDate: "Immediate",
-      openings: "3 openings",
-      experience: "0-1 years",
-      remote: true,
-    },
-    {
-        id: 2,
-        title: "Frontend Developer Intern",
-        company: "Tech Innovators",
-        location: "Remote",
-        logo: "/assets/facebook.png",
-        type: "Part-time",
-        tags: ["React", "JavaScript", "CSS"],
-        salary: "$1000-$1500/month",
-        startDate: "Immediate",
-        openings: "3 openings",
-        experience: "0-1 years",
-        remote: true,
-      },
-      {
-        id: 3,
-        title: "Frontend Developer Intern",
-        company: "Tech Innovators",
-        location: "Remote",
-        logo: "/assets/google_logo.png",
-        type: "Part-time",
-        tags: ["React", "JavaScript", "CSS"],
-        salary: "$1000-$1500/month",
-        startDate: "Immediate",
-        openings: "3 openings",
-        experience: "0-1 years",
-        remote: true,
-      },
-      {
-        id: 4,
-        title: "Frontend Developer Intern",
-        company: "Tech Innovators",
-        location: "Remote",
-        logo: "https://example.com/logo1.png",
-        type: "Part-time",
-        tags: ["React", "JavaScript", "CSS"],
-        salary: "$1000-$1500/month",
-        startDate: "Immediate",
-        openings: "3 openings",
-        experience: "0-1 years",
-        remote: true,
-      },
-      {
-        id: 5,
-        title: "Frontend Developer Intern",
-        company: "Tech Innovators",
-        location: "Remote",
-        logo: "/assets/google_logo.png",
-        type: "Part-time",
-        tags: ["React", "JavaScript", "CSS"],
-        salary: "$1000-$1500/month",
-        startDate: "Immediate",
-        openings: "3 openings",
-        experience: "0-1 years",
-        remote: true,
-      }
-  ];
+  useEffect(() => {
+    const userCookie = Cookies.get('user');
+    if (userCookie) {
+      const user = JSON.parse(userCookie);
+      setCurrentUserId(user.id);
+    }
+  }, []);
+
+  const fetchInternships = async (pageNumber) => {
+    const queryParams = new URLSearchParams({
+      ...filters,
+      page: pageNumber,
+      limit: 10,
+      search: searchQuery,
+      userId: currentUserId,
+    });
+
+    try {
+      const response = await fetch(`http://localhost:3000/internships?${queryParams.toString()}`);
+      const data = await response.json();
+      setJobs(data.internships || []);
+      setIsLoading(false)
+      setTotalPages(data.totalPages || 1);
+    } catch (error) {
+      console.error('Error fetching internships:', error.message);
+    }
+  };
+
+  useEffect(() => {
+    if (currentUserId) {
+      fetchInternships(page);
+    }
+  }, [page, filters, searchQuery, currentUserId]);
+
+  const handlePageChange = (event, value) => {
+    setPage(value);
+  };
+
+  const handleApply = (appliedJobId) => {
+    setJobs(prevJobs => prevJobs.filter(job => job._id !== appliedJobId));
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Oval
+          height={80}
+          width={80}
+          color={isDarkMode ? '#ffffff' : '#000000'}
+          secondaryColor={isDarkMode ? '#ffffff' : '#000000'}
+          ariaLabel="loading"
+        />
+      </div>
+    );
+  }
 
   return (
-    <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 ${isDarkMode ? 'bg-black' : 'bg-gray-100'}`}>
-      {jobs.map(job => (
-        <JobCard key={job.id} job={job} />
-      ))}
+    <div className={`bg-${isDarkMode ? 'black' : 'gray-100'} p-6`}>
+      <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6`}>
+        {jobs.map(job => (
+          <JobCard key={job._id} job={job} onApply={handleApply} />
+        ))}
+      </div>
+      <div className="mt-6 flex justify-center">
+        <CustomPagination
+          count={totalPages}
+          page={page}
+          onChange={handlePageChange}
+          color={isDarkMode ? 'secondary' : 'primary'}
+        />
+      </div>
     </div>
   );
 };

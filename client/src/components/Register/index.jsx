@@ -206,6 +206,7 @@ const UserRegisterFlow = () => {
               <StepSelector
                 accountType={accountType}
                 handleAccountTypeChange={setAccountType}
+                error={errors.accountType}
               />
             )}
             {activeStep === 1 && (
@@ -219,6 +220,7 @@ const UserRegisterFlow = () => {
                 password={password}
                 setPassword={setPassword}
                 refrelid={refrelid}
+                errors={errors}
               />
             )}
             {activeStep === 2 && (
@@ -229,13 +231,12 @@ const UserRegisterFlow = () => {
                 setLinkedin={setLinkedin}
                 termsAccepted={termsAccepted}
                 setTermsAccepted={setTermsAccepted}
+                error={errors.termsAccepted}
               />
             )}
-            <Box
-              sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}
-            >
+            <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
               <Button
-                disabled={activeStep === 0}
+                disabled={activeStep === 0 || loading}
                 onClick={handleBack}
                 variant="contained"
                 color="secondary"
@@ -247,6 +248,7 @@ const UserRegisterFlow = () => {
                   onClick={handleNext}
                   variant="contained"
                   color="primary"
+                  disabled={loading}
                 >
                   Next
                 </Button>
@@ -255,8 +257,9 @@ const UserRegisterFlow = () => {
                   onClick={handleSubmit}
                   variant="contained"
                   color="primary"
+                  disabled={loading}
                 >
-                  Signup
+                  {loading ? "Registering..." : "Signup"}
                 </Button>
               )}
             </Box>
@@ -271,7 +274,7 @@ const UserRegisterFlow = () => {
   );
 };
 
-const StepSelector = ({ handleAccountTypeChange, accountType }) => (
+const StepSelector = ({ handleAccountTypeChange, accountType, error }) => (
   <Box
     sx={{
       display: "flex",
@@ -313,6 +316,7 @@ const StepSelector = ({ handleAccountTypeChange, accountType }) => (
     >
       Mentor
     </Button>
+    {error && <Typography color="error">{error}</Typography>}
   </Box>
 );
 
@@ -326,6 +330,7 @@ const BasicInfoStep = ({
   password,
   setPassword,
   refrelid,
+  errors,
 }) => (
   <Grid container spacing={2}>
     <Grid item xs={12}>
@@ -335,7 +340,8 @@ const BasicInfoStep = ({
         type="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        required
+        error={!!errors.email}
+        helperText={errors.email}
       />
     </Grid>
     <Grid item xs={12}>
@@ -344,7 +350,8 @@ const BasicInfoStep = ({
         label="Username"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
-        required
+        error={!!errors.username}
+        helperText={errors.username}
       />
     </Grid>
     <Grid item xs={12}>
@@ -353,7 +360,8 @@ const BasicInfoStep = ({
         label="Name"
         value={name}
         onChange={(e) => setName(e.target.value)}
-        required
+        error={!!errors.name}
+        helperText={errors.name}
       />
     </Grid>
     <Grid item xs={12}>
@@ -387,6 +395,7 @@ const AdditionalInfoStep = ({
   setLinkedin,
   termsAccepted,
   setTermsAccepted,
+  error,
 }) => (
   <Box>
     <TextField
