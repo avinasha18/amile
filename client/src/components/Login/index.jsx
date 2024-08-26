@@ -18,29 +18,30 @@ import { Actions } from "../../hooks/actions";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../services/redux/AuthSlice";
+
+// Custom hook for styles
 const useStyles = makeStyles((theme) => ({
   root: {
     height: "100vh",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#000",
+    backgroundColor: "#000", // Dark background for the root
   },
   paper: {
     padding: theme.spacing(4),
     maxWidth: 400,
     width: "100%",
     textAlign: "center",
-    backgroundColor: "#000",
-    color: "white",
-    borderColor: "white",
-    borderWidth: "2px",
-    borderRadius: "25px",
+    backgroundColor: "#000", // Slightly lighter background
+    color: "#ffffff", // White text
+    borderRadius: "15px", // Rounded corners
+    border: "1px solid #ffffff", // White border
   },
   form: {
     "& .MuiTextField-root": {
       margin: theme.spacing(2, 0),
-      backgroundColor: "white",
+      backgroundColor: "#ffffff",
       borderRadius: theme.shape.borderRadius,
     },
   },
@@ -55,14 +56,17 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   radioLabel: {
-    color: "#fff",
+    color: "#ffffff",
   },
   inputLabel: {
-    color: "#fff",
+    color: "#000000", // Black text inside input fields
   },
   checkboxLabel: {
-    color: "#fff",
+    color: "#ffffff",
     marginLeft: theme.spacing(1),
+  },
+  error: {
+    color: "#ff0000", // Red text for error messages
   },
 }));
 
@@ -79,17 +83,35 @@ const Login = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("error");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const nav = useNavigate();
-  const dispath = useDispatch();
+  const dispatch = useDispatch();
   const [params] = useSearchParams();
+
+  const validateForm = () => {
+    let isValid = true;
+    if (!email) {
+      setEmailError("Email is required.");
+      isValid = false;
+    } else {
+      setEmailError("");
+    }
+
+    if (!password) {
+      setPasswordError("Password is required.");
+      isValid = false;
+    } else {
+      setPasswordError("");
+    }
+
+    return isValid;
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!email || !password) {
-      setSnackbarMessage("Please fill in all fields.");
-      setSnackbarSeverity("error");
-      setSnackbarOpen(true);
+    if (!validateForm()) {
       return;
     }
 
@@ -103,7 +125,7 @@ const Login = () => {
       if (response.data.success) {
         const cookieExpires = rememberMe ? 10 : 1;
 
-        dispath(
+        dispatch(
           loginSuccess({
             token: response.data.token,
             user: response.data.user,
@@ -160,6 +182,8 @@ const Login = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className={classes.inputLabel}
+            error={!!emailError}
+            helperText={emailError}
           />
           <TextField
             label="Password"
@@ -169,6 +193,8 @@ const Login = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className={classes.inputLabel}
+            error={!!passwordError}
+            helperText={passwordError}
           />
           <RadioGroup
             aria-label="user-type"
@@ -195,14 +221,11 @@ const Login = () => {
               <Checkbox
                 checked={rememberMe}
                 onChange={handleRememberMeChange}
-                color="success"
+                color="default"
                 sx={{
-                  color: "#fff",
+                  color: "#ffffff",
                   "&.Mui-checked": {
-                    color: "white",
-                  },
-                  ".MuiCheckbox-root": {
-                    color: "white",
+                    color: "#ffffff",
                   },
                 }}
               />

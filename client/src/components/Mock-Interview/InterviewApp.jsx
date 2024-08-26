@@ -3,12 +3,13 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Lottie from 'react-lottie';
-import { Button, Skeleton } from '@mui/material';
+import { Button, Skeleton, Typography } from '@mui/material';
 import { FaStop } from "react-icons/fa";
 import { FaMicrophone } from 'react-icons/fa';
-import animationData from './animations/animation.json'; 
+import animationData from './animations/animation.json';
+import aiImage from '../../assets/195.jpg'; // Add your AI image here
 
-const flask_domain = 'http://flask-backend-url'; 
+const flask_domain = 'http://127.0.0.1:5000';
 
 function InterviewApp() {
   const [showAnimation, setShowAnimation] = useState(true);
@@ -18,6 +19,7 @@ function InterviewApp() {
   const [gotResponse, setGotResponse] = useState(false);
   const [conversationHistory, setConversationHistory] = useState([]);
   const [isRecording, setIsRecording] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const videoRef = useRef(null);
   const navigate = useNavigate();
 
@@ -78,6 +80,12 @@ function InterviewApp() {
         ];
         setConversationHistory(newHistory);
         setQuestion(res.data.response);
+
+        // Simulate typing effect
+        setIsTyping(true);
+        setTimeout(() => {
+          setIsTyping(false);
+        }, 2000); // Adjust the duration as needed
       }
     } catch (err) {
       console.error(err);
@@ -92,6 +100,7 @@ function InterviewApp() {
         conversation_history: conversationHistory,
       });
       const feedbackScore = res.data;
+      setIsRecording(false);
       navigate('/feedback', { state: { score: feedbackScore } });
     } catch (err) {
       console.error(err);
@@ -130,10 +139,10 @@ function InterviewApp() {
               transition={{ duration: 0.5 }}
               className="bg-gray-200 rounded-lg overflow-hidden shadow-md"
             >
-              <video ref={videoRef} autoPlay muted className="w-full h-64 object-cover" />
+              <img src={aiImage} alt="AI" className="w-full h-64 object-cover rounded-lg" />
               <div className="p-4 bg-white">
-                <h2 className="text-xl font-semibold text-gray-800">You</h2>
-                <p className="text-sm text-gray-600">Candidate</p>
+                <h2 className="text-xl font-semibold text-gray-800">AI</h2>
+                <p className="text-sm text-gray-600">Interviewer</p>
               </div>
             </motion.div>
             <motion.div
@@ -149,17 +158,32 @@ function InterviewApp() {
                 <Skeleton animation="wave" height={60} />
               )}
             </motion.div>
+           
           </div>
           <div className="space-y-4">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="bg-white rounded-lg shadow-md p-4"
+              className="bg-gray-200 rounded-lg overflow-hidden shadow-md"
             >
-              <h2 className="text-xl font-semibold text-gray-800 mb-2">AI Response</h2>
+              <video ref={videoRef} autoPlay muted className="w-full h-64 object-cover" />
+              <div className="p-4 bg-white">
+                <h2 className="text-xl font-semibold text-gray-800">You</h2>
+                <p className="text-sm text-gray-600">Candidate</p>
+              </div>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="bg-gray-200 rounded-lg overflow-hidden shadow-md p-4"
+            >
+              <h2 className="text-xl font-semibold text-gray-800 mb-2">Your Response</h2>
               {gotResponse ? (
-                <p className="text-gray-700">{response}</p>
+                <Typography variant="body1" className="text-gray-700">
+                  {isTyping ? "Typing..." : response}
+                </Typography>
               ) : (
                 <Skeleton animation="wave" height={60} />
               )}

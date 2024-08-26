@@ -22,7 +22,7 @@ function Feedback() {
     const location = useLocation();
     const { score } = location.state || { score: 'No score available' };
 
-    const nav = useNavigate()
+    const navigate = useNavigate()
 
     // Function to predict performance based on the score
     const predictPerformance = (score) => {
@@ -189,6 +189,7 @@ function Feedback() {
 
                 <Box sx={{ textAlign: 'center', mt: 4 }}>
                     <Button
+                        onClick={()=>navigate('/')}
                         variant="contained"
                         sx={{
                             color: 'white',

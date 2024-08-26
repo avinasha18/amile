@@ -23,7 +23,7 @@ const internshipSchema = new mongoose.Schema({
 });
 
 
-const Internship = mongoose.model('Internship', internshipSchema);
+export const Internship = mongoose.model('Internship', internshipSchema);
 
 export const createInternship = async (data) => {
     const internship = new Internship(data);
@@ -34,12 +34,13 @@ export const findInternshipById = async (id) => {
     return await Internship.findById(id);
 };
 
-export const getAllInternships = async (query, page = 1, limit = 10) => {
+export const getAllInternships = async (query, skip, limit) => {
     return await Internship.find(query)
-        .skip((page - 1) * limit)
-        .limit(limit)
-        .exec();
-};
+      .skip(skip)
+      .limit(limit)
+      .exec();
+  };
+  
 
 export const updateInternship = async (id, data) => {
     return await Internship.findByIdAndUpdate(id, data, { new: true });

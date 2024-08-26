@@ -12,7 +12,6 @@ const Navbar = ({ isLogin }) => {
   const navigate = useNavigate();
   const [isMenuOpen, setMenu] = useState(false);
   const { isDarkMode, toggleTheme } = useTheme();
-
   const handleLogout = () => {
     dispatch(logout());
     navigate("/login");

@@ -67,14 +67,12 @@ const UserRegisterFlow = () => {
   const [github, setGithub] = useState("");
   const [linkedin, setLinkedin] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(true);
+  const [loading, setLoading] = useState(false); // Loading state
+  const [errors, setErrors] = useState({}); // Error state for validations
   const [params] = useSearchParams();
   const refrelid = params.get("refrelid");
-  const nav = useNavigate()
-  const steps = [
-    "Select Account Type",
-    "Basic Information",
-    "Additional Information",
-  ];
+  const nav = useNavigate();
+  const steps = ["Select Account Type", "Basic Information", "Additional Information"];
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -84,7 +82,28 @@ const UserRegisterFlow = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
+  const validate = () => {
+    const newErrors = {};
+
+    if (!accountType) newErrors.accountType = "Account type is required.";
+    if (!email) {
+      newErrors.email = "Email is required.";
+    } else if (!email.endsWith("@gmail.com")) {
+      newErrors.email = "Email must end with @gmail.com.";
+    }
+    if (!username) newErrors.username = "Username is required.";
+    if (!name) newErrors.name = "Name is required.";
+    if (!password) newErrors.password = "Password is required.";
+    if (!termsAccepted) newErrors.termsAccepted = "You must accept the terms.";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async () => {
+    if (!validate()) return;
+
+    setLoading(true); // Start loading
     try {
       const response = await Actions.Register({
         email,
@@ -94,17 +113,19 @@ const UserRegisterFlow = () => {
         github,
         linkedin,
         accountType,
-        refrelid
+        refrelid,
       });
 
       if (response.data.success) {
         console.log(response.data.message);
-        nav("/login",{replace: true})
-      }else{
+        nav("/login", { replace: true });
+      } else {
         console.log(response.data.message);
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -150,6 +171,7 @@ const UserRegisterFlow = () => {
               <StepSelector
                 accountType={accountType}
                 handleAccountTypeChange={setAccountType}
+                error={errors.accountType}
               />
             )}
             {activeStep === 1 && (
@@ -163,6 +185,7 @@ const UserRegisterFlow = () => {
                 password={password}
                 setPassword={setPassword}
                 refrelid={refrelid}
+                errors={errors}
               />
             )}
             {activeStep === 2 && (
@@ -170,16 +193,14 @@ const UserRegisterFlow = () => {
                 github={github}
                 setGithub={setGithub}
                 linkedin={linkedin}
-                setLinkedin={setLinkedin}
                 termsAccepted={termsAccepted}
                 setTermsAccepted={setTermsAccepted}
+                error={errors.termsAccepted}
               />
             )}
-            <Box
-              sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}
-            >
+            <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
               <Button
-                disabled={activeStep === 0}
+                disabled={activeStep === 0 || loading}
                 onClick={handleBack}
                 variant="contained"
                 color="secondary"
@@ -199,8 +220,9 @@ const UserRegisterFlow = () => {
                   onClick={handleSubmit}
                   variant="contained"
                   color="primary"
+                  disabled={loading} // Disable button when loading
                 >
-                  Signup
+                  {loading ? "Registering..." : "Signup"} {/* Change button text */}
                 </Button>
               )}
             </Box>
@@ -211,7 +233,7 @@ const UserRegisterFlow = () => {
   );
 };
 
-const StepSelector = ({ handleAccountTypeChange, accountType }) => (
+const StepSelector = ({ handleAccountTypeChange, accountType, error }) => (
   <Box
     sx={{
       display: "flex",
@@ -253,6 +275,7 @@ const StepSelector = ({ handleAccountTypeChange, accountType }) => (
     >
       Mentor
     </Button>
+    {error && <Typography color="error">{error}</Typography>}
   </Box>
 );
 
@@ -266,6 +289,7 @@ const BasicInfoStep = ({
   password,
   setPassword,
   refrelid,
+  errors,
 }) => (
   <Grid container spacing={2}>
     <Grid item xs={12}>
@@ -275,6 +299,8 @@ const BasicInfoStep = ({
         type="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
+        error={!!errors.email}
+        helperText={errors.email}
         required
       />
     </Grid>
@@ -284,6 +310,8 @@ const BasicInfoStep = ({
         label="Username"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
+        error={!!errors.username}
+        helperText={errors.username}
         required
       />
     </Grid>
@@ -293,6 +321,8 @@ const BasicInfoStep = ({
         label="Name"
         value={name}
         onChange={(e) => setName(e.target.value)}
+        error={!!errors.name}
+        helperText={errors.name}
         required
       />
     </Grid>
@@ -303,6 +333,8 @@ const BasicInfoStep = ({
         type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        error={!!errors.password}
+        helperText={errors.password}
         required
       />
     </Grid>
@@ -325,23 +357,27 @@ const AdditionalInfoStep = ({
   setLinkedin,
   termsAccepted,
   setTermsAccepted,
+  error
 }) => (
   <Grid container spacing={2}>
-    {["github", "linkedin"].map((field) => (
-      <Grid item xs={12} key={field}>
-        <TextField
-          fullWidth
-          label={field.charAt(0).toUpperCase() + field.slice(1)}
-          value={field === "github" ? github : linkedin}
-          onChange={(e) =>
-            field === "github"
-              ? setGithub(e.target.value)
-              : setLinkedin(e.target.value)
-          }
-          placeholder={`Enter your ${field} (optional)`}
-        />
-      </Grid>
-    ))}
+    <Grid item xs={12}>
+      <TextField
+        fullWidth
+        label="GitHub"
+        value={github}
+        onChange={(e) => setGithub(e.target.value)}
+        placeholder="Enter your GitHub (optional)"
+      />
+    </Grid>
+    <Grid item xs={12}>
+      <TextField
+        fullWidth
+        label="LinkedIn"
+        value={linkedin}
+        onChange={(e) => setLinkedin(e.target.value)}
+        placeholder="Enter your LinkedIn (optional)"
+      />
+    </Grid>
     <Grid item xs={12}>
       <FormControlLabel
         control={
@@ -352,8 +388,12 @@ const AdditionalInfoStep = ({
         }
         label="I agree to the terms and conditions"
       />
+      {error && <Typography color="error">{error}</Typography>}
     </Grid>
   </Grid>
 );
 
+
+
 export default UserRegisterFlow;
+

@@ -25,6 +25,7 @@ export const registerStudent = async (req, res) => {
     try {
       const existingUser = await findUserByUsername(username, Student);
       if (existingUser) {
+        console.log("user exists")
         return res.json({ success:false, message: 'User already exists' });
       }
   
@@ -32,6 +33,7 @@ export const registerStudent = async (req, res) => {
   
       const verificationResult = await AccountVerification(username, email);
       if (verificationResult.status === 'error') {
+        console.log(verificationResult.message)
         return res.json({ success:false, message: 'Verification email failed to send' });
       }
   
@@ -42,7 +44,7 @@ export const registerStudent = async (req, res) => {
   
       res.json({ success:true, message: 'Student registered successfully' });
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
       res.json({ success:false, message: 'Server error' });
     }
   };
