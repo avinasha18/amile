@@ -18,6 +18,7 @@ const PageNotFound = () => {
         alignItems: 'center',
         justifyContent: 'center',
         height: '100vh',
+        width:"100%",
         textAlign: 'center',
         padding: 3,
         backgroundColor: isDarkMode ? '#000' : '#fff',

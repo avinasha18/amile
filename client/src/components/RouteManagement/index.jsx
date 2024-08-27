@@ -14,6 +14,7 @@ import MyReferals from "../MyReferals";
 import InterviewApp from "../Mock-Interview/InterviewApp";
 import Feedback from "../Mock-Interview/Feedback"
 import PageNotFound from "../noinfopage";
+import Dashboard from "../Dashboard";
 
 export const RouteManagement = ({ islogin }) => {
   const location = useLocation(window.location);
@@ -33,8 +34,9 @@ export const RouteManagement = ({ islogin }) => {
         <Sidebar isLogin={islogin} />
         <Routes>
           <Route path="/" element={<JobsPage />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route
-            path="messages"
+            path="/messages"
             element={
               <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
                 <Messages />

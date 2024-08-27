@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
 import {Oval} from 'react-loader-spinner'
 import { useSelector } from "react-redux";
-import { Skeleton } from "@mui/material";
+import { Avatar, Skeleton } from "@mui/material";
 const JobCard = ({ job, onApply }) => {
   const { isDarkMode } = useTheme();
   const navigate = useNavigate();
@@ -95,7 +95,7 @@ const JobCard = ({ job, onApply }) => {
       <div className="p-6">
         <div className="flex justify-between items-start mb-4">
           <div className="flex items-center">
-            <img src={job.logo} alt={`${job.companyName} logo`} className="w-12 h-12 rounded-full mr-4" />
+            <Avatar src={job.logo} alt={`${job.companyName} logo`} className="w-12 h-12 rounded-full mr-4" size="large" />
             <div>
               <h3 className={`${isDarkMode ? 'text-gray-300' : 'text-black'} text-xl font-bold`}>{job.role}</h3>
               <p className="text-gray-500">{job.companyName} | {job.location}</p>

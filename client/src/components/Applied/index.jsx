@@ -33,14 +33,14 @@ const AppliedInternships = () => {
   }, [currentUser, navigate]);
 
   return (
-    <div className={`p-6 h-full ${isDarkMode ? 'bg-black text-white' : 'bg-gray-100 text-gray-900'}`}>
+    <div className={`p-6 h-full w-screen ${isDarkMode ? 'bg-black text-white' : 'bg-gray-100 text-gray-900'}`}>
       <header className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold">Applied Internships</h1>
       </header>
       {currentUser ? (
         <>
           {appliedInternships.length === 0 ? (
-            <p className="text-center text-lg">No internships applied for yet.</p>
+            <p className="text-center text-lg ">No internships applied for yet.</p>
           ) : (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
