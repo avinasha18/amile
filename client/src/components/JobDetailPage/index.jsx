@@ -1,47 +1,58 @@
 import React from 'react';
 import { FaArrowLeft, FaBuilding, FaMapMarkerAlt, FaMoneyBillWave, FaCalendarAlt, FaClock, FaUsers, FaGraduationCap } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext'; // Import the theme context
-
-// Sample job data
-const sampleJob = {
-  title: "Senior Frontend Developer",
-  company: "TechNova Solutions",
-  logo: "/assets/google_logo.png",
-  location: "San Francisco, CA (Remote)",
-  type: "Full-time",
-  salary: "$120,000 - $160,000 per year",
-  startDate: "Immediate",
-  duration: "Permanent",
-  openings: 2,
-  experience: "3-5 years",
-  description: "TechNova Solutions is seeking a talented Senior Frontend Developer to join our innovative team. In this role, you'll be responsible for developing and maintaining cutting-edge web applications, collaborating with cross-functional teams, and mentoring junior developers.",
-  requirements: [
-    "3+ years of experience with React.js and its ecosystem",
-    "Strong proficiency in JavaScript, HTML5, and CSS3",
-    "Experience with state management libraries (e.g., Redux, MobX)",
-    "Familiarity with modern frontend build pipelines and tools",
-    "Understanding of cross-browser compatibility issues and ways to work around them",
-    "Excellent problem-solving skills and attention to detail"
-  ],
-  responsibilities: [
-    "Develop new user-facing features using React.js",
-    "Build reusable components and front-end libraries for future use",
-    "Translate designs and wireframes into high-quality code"
-  ],
-  companyDescription: "TechNova Solutions is a leading software development company specializing in creating innovative web and mobile applications. With a team of passionate technologists, we strive to deliver cutting-edge solutions that transform businesses and enhance user experiences. Our collaborative work environment fosters creativity and continuous learning."
-};
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import Cookies from 'js-cookie';
 
 const JobDetailPage = () => {
   const { isDarkMode } = useTheme(); // Get the theme context
-  const job = sampleJob;
   const navigate = useNavigate();
+  const location = useLocation();
+  const { job } = location.state || {}; // Destructure the job data from the location state
+  const currentUser = JSON.parse(Cookies.get('user') || '{}');
+
+  // Fallback in case job is not provided
+  if (!job) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-lg text-gray-500">No job details available.</p>
+      </div>
+    );
+  }
+
+  const handleApply = async () => {
+    try {
+      const response = await axios.post('http://localhost:3000/applications', {
+        internshipId: job._id,
+        studentId: currentUser.id,
+        companyId: job.companyId
+      });
+
+      if (response.status === 201) {
+        toast.success("Application submitted successfully", {
+          position: "bottom-center",
+        });
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        toast.warning(error.response.data.message, {
+          position: "bottom-center",
+        });
+      } else {
+        toast.error("Failed to submit application", {
+          position: "bottom-center",
+        });
+      }
+    }
+  };
 
   return (
     <div className={`min-h-screen overflow-y-auto ${isDarkMode ? 'bg-gray-900 text-gray-300' : 'bg-gray-100 text-gray-900'}`}>
       <div className="container mx-auto px-4 py-8">
         {/* Back button */}
-        <button 
+        <button
           onClick={() => navigate('/')}
           className={`flex items-center ${isDarkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-500'} transition-colors mb-6`}
         >
@@ -53,10 +64,12 @@ const JobDetailPage = () => {
         <div className={`rounded-lg p-6 mb-8 shadow-lg ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <img src={job.logo} alt={`${job.company} logo`} className="w-16 h-16 rounded-full mr-4" />
+              {job.logo && (
+                <img src={job.logo} alt={`${job.companyName} logo`} className="w-16 h-16 rounded-full mr-4" />
+              )}
               <div>
-                <h1 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{job.title}</h1>
-                <p className={`text-xl ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`}>{job.company}</p>
+                <h1 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{job.role}</h1>
+                <p className={`text-xl ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`}>{job.companyName}</p>
               </div>
             </div>
             <span className={`px-4 py-2 rounded-full text-sm ${job.type === 'Full-time' ? (isDarkMode ? 'bg-green-900 text-green-300' : 'bg-green-100 text-green-800') : (isDarkMode ? 'bg-blue-900 text-blue-300' : 'bg-blue-100 text-blue-800')}`}>
@@ -72,24 +85,23 @@ const JobDetailPage = () => {
             <section className={`rounded-lg p-6 mb-8 shadow-lg ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
               <h2 className={`text-xl font-semibold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Job Description</h2>
               <p className="mb-4">{job.description}</p>
-              
-              <h3 className={`text-lg font-semibold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Requirements:</h3>
-              <ul className={`list-disc list-inside mb-4 ${isDarkMode ? 'text-gray-300' : 'text-gray-800'}`}>
-                {job.requirements.map((req, index) => (
-                  <li key={index}>{req}</li>
-                ))}
-              </ul>
+
+              <h3 className={`text-lg font-semibold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Qualifications:</h3>
+              <p className={`mb-4 ${isDarkMode ? 'text-gray-300' : 'text-gray-800'}`}>{job.qualifications}</p>
 
               <h3 className={`text-lg font-semibold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Responsibilities:</h3>
+              <p className={`mb-4 ${isDarkMode ? 'text-gray-300' : 'text-gray-800'}`}>{job.responsibilities}</p>
+
+              <h3 className={`text-lg font-semibold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Benefits:</h3>
               <ul className={`list-disc list-inside ${isDarkMode ? 'text-gray-300' : 'text-gray-800'}`}>
-                {job.responsibilities.map((resp, index) => (
-                  <li key={index}>{resp}</li>
+                {job.benefits.map((benefit, index) => (
+                  <li key={index}>{benefit}</li>
                 ))}
               </ul>
             </section>
 
             <section className={`rounded-lg p-6 mb-8 shadow-lg ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
-              <h2 className={`text-xl font-semibold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>About {job.company}</h2>
+              <h2 className={`text-xl font-semibold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>About {job.companyName}</h2>
               <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-800'}`}>{job.companyDescription}</p>
             </section>
           </div>
@@ -100,13 +112,14 @@ const JobDetailPage = () => {
               <h2 className={`text-xl font-semibold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Quick Info</h2>
               <div className="space-y-3">
                 <InfoItem icon={<FaMapMarkerAlt className={`${isDarkMode ? 'text-blue-400' : 'text-blue-600'} mr-2`} />} text={job.location} />
-                <InfoItem icon={<FaMoneyBillWave className={`${isDarkMode ? 'text-blue-400' : 'text-blue-600'} mr-2`} />} text={job.salary} />
-                <InfoItem icon={<FaCalendarAlt className={`${isDarkMode ? 'text-blue-400' : 'text-blue-600'} mr-2`} />} text={`Start Date: ${job.startDate}`} />
-                <InfoItem icon={<FaClock className={`${isDarkMode ? 'text-blue-400' : 'text-blue-600'} mr-2`} />} text={`Duration: ${job.duration}`} />
-                <InfoItem icon={<FaUsers className={`${isDarkMode ? 'text-blue-400' : 'text-blue-600'} mr-2`} />} text={`${job.openings} openings`} />
-                <InfoItem icon={<FaGraduationCap className={`${isDarkMode ? 'text-blue-400' : 'text-blue-600'} mr-2`} />} text={`Experience: ${job.experience}`} />
+                <InfoItem icon={<FaMoneyBillWave className={`${isDarkMode ? 'text-blue-400' : 'text-blue-600'} mr-2`} />} text={`Stipend: ₹${job.stipend}`} />
+                <InfoItem icon={<FaCalendarAlt className={`${isDarkMode ? 'text-blue-400' : 'text-blue-600'} mr-2`} />} text={`Start Date: ${new Date(job.startDate).toLocaleDateString()}`} />
+                <InfoItem icon={<FaCalendarAlt className={`${isDarkMode ? 'text-blue-400' : 'text-blue-600'} mr-2`} />} text={`End Date: ${job.endDate ? new Date(job.endDate).toLocaleDateString() : 'N/A'}`} />
+                <InfoItem icon={<FaClock className={`${isDarkMode ? 'text-blue-400' : 'text-blue-600'} mr-2`} />} text={`Hours per week: ${job.hours}`} />
+                <InfoItem icon={<FaUsers className={`${isDarkMode ? 'text-blue-400' : 'text-blue-600'} mr-2`} />} text={`Application Deadline: ${new Date(job.applicationDeadline).toLocaleDateString()}`} />
+                <InfoItem icon={<FaGraduationCap className={`${isDarkMode ? 'text-blue-400' : 'text-blue-600'} mr-2`} />} text={`Mode of Work: ${job.modeOfWork}`} />
               </div>
-              <button className={`w-full py-3 rounded-lg font-medium mt-6 ${isDarkMode ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-blue-600 text-white hover:bg-blue-500'} transition-colors`}>
+              <button onClick={handleApply} className={`w-full py-3 rounded-lg font-medium mt-6 ${isDarkMode ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-blue-600 text-white hover:bg-blue-500'} transition-colors`}>
                 Apply Now
               </button>
             </div>
