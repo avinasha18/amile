@@ -1,6 +1,7 @@
-// src/components/MessageInput.js
 import React, { useState } from 'react';
+import { TextField, Button, Box } from '@mui/material';
 import { useTheme } from '../../context/ThemeContext';
+import SendIcon from '@mui/icons-material/Send';
 
 function MessageInput({ sendMessage }) {
   const [message, setMessage] = useState('');
@@ -13,23 +14,67 @@ function MessageInput({ sendMessage }) {
       setMessage('');
     }
   };
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(e);
+    }
+  };
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-0 w-full">
-      <input
-        type="text"
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 1,
+        p: 1,
+        width: '100%',
+        maxWidth: '650px',
+      }}
+    >
+      <TextField
+        multiline
+        maxRows={4}
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         placeholder="Type a message..."
-        className={`flex-grow p-2 border ${isDarkMode ? 'bg-gray-700 text-white border-gray-600' : 'bg-white text-black border-gray-300'} rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
+        variant="outlined"
+        fullWidth
+        onKeyDown={handleKeyDown}
+        sx={{
+          flexGrow: 1,
+          backgroundColor: isDarkMode ? '#333' : '#fff',
+          color: isDarkMode ? '#fff' : '#000',
+          '& .MuiInputBase-root': {
+            color: isDarkMode ? '#fff' : '#000',
+          },
+          '& .MuiOutlinedInput-root': {
+            '& fieldset': {
+              borderColor: isDarkMode ? '#666' : '#ccc',
+            },
+            '&:hover fieldset': {
+              borderColor: isDarkMode ? '#888' : '#aaa',
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: isDarkMode ? '#aaa' : '#666',
+            },
+          },
+        }}
       />
-      <button
-        type="submit"
-        className="bg-blue-500 text-white px-4 py-2 rounded-r-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      >
-        Send
-      </button>
-    </form>
+      {message.trim() && (
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          size="large"
+        >
+          <SendIcon />
+        </Button>
+      )}
+    </Box>
   );
 }
 

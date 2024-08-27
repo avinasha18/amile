@@ -11,7 +11,7 @@ import { useTheme } from '../../context/ThemeContext'; // Import the useTheme ho
 ChartJS.register(CategoryScale, LinearScale, ArcElement, BarElement, Title, Tooltip, Legend);
 
 const Dashboard = () => {
-  const { isDarkMode } = useTheme(); // Hook to get the current theme mode
+  const { isDarkMode } = useTheme(); 
 
   return (
     <div className={`right-content w-full ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'} p-6`}>

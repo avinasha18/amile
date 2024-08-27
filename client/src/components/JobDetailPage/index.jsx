@@ -5,13 +5,14 @@ import { useTheme } from '../../context/ThemeContext'; // Import the theme conte
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
+import { useSelector } from 'react-redux';
 
 const JobDetailPage = () => {
   const { isDarkMode } = useTheme(); // Get the theme context
   const navigate = useNavigate();
   const location = useLocation();
-  const { job } = location.state || {}; // Destructure the job data from the location state
-  const currentUser = JSON.parse(Cookies.get('user') || '{}');
+  const { job } = location.state || {}; 
+  const currentUser = useSelector((state)=>state.auth.user)
 
   // Fallback in case job is not provided
   if (!job) {

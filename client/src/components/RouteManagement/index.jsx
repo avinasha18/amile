@@ -1,11 +1,20 @@
+import { Route, Routes, Navigate, useLocation } from "react-router-dom";
+
+
 import Navbar from "../Navbar";
 import Sidebar from "../Sidebar";
 import JobsPage from "../Jobs";
-
 import JobDetailPage from "../JobDetailPage";
 import ProfilePage from "../Profile";
 import Messages from "../Messages";
-import { Route, Routes, Navigate, useLocation } from "react-router-dom";
+import AppliedInternships from "../Applied";
+import GovernmentJobsPage from "../Government"
+import GovernmentDetailedPage from "../GovernmentDetailed"
+import MyReferals from "../MyReferals";
+import InterviewApp from "../Mock-Interview/InterviewApp";
+import Feedback from "../Mock-Interview/Feedback"
+import PageNotFound from "../noinfopage";
+import Dashboard from "../Dashboard";
 
 export const RouteManagement = ({ islogin }) => {
   const location = useLocation(window.location);
@@ -25,8 +34,9 @@ export const RouteManagement = ({ islogin }) => {
         <Sidebar isLogin={islogin} />
         <Routes>
           <Route path="/" element={<JobsPage />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route
-            path="messages"
+            path="/messages"
             element={
               <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
                 <Messages />
@@ -47,6 +57,61 @@ export const RouteManagement = ({ islogin }) => {
               <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
                 <ProfilePage />
               </ProtectedRoute>
+            }
+          />
+              <Route
+            path="/myreferals"
+            element={
+              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+                <MyReferals />
+              </ProtectedRoute>
+            }
+          />
+
+           <Route
+            path="/applied"
+            element={
+              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+                <AppliedInternships />
+              </ProtectedRoute>
+            }
+          />
+             <Route
+            path="/government"
+            element={
+              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+                <GovernmentJobsPage />
+              </ProtectedRoute>
+            }
+          />
+              <Route
+            path="/governmentDetailed/:id"
+            element={
+              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+                <GovernmentDetailedPage />
+              </ProtectedRoute>
+            }
+          />
+           <Route
+            path="/aimock"
+            element={
+              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+                <InterviewApp />
+              </ProtectedRoute>
+            }
+          />
+               <Route
+            path="/feedback"
+            element={
+              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+                <Feedback />
+              </ProtectedRoute>
+            }
+          />
+               <Route
+            path="/*"
+            element={
+              <PageNotFound/>
             }
           />
         </Routes>

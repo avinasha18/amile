@@ -5,25 +5,17 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { useTheme } from '../../context/ThemeContext'; // Adjust the import path as needed
+import { useSelector } from 'react-redux';
 
 const AppliedInternships = () => {
   const [appliedInternships, setAppliedInternships] = useState([]);
   const [govtAppliedInternships, setGovtAppliedInternships] = useState([]);
 
   const navigate = useNavigate();
-  const [currentUser, setCurrentUser] = useState(null);
-  const { isDarkMode } = useTheme(); // Hook to get the current theme mode
+  const currentUser = useSelector((state) => state.auth.user);
+  const { isDarkMode } = useTheme();
 
   useEffect(() => {
-    const userCookie = Cookies.get('user');
-    if (userCookie) {
-      const user = JSON.parse(userCookie);
-      setCurrentUser(user.id);
-    } else {
-      navigate('/login');
-      return;
-    }
-
     if (currentUser) {
       axios
         .get(`http://localhost:3000/applications/student/${currentUser}`)
@@ -31,23 +23,24 @@ const AppliedInternships = () => {
           setAppliedInternships(response.data.appliedInternshipsWithDetails);
           setGovtAppliedInternships(response.data.govtAppliedInternshipsWithDetails);
 
-          console.log(response.data.govtAppliedInternshipsWithDetails)
+          console.log(response.data.govtAppliedInternshipsWithDetails);
         })
         .catch((error) => {
-          toast.error('Failed to fetch applied internships.');
+          toast.error('Failed to fetch applied internships. Please try again later.');
+          console.error('Error fetching applied internships:', error);
         });
     }
   }, [currentUser, navigate]);
 
   return (
-    <div className={`p-6 h-full ${isDarkMode ? 'bg-black text-white' : 'bg-gray-100 text-gray-900'}`}>
+    <div className={`p-6 h-full w-screen ${isDarkMode ? 'bg-black text-white' : 'bg-gray-100 text-gray-900'}`}>
       <header className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold">Applied Internships</h1>
       </header>
       {currentUser ? (
         <>
           {appliedInternships.length === 0 ? (
-            <p className="text-center text-lg">No internships applied for yet.</p>
+            <p className="text-center text-lg ">No internships applied for yet.</p>
           ) : (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -67,7 +60,10 @@ const AppliedInternships = () => {
                     </div>
                     <p className="text-sm text-gray-600 mb-1">{internship.location}</p>
                     <p className="text-sm text-gray-600 mb-1">Stipend: {internship.stipend}</p>
-                    <p className="text-sm text-gray-600 mb-2">Duration: {new Date(internship.startDate).toLocaleDateString()} to {internship.endDate ? new Date(internship.endDate).toLocaleDateString() : 'Not specified'}</p>
+                    <p className="text-sm text-gray-600 mb-2">
+                      Duration: {new Date(internship.startDate).toLocaleDateString()} to{' '}
+                      {internship.endDate ? new Date(internship.endDate).toLocaleDateString() : 'Not specified'}
+                    </p>
                     <button
                       className={`px-4 py-2 text-sm font-semibold rounded ${getStatusColor(internship.applicationStatus)}`}
                     >
@@ -87,17 +83,19 @@ const AppliedInternships = () => {
                     whileTap={{ scale: 0.95 }}
                   >
                     <div className="flex items-center mb-4">
-                      <img src={internship[0].companyLogo} alt={internship[0].companyName} className="w-12 h-12 mr-4" />
+                      <img src={internship.companyLogo} alt={internship.companyName} className="w-12 h-12 mr-4" />
                       <div>
-                        <h3 className="text-xl font-semibold mb-1">{internship[0].jobTitle}</h3>
-                        <p className="text-sm text-gray-600">{internship[0].companyName}</p>
+                        <h3 className="text-xl font-semibold mb-1">{internship.jobTitle}</h3>
+                        <p className="text-sm text-gray-600">{internship.companyName}</p>
                       </div>
                     </div>
-                    <p className="text-sm text-gray-600 mb-1">{internship[0].location}</p>
-                    <p className="text-sm text-gray-600 mb-1">Stipend: {internship[0].salary}</p>
-                    <p className="text-sm text-gray-600 mb-2">Deadline: {new Date(internship[0].applicationDeadline).toLocaleDateString()} </p>
+                    <p className="text-sm text-gray-600 mb-1">{internship.location}</p>
+                    <p className="text-sm text-gray-600 mb-1">Stipend: {internship.salary}</p>
+                    <p className="text-sm text-gray-600 mb-2">
+                      Deadline: {new Date(internship.applicationDeadline).toLocaleDateString()}
+                    </p>
                     <button
-                      className={`px-4 py-2 text-sm font-semibold rounded ${getStatusColor(internship[0].applicationStatus)}`}
+                      className={`px-4 py-2 text-sm font-semibold rounded ${getStatusColor(internship.applicationStatus)}`}
                     >
                       {internship.applicationStatus}
                     </button>

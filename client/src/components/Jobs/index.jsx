@@ -16,8 +16,8 @@ const JobsPage = () => {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      <div className={`flex-1 ${isDarkMode ? 'bg-[#000]' : 'bg-gray-100'} overflow-y-auto no-scrollbar`}>
+    <div className="flex h-screen overflow-auto w-screen">
+      <div className={`flex-1 ${isDarkMode ? 'bg-[#000]' : 'bg-gray-100'} overflow-y-auto no-scrollbar w-full`}>
         <div className="p-6">
           <h1 className="text-3xl font-bold mb-6 text-[#979696]">Find Internships</h1>
           <div className="mb-6">
@@ -33,7 +33,7 @@ const JobsPage = () => {
         </div>
       </div>
 
-      <div className="w-80 flex-shrink-0 overflow-y-auto no-scrollbar border-l border-gray-300">
+      <div className=" flex-shrink-0 overflow-y-auto no-scrollbar border-l border-gray-300 w-80">
         <JobFilters onApplyFilters={handleApplyFilters} />
       </div>
     </div>
