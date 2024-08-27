@@ -54,26 +54,35 @@ export const createJobPosting = async (req, res) => {
   }
 };
 
+
 export const getAllJobPostings = async (req, res) => {
-    try {
-      const jobs = await Government.find();
-      res.status(200).json(jobs);
-    } catch (error) {
-      res.status(500).json({
-        message: 'Failed to fetch job postings.',
-        error: error.message
-      });
-    }
-  };
-  
+  const userId = req.query.userId;
+
+  try {
+    // Find all jobs the current user has applied for
+    const appliedJobIds = await GovernmentApplication.find({ studentId: userId }).distinct('internshipId');
+
+    // Fetch jobs that are not applied by the current user
+    const jobs = await Government.find({ _id: { $nin: appliedJobIds } });
+
+    res.status(200).json(jobs);
+  } catch (error) {
+    res.status(500).json({
+      message: 'Failed to fetch job postings.',
+      error: error.message
+    });
+  }
+};
+
   
 
 export const getJobPostingById = async (req, res) => {
     try {
       const jobId = req.params.id;
       console.log(req.params)
+
       // Find the job posting by jobId
-      const job = await Government.findOne({ jobId });
+      const job = await Government.findOne({ _id : jobId });
   
       if (!job) {
         return res.status(404).json({
