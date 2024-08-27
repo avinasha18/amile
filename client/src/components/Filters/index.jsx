@@ -1,29 +1,25 @@
 import React, { useState } from 'react';
 import { useTheme } from '../../context/ThemeContext';
 
-const JobFilters = () => {
+const JobFilters = ({ onApplyFilters }) => {
   const { isDarkMode } = useTheme();
-  const [internshipType, setInternshipType] = useState('');
-  const [experienceLevel, setExperienceLevel] = useState('');
-  const [remote, setRemote] = useState(false);
-  const [jobOffer, setJobOffer] = useState(false);
+  const [type, setType] = useState('');
+  const [modeOfWork, setModeOfWork] = useState('');
   const [stipend, setStipend] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [mode, setMode] = useState('');
+  const [hours, setHours] = useState(0);
+  const [startDate, setStartDate] = useState('');
+  const [skillsRequired, setSkillsRequired] = useState([]);
 
   const clearFilters = () => {
-    setInternshipType('');
-    setExperienceLevel('');
-    setRemote(false);
-    setJobOffer(false);
+    setType('');
+    setModeOfWork('');
     setStipend(0);
-    setDuration(0);
-    setMode('');
+    setHours(0);
+    setStartDate('');
+    setSkillsRequired([]);
   };
 
-  const themeClasses = isDarkMode
-    ? 'bg-black text-white'
-    : 'bg-white text-gray-900';
+  const themeClasses = isDarkMode ? 'bg-black text-white' : 'bg-white text-gray-900';
 
   return (
     <div className={`w-full h-full p-6 ${themeClasses} overflow-y-auto no-scrollbar`}>
@@ -33,79 +29,92 @@ const JobFilters = () => {
           Clear All
         </button>
       </div>
-      
+
       <FilterSection title="Internship Type">
         <select
-          value={internshipType}
-          onChange={(e) => setInternshipType(e.target.value)}
+          value={type}
+          onChange={(e) => setType(e.target.value)}
           className={`w-full p-2 border border-gray-300 rounded ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`}
         >
           <option value="">Select Type</option>
-          <option value="Tech">Tech</option>
-          <option value="Non-Tech">Non-Tech</option>
+          <option value="Full-Time">Full-time</option>
+          <option value="Part-Time">Part-time</option>
+          <option value="Summer">Summer</option>
         </select>
       </FilterSection>
-      
-      <FilterSection title="Experience Level">
+
+      <FilterSection title="Mode of Work">
         <select
-          value={experienceLevel}
-          onChange={(e) => setExperienceLevel(e.target.value)}
+          value={modeOfWork}
+          onChange={(e) => setModeOfWork(e.target.value)}
           className={`w-full p-2 border border-gray-300 rounded ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`}
         >
-          <option value="">Select Level</option>
-          <option value="Beginner">Beginner</option>
-          <option value="Intermediate">Intermediate</option>
-          <option value="Advanced">Advanced</option>
+          <option value="">Select Mode</option>
+          <option value="Remote">Remote</option>
+          <option value="In-Office">On-site</option>
+          <option value="Hybrid">Hybrid</option>
         </select>
       </FilterSection>
-      
-      <FilterSection title="Other Options">
-        <Checkbox
-          label="Remote Internship"
-          checked={remote}
-          onChange={(e) => setRemote(e.target.checked)}
-        />
-        <Checkbox
-          label="Job Offer Attached"
-          checked={jobOffer}
-          onChange={(e) => setJobOffer(e.target.checked)}
-        />
-      </FilterSection>
-      
+
       <FilterSection title="Monthly Stipend">
         <RangeSlider
           min={0}
           max={100000}
-          step={1000}
+          step={5000}
           value={stipend}
           onChange={(e) => setStipend(e.target.value)}
-          breakpoints={[1000, 5000, 10000, 25000, 50000, 100000]}
+          breakpoints={[1000, 5000, 10000, 15000, 20000, 30000, 40000, 100000]}
         />
       </FilterSection>
-      
-      <FilterSection title="Max Duration (in Months)">
+
+      <FilterSection title="Hours per Week">
         <RangeSlider
           min={0}
-          max={12}
-          value={duration}
-          onChange={(e) => setDuration(e.target.value)}
-          breakpoints={[1, 3, 6, 9, 12]}
+          max={40}
+          value={hours}
+          onChange={(e) => setHours(e.target.value)}
+          breakpoints={[10, 20, 30, 40]}
         />
       </FilterSection>
-      
-      <FilterSection title="Internship Mode">
-        <select
-          value={mode}
-          onChange={(e) => setMode(e.target.value)}
+
+      <FilterSection title="Start Date">
+        <input
+          type="date"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
           className={`w-full p-2 border border-gray-300 rounded ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`}
-        >
-          <option value="">Select Mode</option>
-          <option value="Online">Online</option>
-          <option value="Offline">Offline</option>
-        </select>
+        />
       </FilterSection>
-      
-      <button className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium mt-6 hover:bg-blue-700 transition-colors">
+
+      <FilterSection title="Skills Required">
+        <input
+          type="text"
+          value={skillsRequired.join(', ')}
+          onChange={(e) =>
+            setSkillsRequired(
+              e.target.value.split(',').map((skill) => skill.trim().toLowerCase())
+            )
+          }
+          placeholder="Enter skills (comma-separated)"
+          className={`w-full p-2 border border-gray-300 rounded ${
+            isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'
+          }`}
+        />
+      </FilterSection>
+
+      <button
+        onClick={() =>
+          onApplyFilters({
+            type,
+            modeOfWork,
+            stipend,
+            hours,
+            startDate,
+            skillsRequired,
+          })
+        }
+        className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium mt-6 hover:bg-blue-700 transition-colors"
+      >
         Apply Filters
       </button>
     </div>
@@ -116,24 +125,11 @@ const FilterSection = ({ title, children }) => {
   const { isDarkMode } = useTheme();
   return (
     <div className="mb-6">
-      <h3 className={`text-lg font-medium mb-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>{title}</h3>
+      <h3 className={`text-lg font-medium mb-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+        {title}
+      </h3>
       {children}
     </div>
-  );
-};
-
-const Checkbox = ({ label, checked, onChange }) => {
-  const { isDarkMode } = useTheme();
-  return (
-    <label className={`flex items-center space-x-2 mb-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-      <input
-        type="checkbox"
-        checked={checked}
-        onChange={onChange}
-        className="form-checkbox text-blue-600"
-      />
-      <span>{label}</span>
-    </label>
   );
 };
 

@@ -22,8 +22,18 @@ const internshipSchema = new mongoose.Schema({
     isActive: { type: Boolean, default: true },           
 });
 
+const applicationSchema = new mongoose.Schema({
+    internshipId: { type: mongoose.Schema.Types.ObjectId, ref: 'Internship', required: true },
+    studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Student', required: true },
+    companyId: { type: mongoose.Schema.Types.ObjectId, ref: 'Company', required: true },
+    status: { type: String, default: 'pending', enum: ['pending', 'selected', 'rejected', 'next round'] },
+    appliedAt: { type: Date, default: Date.now },
+  });
+  
+  export const Application = mongoose.model('Application', applicationSchema);
+  
 
-const Internship = mongoose.model('Internship', internshipSchema);
+export const Internship = mongoose.model('Internship', internshipSchema);
 
 export const createInternship = async (data) => {
     const internship = new Internship(data);
@@ -33,13 +43,17 @@ export const createInternship = async (data) => {
 export const findInternshipById = async (id) => {
     return await Internship.findById(id);
 };
+export const findInternshipByUserName = async (username)=> {
+    return await Internship.find({username})
+}
 
-export const getAllInternships = async (query, page = 1, limit = 10) => {
+export const getAllInternships = async (query, skip, limit) => {
     return await Internship.find(query)
-        .skip((page - 1) * limit)
-        .limit(limit)
-        .exec();
-};
+      .skip(skip)
+      .limit(limit)
+      .exec();
+  };
+  
 
 export const updateInternship = async (id, data) => {
     return await Internship.findByIdAndUpdate(id, data, { new: true });
