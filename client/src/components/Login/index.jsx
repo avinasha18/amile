@@ -19,11 +19,11 @@ import { loginSuccess } from "../../services/redux/AuthSlice";
 import { setAuthToken } from "../../hooks/golbalAuth";
 import { Box, IconButton } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { keyframes } from "@emotion/react";
+
 const Alert = (props) => {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 };
-
-import { keyframes } from "@emotion/react";
 
 const bounce = keyframes`
   0% {
@@ -94,11 +94,32 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // State for show/hide password
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("error");
   const nav = useNavigate();
   const dispatch = useDispatch();
-  const dispatch = useDispatch();
   const [params] = useSearchParams();
+
+  const validateForm = () => {
+    let isValid = true;
+    if (!email) {
+      setEmailError("Email is required");
+      isValid = false;
+    } else {
+      setEmailError("");
+    }
+
+    if (!password) {
+      setPasswordError("Password is required");
+      isValid = false;
+    } else {
+      setPasswordError("");
+    }
+
+    return isValid;
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -126,15 +147,12 @@ const Login = () => {
         setAuthToken(response.data.token);
 
         const isnext = params.get("nextpath");
-        console.log(isnext);
 
         if (isnext) {
           nav(isnext, { replace: true });
         } else {
           nav("/", { replace: true });
         }
-
-        toast.success("Login successful");
       } else {
         if (response.data.message === "verify your account") {
           nav("/resendverify", { replace: true });
@@ -148,7 +166,8 @@ const Login = () => {
         setSnackbarSeverity("error");
       }
     } catch (err) {
-      toast.error("An error occurred. Please try again.");
+      setSnackbarMessage("An error occurred. Please try again.");
+      setSnackbarSeverity("error");
       console.error(err);
     } finally {
       setSnackbarOpen(true);
@@ -166,6 +185,7 @@ const Login = () => {
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
+
   const handleBackClick = () => {
     nav(-1, { replace: true });
   };
@@ -200,6 +220,8 @@ const Login = () => {
             fullWidth
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            error={Boolean(emailError)}
+            helperText={emailError}
             className={classes.inputLabel}
           />
           <TextField
@@ -209,6 +231,8 @@ const Login = () => {
             fullWidth
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            error={Boolean(passwordError)}
+            helperText={passwordError}
             className={classes.inputLabel}
           />
           <Link to={"/forgotpassword"} color="primary">
@@ -245,7 +269,7 @@ const Login = () => {
               }
               label={
                 <Typography className={classes.checkboxLabel}>
-                  Remember Me
+                  Remember me
                 </Typography>
               }
             />
@@ -253,19 +277,17 @@ const Login = () => {
           <Button
             type="submit"
             variant="contained"
+            color="primary"
             fullWidth
             className={classes.button}
           >
             Login
           </Button>
         </form>
-        <Link to={"/signup"} style={{ color: isDarkMode ? "#fff" : "#000" }}>
-          Don't Have An Account? Signup!
-        </Link>
       </Paper>
       <Snackbar
         open={snackbarOpen}
-        autoHideDuration={6000}
+        autoHideDuration={5000}
         onClose={handleSnackbarClose}
       >
         <Alert onClose={handleSnackbarClose} severity={snackbarSeverity}>

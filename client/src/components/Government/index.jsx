@@ -5,6 +5,7 @@ import { Oval } from 'react-loader-spinner';
 import { motion } from 'framer-motion';
 import GovtJobCard from '../GovernmentJobCard';
 import Cookies from 'js-cookie'; // Import Cookies for managing user data
+import { useSelector } from 'react-redux';
 
 const GovernmentJobsPage = () => {
   const [jobs, setJobs] = useState([]);
@@ -12,16 +13,10 @@ const GovernmentJobsPage = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const { isDarkMode } = useTheme();
-
+ const userId =  useSelector((state)=>state.auth.user)
   useEffect(() => {
     const fetchJobs = async () => {
-      setLoading(true); // Set loading to true before fetching
-
-      // Retrieve user data from cookies
-      const userCookie = Cookies.get('user');
-      const user = userCookie ? JSON.parse(userCookie) : null;
-      const userId = user ? user.id : null;
-
+      setLoading(true); 
       if (!userId) {
         console.error("User not logged in or user ID not available.");
         setLoading(false);
