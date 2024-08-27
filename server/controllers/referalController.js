@@ -34,27 +34,32 @@ export const handleReferral = async (referrerUsername, newUser) => {
 
 export const getMyReferrals = async (req, res) => {
     try {
-        const { username ,page = 1, limit = 10  } = req.query;
-
+        const {page = 1, limit = 10  } = req.query;
+        const {username} = req.body;
         const skip = (page - 1) * limit;
 
         const user = await Referral.findOne({ username });
 
         if (!user) {
-            return res.status(404).json({ success: false, message: "User not found" });
+            return res.json({ success: false, message: "User not found" });
         }
 
-        const refereesDetails = await Student.find({ username: { $in: user.referees } }, '-password')
-            .skip(skip) 
-            .limit(Number(limit)); 
+        const refereesDetails = await Student.find(
+            { username: { $in: user.referees } },
+            'name username status' 
+          )
+            .skip(skip)
+            .limit(Number(limit));
+          
 
         const totalReferees = await Student.countDocuments({ username: { $in: user.referees } });
 
-        return res.status(200).json({
+        return res.json({
             success: true,
             message: "Your referees' details are:",
             data: refereesDetails,
             totalPages: Math.ceil(totalReferees / limit),
+            totalReferees,
             currentPage: Number(page)
         });
     } catch (error) {

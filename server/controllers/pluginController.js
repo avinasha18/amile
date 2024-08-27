@@ -1,10 +1,11 @@
+import { Student } from "../models/auth.model.js";
+
 export const connectPlugin = async (req, res) => {
     try {
-      const { pluginName, username, pluginData } = req.body;
-  
+      const { username } = req.body;
+      const {pluginName,pluginData} = req.body.pluginName;
       if (!pluginName || !username || !pluginData) {
         return res
-          .status(400)
           .json({ success: false, message: "Missing required fields" });
       }
   
@@ -16,17 +17,16 @@ export const connectPlugin = async (req, res) => {
   
       if (!updatedStudent) {
         return res
-          .status(404)
           .json({ success: false, message: "Student not found" });
       }
   
-      return res.status(200).json({
+      return res.json({
         success: true,
         message: `${pluginName} data updated successfully`,
         data: updatedStudent,
       });
     } catch (error) {
-      return res.status(500).json({ success: false, message: error.message });
+      return res.json({ success: false, message: error.message });
     }
   };
   

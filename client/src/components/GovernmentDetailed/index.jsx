@@ -4,6 +4,8 @@ import axios from 'axios';
 import { useTheme } from '../../context/ThemeContext';
 import { Oval } from 'react-loader-spinner';
 import { FaArrowLeft, FaMapMarkerAlt, FaMoneyBillWave, FaCalendarAlt, FaClock, FaUsers, FaGraduationCap } from 'react-icons/fa';
+import { toast } from 'react-toastify';
+import Cookies from 'js-cookie';
 
 const GovernmentDetailedPage = () => {
   const { id } = useParams();
@@ -11,6 +13,8 @@ const GovernmentDetailedPage = () => {
   const [loading, setLoading] = useState(true);
   const { isDarkMode } = useTheme();
   const navigate = useNavigate();
+  const [isApplied, setIsApplied] = useState(false);
+  const currentUser = JSON.parse(Cookies.get('user') || '{}');
 
   useEffect(() => {
     const fetchJob = async () => {
@@ -26,6 +30,49 @@ const GovernmentDetailedPage = () => {
 
     fetchJob();
   }, [id]);
+
+  useEffect(() => {
+    const checkApplication = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3000/government/applications/${currentUser.id}`);
+        const appliedJobs = response.data.map(app => app._id);
+        setIsApplied(appliedJobs.includes(job?._id));
+      } catch (error) {
+        console.error("Error checking application status:", error);
+      }
+    };
+
+    if (job) {
+      checkApplication();
+    }
+  }, [job, currentUser.id]);
+
+  const handleApply = async () => {
+    try {
+      const response = await axios.post('http://localhost:3000/government/apply', {
+        internshipId: job._id,
+        studentId: currentUser.id,
+        companyId: job.companyId
+      });
+
+      if (response.status === 201) {
+        toast.success("Application submitted successfully", {
+          position: "bottom-center",
+        });
+        setIsApplied(true);
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        toast.warning(error.response.data.message, {
+          position: "bottom-center",
+        });
+      } else {
+        toast.error("Failed to submit application", {
+          position: "bottom-center",
+        });
+      }
+    }
+  };
 
   if (loading) {
     return (
@@ -86,9 +133,7 @@ const GovernmentDetailedPage = () => {
               <p className={`mb-4 ${isDarkMode ? 'text-gray-300' : 'text-gray-800'}`}>{job.responsibilities}</p>
               <h3 className={`text-lg font-semibold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Benefits:</h3>
               <ul className={`list-disc list-inside ${isDarkMode ? 'text-gray-300' : 'text-gray-800'}`}>
-               
-                  <li key={job._id}>{job?.benefits}</li>
-               
+                <li key={job._id}>{job?.benefits}</li>
               </ul>
             </section>
             <section className={`rounded-lg p-6 mb-8 shadow-lg ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
@@ -104,12 +149,16 @@ const GovernmentDetailedPage = () => {
                 <InfoItem icon={<FaMoneyBillWave className={`${isDarkMode ? 'text-blue-400' : 'text-blue-600'} mr-2`} />} text={`Stipend: ₹${job.salary}`} />
                 <InfoItem icon={<FaCalendarAlt className={`${isDarkMode ? 'text-blue-400' : 'text-blue-600'} mr-2`} />} text={`Start Date: ${new Date(job.startDate).toLocaleDateString()}`} />
                 <InfoItem icon={<FaCalendarAlt className={`${isDarkMode ? 'text-blue-400' : 'text-blue-600'} mr-2`} />} text={`End Date: ${job.endDate ? new Date(job.endDate).toLocaleDateString() : 'N/A'}`} />
-                <InfoItem icon={<FaClock className={`${isDarkMode ? 'text-blue-400' : 'text-blue-600'} mr-2`} />} text={`Hours per week: ${job.hours}`} />
-                <InfoItem icon={<FaUsers className={`${isDarkMode ? 'text-blue-400' : 'text-blue-600'} mr-2`} />} text={`Application Deadline: ${new Date(job.applicationDeadline).toLocaleDateString()}`} />
-                <InfoItem icon={<FaGraduationCap className={`${isDarkMode ? 'text-blue-400' : 'text-blue-600'} mr-2`} />} text={`Mode of Work: ${job.modeOfWork}`} />
+                <InfoItem icon={<FaClock className={`${isDarkMode ? 'text-blue-400' : 'text-blue-600'} mr-2`} />} text={`${job.duration} Months`} />
+                <InfoItem icon={<FaUsers className={`${isDarkMode ? 'text-blue-400' : 'text-blue-600'} mr-2`} />} text={`${job.applicantsCount} applicants`} />
+                <InfoItem icon={<FaGraduationCap className={`${isDarkMode ? 'text-blue-400' : 'text-blue-600'} mr-2`} />} text={`Min CGPA: ${job.minCGPA}`} />
               </div>
-              <button className={`w-full py-3 rounded-lg font-medium mt-6 ${isDarkMode ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-blue-600 text-white hover:bg-blue-500'} transition-colors`}>
-                Apply Now
+              <button
+                className={`w-full mt-6 py-2 px-4 rounded-md transition-colors ${isDarkMode ? 'bg-blue-400 text-white hover:bg-blue-500' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
+                onClick={handleApply}
+                disabled={isApplied}
+              >
+                {isApplied ? 'Applied' : 'Apply Now'}
               </button>
             </div>
           </div>

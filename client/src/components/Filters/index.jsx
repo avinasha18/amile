@@ -21,15 +21,29 @@ const JobFilters = ({ onApplyFilters }) => {
 
   const themeClasses = isDarkMode ? 'bg-black text-white' : 'bg-white text-gray-900';
 
+  const handleApplyFilters = () => {
+    const filters = {
+      type,
+      modeOfWork,
+      stipend,
+      hours,
+      startDate,
+      skillsRequired,
+    };
+    
+    onApplyFilters(filters); // Send filters to the parent component
+  };
+
   return (
-    <div className={`w-full h-full p-6 ${themeClasses} overflow-y-auto no-scrollbar`}>
-      <div className="flex justify-between items-center mb-6">
+    <div className={`w-full h-screen p-6 ${themeClasses} overflow-y-auto no-scrollbar pb-20`}>
+      <div className="flex justify-between items-center mb-6 ">
         <h2 className="text-xl font-semibold text-blue-500">Filters</h2>
         <button onClick={clearFilters} className="text-blue-500 hover:text-blue-400">
           Clear All
         </button>
       </div>
 
+      {/* Filter sections */}
       <FilterSection title="Internship Type">
         <select
           value={type}
@@ -62,7 +76,7 @@ const JobFilters = ({ onApplyFilters }) => {
           max={100000}
           step={5000}
           value={stipend}
-          onChange={(e) => setStipend(e.target.value)}
+          onChange={(e) => setStipend(Number(e.target.value))}
           breakpoints={[1000, 5000, 10000, 15000, 20000, 30000, 40000, 100000]}
         />
       </FilterSection>
@@ -72,7 +86,7 @@ const JobFilters = ({ onApplyFilters }) => {
           min={0}
           max={40}
           value={hours}
-          onChange={(e) => setHours(e.target.value)}
+          onChange={(e) => setHours(Number(e.target.value))}
           breakpoints={[10, 20, 30, 40]}
         />
       </FilterSection>
@@ -103,17 +117,8 @@ const JobFilters = ({ onApplyFilters }) => {
       </FilterSection>
 
       <button
-        onClick={() =>
-          onApplyFilters({
-            type,
-            modeOfWork,
-            stipend,
-            hours,
-            startDate,
-            skillsRequired,
-          })
-        }
-        className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium mt-6 hover:bg-blue-700 transition-colors"
+        onClick={handleApplyFilters}
+        className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium mt-6 hover:bg-blue-700 transition-colors sticky bottom-1"
       >
         Apply Filters
       </button>

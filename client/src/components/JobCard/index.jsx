@@ -6,18 +6,18 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
 import {Oval} from 'react-loader-spinner'
+import { useSelector } from "react-redux";
+import { Avatar, Skeleton } from "@mui/material";
 const JobCard = ({ job, onApply }) => {
   const { isDarkMode } = useTheme();
   const navigate = useNavigate();
   const [isLoading,setIsLoading] = useState(true)
   const [isApplied, setIsApplied] = useState(false);
-  const currentUser = JSON.parse(Cookies.get('user') || '{}');
-  const location = useLocation()
+  const currentUser = useSelector((state)=>state.auth.user)
   useEffect(() => {
-    // Check if the user has already applied for this job
     const checkApplication = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/applications/student/${currentUser.id}`);
+        const response = await axios.get(`http://localhost:3000/applications/student/${currentUser}`);
         const appliedJobs = response.data.map(app => app._id);
         setIsApplied(appliedJobs.includes(job._id));
       } catch (error) {
@@ -26,7 +26,7 @@ const JobCard = ({ job, onApply }) => {
     };
 
     checkApplication();
-  }, [job._id, currentUser.id]);
+  }, [job._id, currentUser]);
 
   const handleViewDetails = () => {
     // if(location.pathname === '/government'){
@@ -69,27 +69,33 @@ const JobCard = ({ job, onApply }) => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Oval
-          height={80}
-          width={80}
-          color={isDarkMode ? '#ffffff' : '#000000'}
-          secondaryColor={isDarkMode ? '#ffffff' : '#000000'}
-          ariaLabel="loading"
-        />
+      <div className={`bg-${isDarkMode ? "black" : "gray-100"} p-6`}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6">
+          {Array.from(new Array(10)).map((_, index) => (
+            <div key={index} className={`p-4 bg-white ${isDarkMode?"dark:bg-gray-900":"dark:bg-gray-0"} rounded-md shadow-md `}>
+            <div style={{display:"flex" , gap:15}}>
+
+              <Skeleton variant="circular" width={80} height={80} sx={{ bgcolor: isDarkMode ? "grey.800" : "grey.300" }} />
+              <Skeleton variant="text" width="40%" sx={{ fontSize: '0.5rem', bgcolor: isDarkMode ? "grey.800" : "grey.300", marginTop: '2rem' }} />
+              <Skeleton variant="text" width="40%" sx={{ fontSize: '1rem', bgcolor: isDarkMode ? "grey.800" : "grey.300", marginTop: '0.5rem' }} />
+              </div>
+              <Skeleton variant="rectangular" width="100%" height={80} sx={{ bgcolor: isDarkMode ? "grey.800" : "grey.300", marginTop: '1rem' }} />
+            </div>
+          ))}
+        </div>
       </div>
     );
+  }
   
-}
 
-  if (isApplied) return null; // Don't render the card if the user has already applied
+  if (isApplied) return null;
 
   return (
     <div className={`${isDarkMode ? 'bg-[#0f1011]' : 'bg-white'} rounded-lg shadow-md overflow-hidden`}>
       <div className="p-6">
         <div className="flex justify-between items-start mb-4">
           <div className="flex items-center">
-            <img src={job.logo} alt={`${job.companyName} logo`} className="w-12 h-12 rounded-full mr-4" />
+            <Avatar src={job.logo} alt={`${job.companyName} logo`} className="w-12 h-12 rounded-full mr-4" size="large" />
             <div>
               <h3 className={`${isDarkMode ? 'text-gray-300' : 'text-black'} text-xl font-bold`}>{job.role}</h3>
               <p className="text-gray-500">{job.companyName} | {job.location}</p>
