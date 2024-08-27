@@ -9,6 +9,8 @@ const Profile = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [activeTab, setActiveTab] = useState('Qualifications');
     const [isAdding, setIsAdding] = useState(false);
+    const [isEditingSkills, setIsEditingSkills] = useState(false);
+    const [isEditingSocial, setIsEditingSocial] = useState(false);
 
     const tabs = ['Qualifications', 'Projects', 'Experience', 'Certifications'];
 
@@ -117,6 +119,24 @@ const Profile = () => {
         }));
     };
 
+    const handleSkillEdit = () => {
+        setIsEditingSkills(!isEditingSkills);
+    };
+
+    const handleAddSkill = (newSkill) => {
+        setUser(prevUser => ({
+            ...prevUser,
+            skills: [...prevUser.skills, newSkill]
+        }));
+    };
+
+    const handleRemoveSkill = (skillIndex) => {
+        setUser(prevUser => ({
+            ...prevUser,
+            skills: prevUser.skills.filter((_, index) => index !== skillIndex)
+        }));
+    };
+
     const renderTabContent = () => {
         switch (activeTab) {
             case 'Projects':
@@ -156,6 +176,44 @@ const Profile = () => {
                                 </div>
                             ))
                         }
+                        {isAdding ? (
+                            <div className="mt-4">
+                                <input
+                                    type="text"
+                                    placeholder="Project Name"
+                                    value={newItem.name || ''}
+                                    onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
+                                    className="bg-gray-800 text-white px-4 py-2 rounded w-full mb-2"
+                                />
+                                <textarea
+                                    placeholder="Description (separate points with newlines)"
+                                    value={newItem.description || ''}
+                                    onChange={(e) => setNewItem({ ...newItem, description: e.target.value.split('\n') })}
+                                    className="bg-gray-800 text-white px-4 py-2 rounded w-full mb-2"
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Technologies (comma-separated)"
+                                    value={newItem.technologies || ''}
+                                    onChange={(e) => setNewItem({ ...newItem, technologies: e.target.value.split(',') })}
+                                    className="bg-gray-800 text-white px-4 py-2 rounded w-full mb-2"
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Project Link"
+                                    value={newItem.link || ''}
+                                    onChange={(e) => setNewItem({ ...newItem, link: e.target.value })}
+                                    className="bg-gray-800 text-white px-4 py-2 rounded w-full mb-2"
+                                />
+                                <button onClick={() => handleAddItem('projects')} className="bg-blue-600 text-white px-4 py-2 rounded">
+                                    Add Project
+                                </button>
+                            </div>
+                        ) : (
+                            <button onClick={() => setIsAdding(true)} className="bg-blue-600 text-white px-4 py-2 rounded flex justify-center items-center gap-1">
+                                <FaPlus /> <span>Add Project</span>
+                            </button>
+                        )}
                     </div>
                 );
             case 'Experience':
@@ -203,17 +261,17 @@ const Profile = () => {
                                             className="px-2 py-1 rounded mb-2 bg-slate-700 text-white"
                                         />
                                     ) : (
-                                        
+
                                         <div className="flex flex-wrap gap-2 my-5">
-                                                {titles.map((title, index) => (
-                                                    <p
-                                                        key={index}
-                                                        className={`text-white px-4 py-2 rounded-md bg-slate-900 border-2 border-gray-600`}
-                                                    >
-                                                        {title.trim()}
-                                                    </p>
-                                                ))}
-                                            </div>
+                                            {titles.map((title, index) => (
+                                                <p
+                                                    key={index}
+                                                    className={`text-white px-4 py-2 rounded-md bg-slate-900 border-2 border-gray-600`}
+                                                >
+                                                    {title.trim()}
+                                                </p>
+                                            ))}
+                                        </div>
                                     )}
                                 </div>
                             </div>
@@ -357,7 +415,7 @@ const SocialMedia = ({ media }) => {
                     <div className='flex flex-shrink-0 items-center gap-4'>
                         <FaLinkedin />
                         <Link to="">
-                        <h1>LinkedIn</h1>
+                            <h1>LinkedIn</h1>
                         </Link>
                     </div>
 
@@ -367,7 +425,7 @@ const SocialMedia = ({ media }) => {
                     <div className='flex flex-shrink-0 items-center gap-4'>
                         <FaInstagram />
                         <Link to="">
-                        <h1>Instagram</h1>
+                            <h1>Instagram</h1>
                         </Link>
                     </div>
 

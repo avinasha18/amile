@@ -193,6 +193,7 @@ const UserRegisterFlow = () => {
                 github={github}
                 setGithub={setGithub}
                 linkedin={linkedin}
+                setLinkedin={setLinkedin}
                 termsAccepted={termsAccepted}
                 setTermsAccepted={setTermsAccepted}
                 error={errors.termsAccepted}
