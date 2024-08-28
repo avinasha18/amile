@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
+import { stringify } from "uuid";
 // Define the schema for a student
 const studentSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
@@ -7,13 +8,12 @@ const studentSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   status: { type: String, required: true, default: "inactive" },
-
   education: [String],
   workExperience: [String],
-  projects: [String],
+  projects: [{ title:{type:String},description:{type:String},link:{type:String}}],
   skills: [String],
   achievements: [String],
-  certifications: [String],
+  certifications:  [{ title:{type:String},description:{type:String},link:{type:String}}],
   github: String,
   linkedin: String,
   portfolio: String,
@@ -236,6 +236,17 @@ export const findByToken = async (token) => {
     }
 };
 
+// 
+export const findTokenByUsername = async (username) => {
+  try {
+      const result = await AccountVerification.findOne({ username}).exec(); 
+      return result;
+  } catch (error) {
+      console.error('Error finding by token:', error);
+      return null;
+  }
+};
+
 export const updateAccountStatus = async (username) => {
   try {
     const result = await Student.findOneAndUpdate(
@@ -271,4 +282,13 @@ export const removeUserVerificationToken = async (username) => {
         console.error('Error removing verification token:', error);
         return null;
     }
+};
+export const removeUserVerificationTokenbyToken = async (token) => {
+  try {
+      const result = await AccountVerification.deleteOne({ token }).exec(); 
+      return result;
+  } catch (error) {
+      console.error('Error removing verification token:', error);
+      return null;
+  }
 };

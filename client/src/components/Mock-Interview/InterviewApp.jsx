@@ -3,12 +3,13 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Lottie from 'react-lottie';
-import { Button, Skeleton, Typography } from '@mui/material';
+import { Button, IconButton, Skeleton, Typography } from '@mui/material';
 import { FaStop } from "react-icons/fa";
 import { FaMicrophone } from 'react-icons/fa';
 import animationData from './animations/animation.json';
-import aiImage from '../../assets/195.jpg'; // Add your AI image here
-
+import aiImage from '../../assets/195.jpg'; 
+import VideocamOffIcon from '@mui/icons-material/VideocamOff';
+import VideocamIcon from '@mui/icons-material/Videocam';
 const flask_domain = 'http://127.0.0.1:5000';
 
 function InterviewApp() {
@@ -20,8 +21,10 @@ function InterviewApp() {
   const [conversationHistory, setConversationHistory] = useState([]);
   const [isRecording, setIsRecording] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [isvideo, setIsVideo] = useState(false);
   const videoRef = useRef(null);
   const navigate = useNavigate();
+  
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -43,11 +46,54 @@ function InterviewApp() {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
+        setIsVideo(true);
       }
     } catch (error) {
-      console.error('Error accessing camera:', error);
+      if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+        try {
+          await navigator.permissions.query({ name: 'camera' });
+          // Request camera permissions again
+          const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+            setIsVideo(true);
+          }
+        } catch (err) {
+          alert('Camera access has been denied. Please allow camera permissions in your browser settings.');
+        }
+      } else {
+        console.error('Error accessing camera:', error);
+        alert('An error occurred while trying to access the camera. Please try again.');
+      }
     }
   };
+  
+  const stopVideoStream = async () => {
+    try {
+      if (videoRef.current && videoRef.current.srcObject) {
+        const stream = videoRef.current.srcObject;
+        const tracks = stream.getTracks();
+  
+        tracks.forEach(track => track.stop());
+        videoRef.current.srcObject = null;
+  
+        setIsVideo(false);
+      }
+    } catch (error) {
+      console.error('Error stopping video stream:', error);
+    }
+  };
+  
+  
+   const toggleVideoStream = async () => {
+
+    if(isvideo){
+      stopVideoStream()
+    }else{
+      startVideoStream()
+    }
+
+   }
 
   const fetchFirstQuestion = async () => {
     try {
@@ -109,7 +155,7 @@ function InterviewApp() {
 
   if (showAnimation) {
     return (
-      <div className="h-screen flex items-center justify-center bg-gradient-to-br from-blue-400 to-indigo-600">
+      <div className="h-screen w-screen flex items-center justify-center bg-gradient-to-br from-blue-400 to-indigo-600">
         <Lottie
           options={{
             loop: true,
@@ -124,7 +170,7 @@ function InterviewApp() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-200 flex items-center justify-center p-4">
+    <div className="min-h-screen w-screen overflow-y-auto n0-scrollbar bg-gradient-to-br from-blue-100 to-indigo-200 flex items-center justify-center py-20 p-2">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -168,9 +214,16 @@ function InterviewApp() {
               className="bg-gray-200 rounded-lg overflow-hidden shadow-md"
             >
               <video ref={videoRef} autoPlay muted className="w-full h-64 object-cover" />
+              <div className='flex justify-between bg-white'>
+
+             
               <div className="p-4 bg-white">
                 <h2 className="text-xl font-semibold text-gray-800">You</h2>
                 <p className="text-sm text-gray-600">Candidate</p>
+              </div>
+              <div className="p-4 bg-white">
+                <IconButton onClick={toggleVideoStream}>{isvideo?<VideocamOffIcon/> :<VideocamIcon/>}</IconButton>
+              </div>
               </div>
             </motion.div>
             <motion.div

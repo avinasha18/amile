@@ -28,10 +28,9 @@ const JobList = ({ filters, searchQuery }) => {
   const [currentUserId, setCurrentUserId] = useState(null);
 
   useEffect(() => {
-    const userCookie = Cookies.get('user');
+    const userCookie = Cookies.get('userId');
     if (userCookie) {
-      const user = JSON.parse(userCookie);
-      setCurrentUserId(user.id);
+      setCurrentUserId(userCookie);
     }
   }, []);
 
@@ -90,7 +89,7 @@ const JobList = ({ filters, searchQuery }) => {
           <JobCard key={job._id} job={job} onApply={handleApply} />
         ))}
       </div>
-      <div className="mt-6 flex justify-center">
+      <div className="mt-4 mb-9 flex justify-center">
         <CustomPagination
           count={totalPages}
           page={page}

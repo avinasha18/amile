@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { logout } from "../../services/redux/AuthSlice";
 import { Button } from "@mui/material";
 import "./index.css";
+import { setAuthToken } from "../../hooks/golbalAuth";
 
 const Navbar = ({ isLogin }) => {
   const dispatch = useDispatch();
@@ -14,6 +15,7 @@ const Navbar = ({ isLogin }) => {
   const { isDarkMode, toggleTheme } = useTheme();
   const handleLogout = () => {
     dispatch(logout());
+    setAuthToken()
     navigate("/login");
   };
 
@@ -51,7 +53,7 @@ const Navbar = ({ isLogin }) => {
         </h1>
         <nav className="hidden md:flex space-x-6">
           <NavItem to="/dashboard">Dashboard</NavItem>
-          <NavItem to="/jobs">Jobs</NavItem>
+          <NavItem to="/">Jobs</NavItem>
           <NavItem to="/messages">Messages</NavItem>
         </nav>
 
@@ -119,6 +121,7 @@ const UserMenu = ({ onLogout, isDarkMode }) => (
   >
     <MenuItem to="/profile">Your Profile</MenuItem>
     <MenuItem to="/settings">Settings</MenuItem>
+    <MenuItem to="/myreferals">My Referals</MenuItem>
     <MenuItem onClick={onLogout}>Sign out</MenuItem>
   </div>
 );

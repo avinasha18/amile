@@ -11,13 +11,13 @@ const JobCard = ({ job, onApply }) => {
   const navigate = useNavigate();
   const [isLoading,setIsLoading] = useState(true)
   const [isApplied, setIsApplied] = useState(false);
-  const currentUser = JSON.parse(Cookies.get('user') || '{}');
+  const currentUser = Cookies.get('userId') 
   const location = useLocation()
   useEffect(() => {
     // Check if the user has already applied for this job
     const checkApplication = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/applications/student/${currentUser.id}`);
+        const response = await axios.get(`http://localhost:3000/applications/student/${currentUser}`);
         const appliedJobs = response.data.map(app => app._id);
         setIsApplied(appliedJobs.includes(job._id));
       } catch (error) {
@@ -26,7 +26,7 @@ const JobCard = ({ job, onApply }) => {
     };
 
     checkApplication();
-  }, [job._id, currentUser.id]);
+  }, [job._id, currentUser]);
 
   const handleViewDetails = () => {
     // if(location.pathname === '/government'){
@@ -43,7 +43,7 @@ const JobCard = ({ job, onApply }) => {
     try {
       const response = await axios.post('http://localhost:3000/applications', {
         internshipId: job._id,
-        studentId: currentUser.id,
+        studentId: currentUser,
         companyId: job.companyId
       });
 

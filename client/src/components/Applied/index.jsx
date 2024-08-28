@@ -15,10 +15,10 @@ const AppliedInternships = () => {
   const { isDarkMode } = useTheme(); // Hook to get the current theme mode
 
   useEffect(() => {
-    const userCookie = Cookies.get('user');
+    const userCookie = Cookies.get('userId');
     if (userCookie) {
-      const user = JSON.parse(userCookie);
-      setCurrentUser(user.id);
+     
+      setCurrentUser(userCookie);
     } else {
       navigate('/login');
       return;
@@ -40,7 +40,7 @@ const AppliedInternships = () => {
   }, [currentUser, navigate]);
 
   return (
-    <div className={`p-6 h-full ${isDarkMode ? 'bg-black text-white' : 'bg-gray-100 text-gray-900'}`}>
+    <div className={`p-6 h-full w-full overflow-y-auto ${isDarkMode ? 'bg-black text-white' : 'bg-gray-100 text-gray-900'}`}>
       <header className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold">Applied Internships</h1>
       </header>

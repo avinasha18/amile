@@ -14,7 +14,7 @@ const Dashboard = () => {
   const { isDarkMode } = useTheme(); // Hook to get the current theme mode
 
   return (
-    <div className={`right-content w-full ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'} p-6`}>
+    <div className={`right-content overflow-y-auto w-full ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'} p-6`}>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <DashboardBox color={["#1da256", "#48d483"]} icon={<FaUserCircle />} grow={true} />
         <DashboardBox color={["#c012e2", "#eb64fe"]} icon={<FaUserCircle />} />

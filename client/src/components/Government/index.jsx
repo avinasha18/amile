@@ -18,9 +18,8 @@ const GovernmentJobsPage = () => {
       setLoading(true); // Set loading to true before fetching
 
       // Retrieve user data from cookies
-      const userCookie = Cookies.get('user');
-      const user = userCookie ? JSON.parse(userCookie) : null;
-      const userId = user ? user.id : null;
+      const userCookie = Cookies.get('userId');
+      const userId = userCookie
 
       if (!userId) {
         console.error("User not logged in or user ID not available.");
@@ -57,7 +56,7 @@ const GovernmentJobsPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen  flex items-center justify-center">
         <Oval
           height={80}
           width={80}
@@ -70,7 +69,7 @@ const GovernmentJobsPage = () => {
   }
 
   return (
-    <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900 text-gray-300' : 'bg-gray-100 text-gray-900'}`}>
+    <div className={`min-h-screen w-full overflow-y-auto ${isDarkMode ? 'bg-gray-900 text-gray-300' : 'bg-gray-100 text-gray-900'}`}>
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-6">Government Job Postings</h1>
         <input
