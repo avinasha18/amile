@@ -30,11 +30,11 @@ const courses = [
     },
 ];
 
-const Courses = () => {
+const MentorCourses = () => {
     return (
         <div className="p-6 grid grid-cols-1 gap-y-10 md:grid-cols-2 lg:grid-cols-3 bg-black w-full overflow-y-auto py-10">
             {courses.map((course) => (
-                <Link key={course.id} to={`/courses/${course.id}`} className="backdrop-blur-lg bg-opacity-20 rounded-lg shadow hover:shadow-lg transition-shadow">
+                <Link key={course.id} to={`/mentor/courses/${course.id}`} className="backdrop-blur-lg bg-opacity-20 rounded-lg shadow hover:shadow-lg transition-shadow">
                     <div className=' h-full relative'>
                         <img src={course.courseImage} alt={course.title} className='w-5/6 h-1/2 mb-5 rounded-lg' />
                         <div className='px-4'>
@@ -53,4 +53,4 @@ const Courses = () => {
     );
 };
 
-export default Courses;
+export default MentorCourses;

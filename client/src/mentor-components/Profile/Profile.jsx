@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
+import { FaPlus } from 'react-icons/fa';
 import { FaSquareGithub } from "react-icons/fa6";
 import { FaInstagram } from 'react-icons/fa';
 import { FaLinkedin } from 'react-icons/fa';
 import { FaPaperclip } from "react-icons/fa";
 
-const Profile = () => {
+const MentorProfile = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [activeTab, setActiveTab] = useState('Qualifications');
     const [isAdding, setIsAdding] = useState(false);
@@ -466,4 +467,4 @@ const Experience = () => {
 }
 
 
-export default Profile
+export default MentorProfile

@@ -5,7 +5,7 @@ import './index.css';
 import Badge from '@mui/material/Badge';
 import MailIcon from '@mui/icons-material/Mail';
 
-const Navbar = () => {
+const MentorNavbar = () => {
   const [isMenuOpen, setMenu] = useState(false);
   const menuRef = useRef(null);
 
@@ -79,4 +79,4 @@ const MenuItem = ({ children }) => (
   </a>
 );
 
-export default Navbar;
+export default MentorNavbar;

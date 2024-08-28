@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Home = () => {
+const MentorHome = () => {
     const techNews = [
         {
             title: "AI Revolutionizes Tech Industry",
@@ -38,4 +38,4 @@ const Home = () => {
     );
 };
 
-export default Home;
+export default MentorHome;

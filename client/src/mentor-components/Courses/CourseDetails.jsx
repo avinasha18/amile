@@ -55,7 +55,7 @@ const courseData = {
     // Add more course data as needed
 };
 
-const CourseDetails = () => {
+const MentorCourseDetails = () => {
     const { id } = useParams();
     const course = courseData[id];
     const [openModule, setOpenModule] = useState(null);
@@ -129,4 +129,4 @@ const CourseDetails = () => {
     );
 };
 
-export default CourseDetails;
+export default MentorCourseDetails;

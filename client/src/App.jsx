@@ -13,6 +13,7 @@ import { VerifyAccount } from "./components/verifyAccount";
 import ReportIncident from "./components/reportIncident";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import MentorRouteManagement from "./mentor-components/MentorRouteManagement";
 function App() {
   const islogin = useSelector((state) => state.auth.token);
   setAuthToken(islogin);
@@ -33,6 +34,8 @@ function App() {
           element={!islogin ? <Login /> : <PageNotFound />}
         />
         <Route path="/*" element={<RouteManagement islogin={islogin} />} />
+
+        <Route path="/mentor/*" element={<MentorRouteManagement />}/>
       </Routes>
       <ToastContainer
           position="bottom-center"
