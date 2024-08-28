@@ -11,7 +11,8 @@ import { ResetPassword } from "./components/resetPassword";
 import { ResendVerification } from "./components/resendVerification";
 import { VerifyAccount } from "./components/verifyAccount";
 import ReportIncident from "./components/reportIncident";
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 function App() {
   const islogin = useSelector((state) => state.auth.token);
   setAuthToken(islogin);
@@ -33,6 +34,17 @@ function App() {
         />
         <Route path="/*" element={<RouteManagement islogin={islogin} />} />
       </Routes>
+      <ToastContainer
+          position="bottom-center"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
     </ThemeProvider>
   );
 }
