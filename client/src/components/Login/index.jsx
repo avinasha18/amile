@@ -202,7 +202,7 @@ const Login = () => {
                 </div>
                 <div className="text-sm">
                   <a
-                    href="javascript:void(0);"
+                    href="/forgotpassword"
                     className="text-blue-600 hover:underline font-semibold"
                   >
                     Forgot your password?
@@ -221,7 +221,7 @@ const Login = () => {
               <p className="text-gray-800 text-sm !mt-8 text-center">
                 Don't have an account?{" "}
                 <a
-                  href="javascript:void(0);"
+                  href="/signup"
                   className="text-blue-600 hover:underline ml-1 whitespace-nowrap font-semibold"
                 >
                   Register here
