@@ -7,17 +7,17 @@ import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
 import { Oval } from 'react-loader-spinner';
 
-const GovtJobCard = ({ job, onApply }) => {
+const GovtJobCard = ({ job }) => {
   const { isDarkMode } = useTheme();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [isApplied, setIsApplied] = useState(false);
-  const currentUser = JSON.parse(Cookies.get('user') || '{}');
+  const currentUser = Cookies.get('userId') 
 
   useEffect(() => {
     const checkApplication = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/government/applications/${currentUser.id}`);
+        const response = await axios.get(`http://localhost:3000/government/applications/${currentUser}`);
         const appliedJobs = response.data.map(app => app._id);
         setIsApplied(appliedJobs.includes(job._id));
       } catch (error) {
@@ -28,7 +28,7 @@ const GovtJobCard = ({ job, onApply }) => {
     };
 
     checkApplication();
-  }, [job._id, currentUser.id]);
+  }, [job._id, currentUser]);
 
   const handleViewDetails = () => {
     navigate(`/governmentDetailed/${job._id}`);
@@ -38,7 +38,7 @@ const GovtJobCard = ({ job, onApply }) => {
     try {
       const response = await axios.post('http://localhost:3000/government/apply', {
         internshipId: job._id,
-        studentId: currentUser.id,
+        studentId: currentUser,
         companyId: job.companyId
       });
 

@@ -80,8 +80,9 @@ export const getJobPostingById = async (req, res) => {
     try {
       const jobId = req.params.id;
       console.log(req.params)
+
       // Find the job posting by jobId
-      const job = await Government.findOne({ jobId });
+      const job = await Government.findOne({ _id : jobId });
   
       if (!job) {
         return res.status(404).json({

@@ -19,7 +19,7 @@ export const Actions = {
         return await axios.post(api+`/verifyaccount?token=${data.accountid}`)
     },
     FetchMyReferals: async (data) => {
-        return await axios.get(api + `/myreferals?page=${data.page || 1}`); 
+        return await axios.get(api + `/myreferals?page=${data.page || 1}`);
     },
     ConnectPlugin : async (data) => {
         return await axios.post(api + "/connectplugin",{...data})
@@ -43,6 +43,5 @@ export const Actions = {
         return await axios.post(api+"/reportincident",{...data});
 
     },
-
 
 }

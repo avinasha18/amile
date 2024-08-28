@@ -5,14 +5,13 @@ import { useTheme } from '../../context/ThemeContext'; // Import the theme conte
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
-import { useSelector } from 'react-redux';
 
 const JobDetailPage = () => {
   const { isDarkMode } = useTheme(); // Get the theme context
   const navigate = useNavigate();
   const location = useLocation();
-  const { job } = location.state || {}; 
-  const currentUser = useSelector((state)=>state.auth.user)
+  const { job } = location.state || {}; // Destructure the job data from the location state
+  const currentUser = Cookies.get('userId') 
 
   // Fallback in case job is not provided
   if (!job) {
@@ -27,7 +26,7 @@ const JobDetailPage = () => {
     try {
       const response = await axios.post('http://localhost:3000/applications', {
         internshipId: job._id,
-        studentId: currentUser.id,
+        studentId: currentUser,
         companyId: job.companyId
       });
 
@@ -50,7 +49,7 @@ const JobDetailPage = () => {
   };
 
   return (
-    <div className={`min-h-screen overflow-y-auto ${isDarkMode ? 'bg-gray-900 text-gray-300' : 'bg-gray-100 text-gray-900'}`}>
+    <div className={`min-h-screen w-full  overflow-y-auto ${isDarkMode ? 'bg-gray-900 text-gray-300' : 'bg-gray-100 text-gray-900'}`}>
       <div className="container mx-auto px-4 py-8">
         {/* Back button */}
         <button

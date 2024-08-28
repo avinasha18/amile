@@ -13,6 +13,7 @@ import { Actions } from "../../hooks/actions";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserData } from "../../services/redux/AuthSlice";
 import { Avatar, Box, Link, Skeleton } from "@mui/material";
+
 const ProfilePage = () => {
   const { isDarkMode } = useTheme();
   const [activeTab, setActiveTab] = useState("Projects");
@@ -34,72 +35,6 @@ const ProfilePage = () => {
     "POR",
   ];
   const [user, setUser] = useState({});
-  //   {
-  //   name: "Tejassri Avinasha Ryali",
-  //   title: "Backend Developer • Frontend Developer • Fullstack Developer",
-  //   college:
-  //     "Sagi Rama Krishnam Raju Engineering College, Chinn... 2026 Pass out",
-  //   tagline: "Full stack developer",
-  //   skills: [
-  //     "HTML",
-  //     "CSS",
-  //     "Node.js",
-  //     "React.js",
-  //     "Express.js",
-  //     "Next.js",
-  //     "SQL",
-  //     "JavaScript",
-  //     "MongoDB",
-  //     "Python",
-  //   ],
-  //     linkedin: "https://linkedin.com/in/johndoe",
-  //     github: "https://github.com/johndoe",
-  //     website: "https://johndoe.com",
-  //   education: [
-  //     {
-  //       degree: "Bachelor of Science in Computer Science",
-  //       school: "Tech University",
-  //       year: "2022 - 2026",
-  //     },
-  //   ],
-  //   projects: [
-  //     {
-  //       name: "Project X",
-  //       description: [
-  //         "Developed a web application using React and Node.js.",
-  //         "Implemented user authentication using JWT.",
-  //         "Integrated with third-party APIs for data visualization.",
-  //       ],
-  //       technologies: ["React.js", "Node.js", "Express.js", "MongoDB", "JWT"],
-  //       link: "https://projectx.com",
-  //     },
-  //   ],
-  //   responsibilities: [
-  //     {
-  //       title: "Team Lead",
-  //       organization: "Tech Club",
-  //       duration: "2023 - Present",
-  //     },
-  //   ],
-  //   workExperience: [
-  //     {
-  //       position: "Software Developer Intern",
-  //       company: "Tech Corp",
-  //       duration: "Summer 2023",
-  //     },
-  //   ],
-  //   achievements: [
-  //     "First place in University Hackathon 2023",
-  //     "Dean's List 2022-2023",
-  //   ],
-  //   certifications: [
-  //     {
-  //       name: "AWS Certified Developer",
-  //       issuer: "Amazon Web Services",
-  //       year: "2023",
-  //     },
-  //   ],
-  // }
 
   useEffect(() => {
     getUser();
@@ -510,10 +445,10 @@ const ProfilePage = () => {
                   className="bg-gray-800 text-white px-4 py-2 rounded w-full mb-2"
                 />
                 <button
-                  onClick={() => setIsAdding(true)}
-                  className="bg-blue-600 text-white px-4 py-2 rounded flex justify-center items-center gap-1"
+                  onClick={() => handleAddItem("achievements")}
+                  className="bg-blue-600 text-white px-4 py-2 rounded"
                 >
-                  <FaPlus /> <span>Add Achievement</span>
+                  Add Achievement
                 </button>
               </div>
             ) : (
@@ -533,24 +468,19 @@ const ProfilePage = () => {
               <div key={index} className="mb-4">
                 <h3 className="text-lg font-semibold">{certification.title}</h3>
                 <p>
-                  {certification?.description}  
+                  {certification?.description}
                 </p>
                 <p>
                   {certification.issuer}, {certification.year}
                 </p>
                 <div className="flex">
-
-                <a href={certification?.link} className="badge"> Certificate link</a>
-
-              
-                <button
-                  onClick={() => handleRemoveItem("certifications", index)}
-                  className="text-red-500"
-                >
-                  Delete
-                </button>
-                 
-
+                  <a href={certification?.link} className="badge"> Certificate link</a>
+                  <button
+                    onClick={() => handleRemoveItem("certifications", index)}
+                    className="text-red-500"
+                  >
+                    Delete
+                  </button>
                 </div>
               </div>
             ))}
@@ -561,7 +491,7 @@ const ProfilePage = () => {
                   placeholder="Certification Name"
                   value={newItem.title || ""}
                   onChange={(e) =>
-                    setNewItem({ ...newItem, name: e.target.value })
+                    setNewItem({ ...newItem, title: e.target.value })
                   }
                   className="bg-gray-800 text-white px-4 py-2 rounded w-full mb-2"
                 />
@@ -583,11 +513,20 @@ const ProfilePage = () => {
                   }
                   className="bg-gray-800 text-white px-4 py-2 rounded w-full mb-2"
                 />
+                <input
+                  type="text"
+                  placeholder="Link"
+                  value={newItem.link || ""}
+                  onChange={(e) =>
+                    setNewItem({ ...newItem, link: e.target.value })
+                  }
+                  className="bg-gray-800 text-white px-4 py-2 rounded w-full mb-2"
+                />
                 <button
-                  onClick={() => setIsAdding(true)}
-                  className="bg-blue-600 text-white px-4 py-2 rounded flex justify-center items-center gap-1"
+                  onClick={() => handleAddItem("certifications")}
+                  className="bg-blue-600 text-white px-4 py-2 rounded"
                 >
-                  <FaPlus /> <span>Add Certifications</span>
+                  Add Certification
                 </button>
               </div>
             ) : (
@@ -595,7 +534,7 @@ const ProfilePage = () => {
                 onClick={() => setIsAdding(true)}
                 className="bg-blue-600 text-white px-4 py-2 rounded flex justify-center items-center gap-1"
               >
-                <FaPlus /> <span>Add Certifications</span>
+                <FaPlus /> <span>Add Certification</span>
               </button>
             )}
           </div>

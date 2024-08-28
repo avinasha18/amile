@@ -18,7 +18,4 @@ router.post('/connectplugin',CheckAuthorization,connectPlugin);
 router.post('/updateuser',CheckAuthorization,updateStudent);
 router.post('/disconnectplugin', disconnectPlugin);
 
-
-
-
 export default router;

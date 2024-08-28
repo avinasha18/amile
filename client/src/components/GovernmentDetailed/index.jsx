@@ -14,7 +14,7 @@ const GovernmentDetailedPage = () => {
   const { isDarkMode } = useTheme();
   const navigate = useNavigate();
   const [isApplied, setIsApplied] = useState(false);
-  const currentUser = JSON.parse(Cookies.get('user') || '{}');
+  const currentUser =Cookies.get('userId') 
 
   useEffect(() => {
     const fetchJob = async () => {
@@ -45,13 +45,13 @@ const GovernmentDetailedPage = () => {
     if (job) {
       checkApplication();
     }
-  }, [job, currentUser.id]);
+  }, [job, currentUser]);
 
   const handleApply = async () => {
     try {
       const response = await axios.post('http://localhost:3000/government/apply', {
         internshipId: job._id,
-        studentId: currentUser.id,
+        studentId: currentUser,
         companyId: job.companyId
       });
 
@@ -97,7 +97,7 @@ const GovernmentDetailedPage = () => {
   }
 
   return (
-    <div className={`min-h-screen overflow-y-auto ${isDarkMode ? 'bg-gray-900 text-gray-300' : 'bg-gray-100 text-gray-900'}`}>
+    <div className={`min-h-screen w-full overflow-y-auto ${isDarkMode ? 'bg-gray-900 text-gray-300' : 'bg-gray-100 text-gray-900'}`}>
       <div className="container mx-auto px-4 py-8">
         <button
           onClick={() => navigate('/government')}

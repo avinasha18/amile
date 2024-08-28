@@ -15,6 +15,7 @@ import {
   Paper,
   Grid,
   Pagination,
+  IconButton
 } from "@mui/material";
 import { useTheme } from "../../context/ThemeContext";
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
@@ -22,7 +23,6 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import EmailIcon from '@mui/icons-material/Email';
 import ShareIcon from '@mui/icons-material/Share';
-import { IconButton } from "@material-ui/core";
 import { useSelector } from "react-redux";
 
 const MyReferals = () => {

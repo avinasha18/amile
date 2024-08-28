@@ -148,8 +148,6 @@ export const VerifyUserAccountwithToken = async (req, res) => {
   }
 };
 
-
-
 export const forgotPassword = async (req, res) => {
   const { username, accountType } = req.body;
 
@@ -184,7 +182,6 @@ export const forgotPassword = async (req, res) => {
   }
 };
 
-
 export const resetPassword = async (req, res) => {
   const { email, password, token } = req.body;
 
@@ -200,7 +197,7 @@ export const resetPassword = async (req, res) => {
     const timeDifference = (currentTime - tokenCreationTime) / (1000 * 60);
 
     if (timeDifference > 15) {
-      await removeUserVerificationToken(tokenData.username); 
+      await removeUserVerificationToken(tokenData.username);
       return res.json({ success: false, message: "Token has expired" });
     }
 
@@ -209,7 +206,7 @@ export const resetPassword = async (req, res) => {
     const status = await Student.findOneAndUpdate(
       { username: tokenData.username, email: email },
       { $set: { password: hashedPassword } },
-      { new: true } 
+      { new: true }
     );
 
     if (!status) {
@@ -224,7 +221,6 @@ export const resetPassword = async (req, res) => {
     return res.status(500).json({ success: false, message: "An error occurred during the password reset process" });
   }
 };
-
 
 export const loginUser = async (req, res) => {
   const { username, password, userType } = req.body;
@@ -248,7 +244,10 @@ export const loginUser = async (req, res) => {
       const token = jwt.sign({ username, userType }, JWT_SECRET, {
         expiresIn: "7d",
       });
-      res.json({ success: true, token, user: user.username });
+      console.log(user)
+      // res.json({ success: true, token, user: user.username });
+      res.json({ success: true, token, user: user,userId : user._id });
+
     } else {
       return res.json({ success: false, message: "Invalid password" });
     }
@@ -256,6 +255,7 @@ export const loginUser = async (req, res) => {
     res.status(500).send("Server error", e);
   }
 };
+
 export const reportIncident = async (req, res) => {
   const { token } = req.body;
 
@@ -276,12 +276,9 @@ export const reportIncident = async (req, res) => {
   }
 };
 
-
-
 export const getUser = async (req, res) => {
   try {
     const { username } = req.body;
-
     if (!username) {
       return res.json({ success: false, message: "Username is required" });
     }
@@ -301,6 +298,7 @@ export const getUser = async (req, res) => {
 
 export const updateStudent = async (req, res) => {
   const { username, ...otherDetails } = req.body;
+  console.log('in update api')
   console.log(req.body);
   try {
     const existingUser = await findUserByUsername(username, Student);
