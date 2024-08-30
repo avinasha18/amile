@@ -13,7 +13,7 @@ const MentorRouteManagement = () => {
     <MentorNavbar  />
     <div className={`h-screen flex flex-1 overflow-hidden no-scrollbar`}>
       <MentorSidebar  />
-      <div className="flex-1 bg-gray-100 p-4 ml-64 mt-16 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto">
         <Routes>
           <Route path="/" element={<MentorHome />} />
           <Route path="/profile" element={<MentorProfile />} />

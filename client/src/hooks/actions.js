@@ -6,8 +6,8 @@ export const Actions = {
         return await axios.post(`${api}/login`, { ...data });
     },
     Register: async (data) => {
-        const endpoint = data.accountType === "Student" 
-            ? `/register/student?refrelid=${data.refrelid}` 
+        const endpoint = data.accountType === "Student"
+            ? `/register/student?refrelid=${data.refrelid}`
             : `/register/mentor?refrelid=${data.refrelid}`;
         return await axios.post(`${api}${endpoint}`, { ...data });
     },
@@ -44,4 +44,13 @@ export const Actions = {
     reportIncident: async (data) => {
         return await axios.post(`${api}/reportincident`, { ...data });
     },
+};
+
+export const getApplicationStatistics = async (userId) => {
+    try {
+        const response = await axios.get(`${api}/statistics/${userId}`);
+        return response.data;
+    } catch (error) {
+        throw new Error('Failed to fetch application statistics');
+    }
 };

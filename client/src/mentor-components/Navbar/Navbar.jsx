@@ -7,9 +7,17 @@ import { logout } from "../../services/redux/AuthSlice";
 import Badge from '@mui/material/Badge';
 import MailIcon from '@mui/icons-material/Mail';
 import { setAuthToken } from "../../hooks/golbalAuth";
+import { MdOutlineLightMode } from 'react-icons/md';
+import { FaRegBell } from 'react-icons/fa';
+import { AiOutlineMessage } from 'react-icons/ai';
+import { Avatar, Menu, MenuItem as MuiMenuItem, ListItemIcon } from '@mui/material';
+import PersonAdd from '@mui/icons-material/PersonAdd';
+import Logout from '@mui/icons-material/Logout';
 
 const MentorNavbar = () => {
   const [isMenuOpen, setMenu] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [open, setOpen] = useState(false);
   const menuRef = useRef(null);
   
   const dispatch = useDispatch();
@@ -19,6 +27,16 @@ const MentorNavbar = () => {
     await dispatch(logout());
     setAuthToken(); // This clears the token from the axios headers
     navigate("/login");
+  };
+
+  const handleOpenMyAccDrop = (event) => {
+    setAnchorEl(event.currentTarget);
+    setOpen(true);
+  };
+
+  const handleCloseMyAccDrop = () => {
+    setAnchorEl(null);
+    setOpen(false);
   };
   
   // Close the menu when clicking outside of it
@@ -63,58 +81,6 @@ const MentorNavbar = () => {
           </button>
           {isMenuOpen && <UserMenu onLogout={handleLogout}/>}
         </div>
-      </div>
-
-      {/* Action Buttons and Account Menu */}
-      <div className="flex items-center">
-        <button className="p-2 rounded-full bg-gray-200 hover:bg-gray-300 mr-2">
-          <MdOutlineLightMode className="text-gray-800 text-lg" />
-        </button>
-        <button className="p-2 rounded-full bg-gray-200 hover:bg-gray-300 mr-2">
-          <FaRegBell className="text-gray-800 text-lg" />
-        </button>
-        <button className="p-2 rounded-full bg-gray-200 hover:bg-gray-300 mr-2">
-          <AiOutlineMessage className="text-gray-800 text-lg" />
-        </button>
-        
-        {/* Account Dropdown */}
-        <div className="flex items-center cursor-pointer" onClick={handleOpenMyAccDrop}>
-          <Avatar alt="User" src="https://yt3.ggpht.com/yti/ANjgQV8o4R3r61DocNKC7tWs43p6uEM953AY3eSo1DLhX3M=s88-c-k-c0x00ffffff-no-rj-mo" />
-          <div className="ml-2">
-            <h4 className="text-sm font-semibold text-gray-800">yogini</h4>
-            <p className="text-xs text-gray-600">@yogini</p>
-          </div>
-        </div>
-
-        {/* Account Menu */}
-        <Menu
-          anchorEl={anchorEl}
-          id="account-menu"
-          open={open}
-          onClose={handleCloseMyAccDrop}
-          onClick={handleCloseMyAccDrop}
-          transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-        >
-          <MenuItem onClick={handleCloseMyAccDrop}>
-            <ListItemIcon>
-              <PersonAdd fontSize="small" />
-            </ListItemIcon>
-            My account
-          </MenuItem>
-          <MenuItem onClick={handleCloseMyAccDrop}>
-            <ListItemIcon>
-              <IoShieldHalfSharp />
-            </ListItemIcon>
-            Reset Password
-          </MenuItem>
-          <MenuItem onClick={handleCloseMyAccDrop}>
-            <ListItemIcon>
-              <Logout fontSize="small" />
-            </ListItemIcon>
-            Logout
-          </MenuItem>
-        </Menu>
       </div>
     </header>
   );
