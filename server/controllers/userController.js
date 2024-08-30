@@ -5,7 +5,6 @@ import {
   findUserByUsername,
   Student,
   Mentor,
-  Company,
   updateUser,
   addUserVerificationToken,
   findByToken,

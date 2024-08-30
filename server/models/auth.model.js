@@ -33,17 +33,7 @@ const mentorSchema = new mongoose.Schema({
   portfolio: String,
 });
 
-// Define the schema for a company
-const companySchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  companyName: { type: String, required: true },
-  crn: { type: String, required: true },
-  linkedin: String,
-  website: String,
-  address: String,
-  contactNumber: String,
-});
+
 
 // Define the schema for a Account Verifying
 
@@ -57,7 +47,6 @@ const accountSchema = new mongoose.Schema({
 // Create models for each schema
 export const Student = mongoose.model("Student", studentSchema);
 export const Mentor = mongoose.model("Mentor", mentorSchema);
-export const Company = mongoose.model("Company", companySchema);
 
 export const AccountVerification = mongoose.model(
   "AccountVerification",
@@ -176,34 +165,7 @@ export const createMentor = async (mentorData) => {
   await newMentor.save();
 };
 
-// Function to create a new company
-export const createCompany = async (companyData) => {
-  const {
-    username,
-    password,
-    companyName,
-    crn,
-    linkedin,
-    website,
-    address,
-    contactNumber,
-  } = companyData;
 
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  const newCompany = new Company({
-    username,
-    companyName,
-    password: hashedPassword,
-    crn,
-    linkedin,
-    website,
-    address,
-    contactNumber,
-  });
-
-  await newCompany.save();
-};
 
 // Function to find a user by username in a specific collection
 export const findUserByUsername = async (username, model) => {
