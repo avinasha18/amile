@@ -54,19 +54,7 @@ const GovernmentJobsPage = () => {
     setFilteredJobs(filtered);
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen  flex items-center justify-center">
-        <Oval
-          height={80}
-          width={80}
-          color={isDarkMode ? '#ffffff' : '#000000'}
-          secondaryColor={isDarkMode ? '#ffffff' : '#000000'}
-          ariaLabel="loading"
-        />
-      </div>
-    );
-  }
+
 
   return (
     <div className={`min-h-screen w-full overflow-y-auto ${isDarkMode ? 'bg-gray-900 text-gray-300' : 'bg-gray-100 text-gray-900'}`}>

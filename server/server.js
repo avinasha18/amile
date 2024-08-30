@@ -35,7 +35,7 @@ app.use(bodyParser.json());
 
 app.use("/", userRoutes);
 app.use("/", mentorRoutes);
-app.use("/", companyRoutes);
+app.use("/companies", companyRoutes);
 app.use("/", internshipRoutes);
 app.use("/", referalRoutes);
 app.use('/', applicationRoutes);
