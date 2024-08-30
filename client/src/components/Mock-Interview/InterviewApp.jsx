@@ -170,7 +170,7 @@ function InterviewApp() {
   }
 
   return (
-    <div className="min-h-screen w-screen overflow-y-auto n0-scrollbar bg-gradient-to-br from-blue-100 to-indigo-200 flex items-center justify-center py-20 p-2">
+    <div className="min-h-screen w-screen overflow-y-auto no-scrollbar bg-gradient-to-br from-blue-100 to-indigo-200 flex items-center justify-center py-20 p-2">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
