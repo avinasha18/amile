@@ -2,25 +2,85 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken"
 
 import {
-    createMentor, findUserByUsername, Mentor,
+   findUserByUsername, Mentor,
     addUserVerificationToken,
     findTokenByUsername,
     removeUserVerificationToken,
-    Company,
     AccountVerification,
-    updateUserMentor
 
 } from '../models/auth.model.js';
-
+import Company from '../models/company.model.js'
 import { HtmlTemplates } from "../services/htmlTemplates.js";
 import { sendEmail } from "../services/mailServices.js";
 const JWT_SECRET = process.env.JWT_SECRET;
 
 
+export const updateUserMentor = async (userData) => {
+    const {
+      username,
+      name,
+      qualifications,
+      workExperience,
+      certifications,
+      skills,
+      title,
+    } = userData;
+  
+    const updateData = {};
+  
+    if (name) updateData.name = name;
+    if (workExperience) updateData.workExperience = workExperience;
+    if (qualifications) updateData.qualifications = qualifications;
+    if (skills) updateData.skills = skills;
+    if (title) updateData.title = title;
+    if (certifications) updateData.certifications = certifications;
+  
+    const updatedUser = await Mentor.findOneAndUpdate(
+      { username },
+      { $set: updateData },
+      { new: true, runValidators: true }
+    );
+  
+    return updatedUser;
+  }
+  export const createMentor = async (mentorData) => {
+    const {
+      email,
+      username,
+      password,
+      name,
+      qualifications,
+      certifications,
+      workExperience,
+      github,
+      linkedin,
+      portfolio,
+    } = mentorData;
+  
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newMentor = new Mentor({
+      email,
+      username,
+      name,
+      password: hashedPassword,
+      qualifications,
+      certifications,
+      workExperience,
+      github,
+      linkedin,
+      portfolio,
+    });
+  
+    await newMentor.save();
+  };
+  
+  
+  
+  
+  
 export const registerMentor = async (req, res) => {
     const { email, username, ...otherDetails } = req.body;
     const { refrelid } = req.query;
-
     try {
         if (!email) {
             return res.status(400).send('Email is required');
@@ -175,7 +235,6 @@ export const resetPassword = async (req, res) => {
 };
 
 export const loginUser = async (req, res) => {
-    console.log(req.body)
     const { username, password, userType } = req.body;
     try {
         const collection =
@@ -196,7 +255,6 @@ export const loginUser = async (req, res) => {
             const token = jwt.sign({ username, userType }, JWT_SECRET, {
                 expiresIn: "7d",
             });
-            console.log(user)
             // res.json({ success: true, token, user: user.username });
             res.json({ success: true, token, user: user, userId: user._id });
 
@@ -249,8 +307,7 @@ export const getUser = async (req, res) => {
 
 export const updateMentor = async (req, res) => {
     const { username, ...otherDetails } = req.body;
-    console.log('in update api')
-    console.log({ ...otherDetails });
+    // console.log({ ...otherDetails });
     try {
         const existingUser = await findUserByUsername(username, Mentor);
         if (!existingUser) {
@@ -269,4 +326,3 @@ export const updateMentor = async (req, res) => {
         res.status(500).send("Server error");
     }
 };
-

@@ -9,6 +9,8 @@ import {
   FaBook,
   FaCog,
 } from "react-icons/fa";
+import { SiCompilerexplorer } from "react-icons/si";
+
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { Link } from "react-router-dom";
@@ -92,6 +94,7 @@ const Sidebar = () => {
             to="/government"
             isCollapsed={isCollapsed}
           />
+         
           <SidebarItem
             icon={FaBrain}
             label="AI Interviewer"
@@ -99,6 +102,13 @@ const Sidebar = () => {
             to="/aimock"
             isCollapsed={isCollapsed}
             gradient
+          />
+           <SidebarItem
+            icon={SiCompilerexplorer}
+            label="Code Playground"
+            isDarkMode={isDarkMode}
+            to="/compiler"
+            isCollapsed={isCollapsed}
           />
         </SidebarSection>
         <SidebarSection title="Courses" isCollapsed={isCollapsed}>
@@ -164,7 +174,7 @@ const SidebarItem = ({
       </Link>
     ) : (
       <a
-        href="#"
+        href={to}
         className={`flex items-center py-2 px-4 gap-3 ${
           isDarkMode
             ? "hover:bg-[#fff] hover:text-[#121010]"

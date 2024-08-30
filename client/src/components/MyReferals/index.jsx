@@ -34,7 +34,7 @@ const MyReferals = () => {
   const [totalReferees, setTotalReferees] = useState(0); // State for total referees
   const { isDarkMode } = useTheme();
   const user = useSelector((state) => state.auth.user);
-
+    console.log(user)
   useEffect(() => {
     fetchReferals(page);
   }, [page]);
@@ -59,7 +59,7 @@ const MyReferals = () => {
   };
 
   const shareMessage = "Your Friend Invited You To Join Amile for Jobs / Internships";
-  const referralLink = `${window.location.origin}/signup?refrelid=${encodeURIComponent(user)}`;
+  const referralLink = `${window.location.origin}/signup?refrelid=${user}`;
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);

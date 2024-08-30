@@ -1,13 +1,10 @@
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import { FaUser, FaEye, FaEyeSlash } from "react-icons/fa"; // Importing React Icons
 import { styled, ThemeProvider, createTheme } from "@mui/material/styles";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess } from "../../services/redux/AuthSlice";
 import Cookies from "js-cookie";
 import { Actions } from "../../hooks/actions";
@@ -51,12 +48,19 @@ const useStyles = styled((theme) => ({
 }));
 
 const Login = () => {
-  const [darkMode, setDarkMode] = useState(false);
+  const isDarkMode = useSelector((state) => state.theme.isDarkMode);
   const theme = createTheme({
     palette: {
-      mode: darkMode ? "dark" : "light",
+      mode: isDarkMode ? "dark" : "light",
       primary: {
-        main: darkMode ? "#bb86fc" : "#6200ee",
+        main: isDarkMode ? "#bb86fc" : "#6200ee",
+      },
+      background: {
+        default: isDarkMode ? "#121212" : "#f5f5f5",
+        paper: isDarkMode ? "#1d1d1d" : "#ffffff",
+      },
+      text: {
+        primary: isDarkMode ? "#ffffff" : "#000000",
       },
     },
   });
@@ -68,7 +72,7 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // State for show/hide password
+  const [showPassword, setShowPassword] = useState(false);
   const nav = useNavigate();
   const dispatch = useDispatch();
   const [params] = useSearchParams();
@@ -140,52 +144,15 @@ const Login = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <div className="bg-gray-50 font-[sans-serif] min-h-screen flex flex-col items-center justify-center py-6 px-4">
+      <div className={`bg-${isDarkMode ? 'gray-900' : 'gray-50'} font-[sans-serif] min-h-screen flex flex-col items-center justify-center py-6 px-4`}>
         <div className="max-w-md w-full">
-
+         
           <div className="p-8 rounded-2xl bg-white shadow">
             <h2 className="text-gray-800 text-center text-2xl font-bold">
               Sign in
             </h2>
             <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
               <div>
-                <RadioGroup
-                  row
-                  aria-labelledby="demo-row-radio-buttons-group-label"
-                  name="row-radio-buttons-group"
-                  className="mb-3"
-                  value={userType} // Bind to userType state
-                  onChange={(e) => setUserType(e.target.value)} // Update userType state on change
-                >
-                  <FormControlLabel
-                    value="student"
-                    control={
-                      <Radio
-                        sx={{
-                          color: 'black', // Unchecked color
-                          '&.Mui-checked': {
-                            color: '#1976d2', // Checked color (blue)
-                          },
-                        }}
-                      />
-                    }
-                    label="Student"
-                  />
-                  <FormControlLabel
-                    value="mentor"
-                    control={
-                      <Radio
-                        sx={{
-                          color: 'black', // Unchecked color
-                          '&.Mui-checked': {
-                            color: '#1976d2', // Checked color (blue)
-                          },
-                        }}
-                      />
-                    }
-                    label="Mentor"
-                  />
-                </RadioGroup>
                 <label className="text-gray-800 text-sm mb-2 block">
                   User name
                 </label>
@@ -194,7 +161,7 @@ const Login = () => {
                     name="username"
                     type="text"
                     required
-                    className="w-full text-gray-800 text-sm border border-gray-300 px-4 py-3 rounded-md outline-blue-600"
+                    className={`w-full text-${isDarkMode ? 'black' : 'gray-800'} text-sm border border-gray-300 px-4 py-3 rounded-md outline-blue-600`}
                     placeholder="Enter user name"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -204,15 +171,15 @@ const Login = () => {
               </div>
 
               <div>
-                <label className="text-gray-800 text-sm mb-2 block">
+                <label className={`text-${isDarkMode ? 'white' : 'gray-800'} text-sm mb-2 block`}>
                   Password
                 </label>
                 <div className="relative flex items-center">
                   <input
                     name="password"
-                    type={showPassword ? "text" : "password"} // Toggle input type based on state
+                    type={showPassword ? "text" : "password"}
                     required
-                    className="w-full text-gray-800 text-sm border border-gray-300 px-4 py-3 rounded-md outline-blue-600"
+                    className={`w-full text-${isDarkMode ? 'black' : 'gray'} text-sm border border-gray-300 px-4 py-3 rounded-md outline-blue-600`}
                     placeholder="Enter password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -239,14 +206,14 @@ const Login = () => {
                   />
                   <label
                     htmlFor="remember-me"
-                    className="ml-3 block text-sm text-gray-800"
+                    className={`ml-3 block text-sm text-${isDarkMode ? 'white' : 'gray-800'}`}
                   >
                     Remember me
                   </label>
                 </div>
                 <div className="text-sm">
                   <a
-                    href="javascript:void(0);"
+                    href="/forgotpassword"
                     className="text-blue-600 hover:underline font-semibold"
                   >
                     Forgot your password?
@@ -262,10 +229,10 @@ const Login = () => {
                   Sign in
                 </button>
               </div>
-              <p className="text-gray-800 text-sm !mt-8 text-center">
+              <p className={`text-${isDarkMode ? 'white' : 'gray-800'} text-sm !mt-8 text-center`}>
                 Don't have an account?{" "}
                 <a
-                  href="javascript:void(0);"
+                  href="/signup"
                   className="text-blue-600 hover:underline ml-1 whitespace-nowrap font-semibold"
                 >
                   Register here

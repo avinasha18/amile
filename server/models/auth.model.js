@@ -8,8 +8,8 @@ const studentSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   status: { type: String, required: true, default: "inactive" },
-  education: [String],
-  workExperience: [String],
+  education: [{ degree:{type:String},school:{type:String},year:{type:String}}],
+  workExperience: [{position:{type:String},company:{type:String},duration:{type:String}}],
   projects: [{ title:{type:String},description:{type:String},link:{type:String}}],
   skills: [String],
   achievements: [String],
@@ -22,56 +22,19 @@ const studentSchema = new mongoose.Schema({
 
 // Define the schema for a mentor
 const mentorSchema = new mongoose.Schema({
+  email: { type: String, required: true, unique: true },
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  status: { type: String, required: true, default: "inactive" },
-  title: String, 
-  qualifications: [
-    {
-      name: { type: String, required: true },
-      institution: { type: String, required: true },
-      year: { type: String, required: true },
-      description: { type: String, required: true },
-      collegeLogo: { type: String, required: true }
-    }
-  ],
-  skills: [String],
-  certifications: [
-    {
-      name: { type: String, required: true },
-      issuedBy: { type: String, required: true },
-      description: { type: String, required: true },
-      organizationLogo: { type: String, required: true }
-    }
-  ],
-  
-  workExperience: [
-    {
-      position: { type: String, required: true },
-      company: { type: String, required: true },
-      duration: { type: String, required: true }
-    }
-  ],
+  qualifications: String,
+  certifications: String,
+  workExperience: String,
   github: String,
   linkedin: String,
   portfolio: String,
-  myPortfolioPlugin: { type: String },
 });
 
 
-// Define the schema for a company
-const companySchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  companyName: { type: String, required: true },
-  crn: { type: String, required: true },
-  linkedin: String,
-  website: String,
-  address: String,
-  contactNumber: String,
-});
 
 // Define the schema for a Account Verifying
 
@@ -85,7 +48,6 @@ const accountSchema = new mongoose.Schema({
 // Create models for each schema
 export const Student = mongoose.model("Student", studentSchema);
 export const Mentor = mongoose.model("Mentor", mentorSchema);
-export const Company = mongoose.model("Company", companySchema);
 
 export const AccountVerification = mongoose.model(
   "AccountVerification",
@@ -171,94 +133,7 @@ export const updateUser = async (userData) => {
 
   return updatedUser;
 };
-export const updateUserMentor = async (userData) => {
-  const {
-    username,
-    name,
-    qualifications,
-    workExperience,
-    certifications,
-    skills,
-    title,
-  } = userData;
 
-  const updateData = {};
-
-  if (name) updateData.name = name;
-  if (workExperience) updateData.workExperience = workExperience;
-  if (qualifications) updateData.qualifications = qualifications;
-  if (skills) updateData.skills = skills;
-  if (title) updateData.title = title;
-  if (certifications) updateData.certifications = certifications;
-
-  const updatedUser = await Mentor.findOneAndUpdate(
-    { username },
-    { $set: updateData },
-    { new: true, runValidators: true }
-  );
-
-  return updatedUser;
-}
-export const createMentor = async (mentorData) => {
-  const {
-    email,
-    username,
-    password,
-    name,
-    qualifications,
-    certifications,
-    workExperience,
-    github,
-    linkedin,
-    portfolio,
-  } = mentorData;
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  const newMentor = new Mentor({
-    email,
-    username,
-    name,
-    password: hashedPassword,
-    qualifications,
-    certifications,
-    workExperience,
-    github,
-    linkedin,
-    portfolio,
-  });
-
-  await newMentor.save();
-};
-
-// Function to create a new company
-export const createCompany = async (companyData) => {
-  const {
-    username,
-    password,
-    companyName,
-    crn,
-    linkedin,
-    website,
-    address,
-    contactNumber,
-  } = companyData;
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  const newCompany = new Company({
-    username,
-    companyName,
-    password: hashedPassword,
-    crn,
-    linkedin,
-    website,
-    address,
-    contactNumber,
-  });
-
-  await newCompany.save();
-};
 
 
 // Function to find a user by username in a specific collection

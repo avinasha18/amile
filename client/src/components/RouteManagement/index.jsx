@@ -16,6 +16,7 @@ import Feedback from "../Mock-Interview/Feedback"
 import PageNotFound from "../noinfopage";
 import Dashboard from "../Dashboard";
 import CompanyChatStart from "../CompanyStartChart";
+import Compiler from "../Compiler/components/Compiler";
 
 export const RouteManagement = ({ islogin }) => {
   const location = useLocation(window.location);
@@ -116,6 +117,8 @@ export const RouteManagement = ({ islogin }) => {
             }
           />
           <Route path="/companyChat" element={< CompanyChatStart />} />
+          <Route path="/compiler" element={< Compiler />} />
+
         </Routes>
       </div>
     </div>

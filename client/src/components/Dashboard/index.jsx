@@ -97,9 +97,9 @@ const Dashboard = () => {
   };
 
   return (
-    <div className={`right-content overflow-y-auto w-full ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'} p-6`}>
+    <div className={`right-content overflow-y-auto no-scrollbar w-full ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'} p-6`}>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <DashboardBox color={["#1da256", "#48d483"]} icon={<FaUserCircle />} title={'Total Applications'} grow={true} percentage={Math.round((statistics.acceptedApplications / statistics.totalApplications) * 100)} />
+        <DashboardBox color={["#1da256", "#48d483"]} icon={<FaUserCircle />} title={'Total Applications'} value={statistics.totalApplications} grow={true} percentage={Math.round((statistics.acceptedApplications / statistics.totalApplications) * 100)} />
         <DashboardBox color={["#c012e2", "#eb64fe"]} icon={<FaUserCircle />} title={'Pending'} value={statistics.pendingApplications} percentage={Math.round((statistics.rejectedApplications / statistics.totalApplications) * 100)} />
         <DashboardBox color={["#2c78e5", "#60aff5"]} icon={<FaUserCircle />} title={'Accepted'}  value={statistics.acceptedApplications} percentage={Math.round((statistics.pendingApplications / statistics.totalApplications) * 100)} />
         <DashboardBox color={["#e1950e", "#f3cd29"]} icon={<FaUserCircle />} title={'Rejected'}  value={statistics.rejectedApplications} percentage={Math.round((statistics.totalApplications / statistics.totalApplications) * 100)} />

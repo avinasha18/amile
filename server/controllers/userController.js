@@ -5,7 +5,6 @@ import {
   findUserByUsername,
   Student,
   Mentor,
-  Company,
   updateUser,
   addUserVerificationToken,
   findByToken,
@@ -244,9 +243,9 @@ export const loginUser = async (req, res) => {
       const token = jwt.sign({ username, userType }, JWT_SECRET, {
         expiresIn: "7d",
       });
-      console.log(user)
+      // console.log(user)
       // res.json({ success: true, token, user: user.username });
-      res.json({ success: true, token, user: user,userId : user._id });
+      res.json({ success: true, token, user : user,userId : user._id });
 
     } else {
       return res.json({ success: false, message: "Invalid password" });
@@ -298,8 +297,7 @@ export const getUser = async (req, res) => {
 
 export const updateStudent = async (req, res) => {
   const { username, ...otherDetails } = req.body;
-  console.log('in update api')
-  console.log(req.body);
+ 
   try {
     const existingUser = await findUserByUsername(username, Student);
     if (!existingUser) {

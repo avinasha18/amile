@@ -1,6 +1,9 @@
 import { Government, GovernmentApplication } from "../models/government.model.js";
 import { Application, Internship } from "../models/intern.model.js";
 import { ObjectId } from 'mongodb';
+import { sendEmail } from "../services/mailServices.js";
+import { Student } from "../models/auth.model.js";
+import { HtmlTemplates } from "../services/htmlTemplates.js";
 
 export const createApplicationController = async (req, res) => {
   const { internshipId, studentId, companyId } = req.body;
@@ -21,9 +24,18 @@ export const createApplicationController = async (req, res) => {
       companyId: new ObjectId(companyId),
     });
 
+    const {name, email} = await  Student.findById(studentId,"name email");
+    const {companyName, role} = await Internship.findById(internshipId);
+    const subject = "Application submitted successfully";
     await newApplication.save();
+    await  sendEmail(email,subject, HtmlTemplates.appliedInternship(name,role,companyName))
+
+
+
+
     res.status(201).json({ message: "Application submitted successfully" });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: `Error: ${error.message}` });
   }
 };
