@@ -1,24 +1,61 @@
 import React, { useState, useEffect } from "react";
-import { FaMoneyBillAlt, FaCalendarAlt, FaHandPointRight, FaUser } from 'react-icons/fa';
-import { useNavigate ,useLocation} from 'react-router-dom';
+import { FaMoneyBillAlt, FaCalendarAlt, FaUser } from 'react-icons/fa';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
-import {Oval} from 'react-loader-spinner'
+
+const SkeletonCard = () => {
+  const { isDarkMode } = useTheme();
+  
+  return (
+    <div className={`${isDarkMode ? 'bg-[#0f1011]' : 'bg-white'} rounded-lg shadow-md overflow-hidden animate-pulse`}>
+      <div className="p-6">
+        <div className="flex justify-between items-start mb-4">
+          <div className="flex items-center">
+            <div className="w-12 h-12 rounded-full bg-gray-300 mr-4"></div>
+            <div>
+              <div className="h-4 bg-gray-300 rounded w-32 mb-2"></div>
+              <div className="h-3 bg-gray-300 rounded w-20"></div>
+            </div>
+          </div>
+          <div className="h-6 bg-gray-300 rounded-full w-16"></div>
+        </div>
+        <div className="flex flex-wrap gap-2 mb-4">
+          <div className="h-4 bg-gray-300 rounded-full w-16"></div>
+          <div className="h-4 bg-gray-300 rounded-full w-12"></div>
+          <div className="h-4 bg-gray-300 rounded-full w-20"></div>
+        </div>
+        <div className="grid grid-cols-2 gap-4 mb-4 text-sm text-gray-500">
+          <div className="h-4 bg-gray-300 rounded w-full"></div>
+          <div className="h-4 bg-gray-300 rounded w-full"></div>
+          <div className="h-4 bg-gray-300 rounded w-full"></div>
+          <div className="h-4 bg-gray-300 rounded w-full"></div>
+        </div>
+        <div className="flex justify-between items-center">
+          <div className="h-10 bg-gray-300 rounded w-24"></div>
+          <div className="h-10 bg-gray-300 rounded w-24"></div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const JobCard = ({ job, onApply }) => {
   const { isDarkMode } = useTheme();
   const navigate = useNavigate();
-  const [isLoading,setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true);
   const [isApplied, setIsApplied] = useState(false);
-  const currentUser = Cookies.get('userId') 
-  const location = useLocation()
+  const currentUser = Cookies.get('userId');
+  const location = useLocation();
+
   useEffect(() => {
     // Check if the user has already applied for this job
     const checkApplication = async () => {
       try {
         const response = await axios.get(`http://localhost:3000/applications/student/${currentUser}`);
-        const appliedJobs = response.data.map(app => app._id);
+        const appliedJobs = response?.data?.map(app => app._id);
         setIsApplied(appliedJobs.includes(job._id));
       } catch (error) {
         console.error("Error checking application status:", error);
@@ -28,16 +65,14 @@ const JobCard = ({ job, onApply }) => {
     checkApplication();
   }, [job._id, currentUser]);
 
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
   const handleViewDetails = () => {
-    // if(location.pathname === '/government'){
-    //   navigate(`/governmentDetailed/${job.jobId}`)
-    //   return
-    // }
     navigate('/jobDetail', { state: { job } });
   };
-
-  setTimeout(()=>setIsLoading(false),1000)
-
 
   const handleApply = async () => {
     try {
@@ -68,19 +103,8 @@ const JobCard = ({ job, onApply }) => {
   };
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Oval
-          height={80}
-          width={80}
-          color={isDarkMode ? '#ffffff' : '#000000'}
-          secondaryColor={isDarkMode ? '#ffffff' : '#000000'}
-          ariaLabel="loading"
-        />
-      </div>
-    );
-  
-}
+    return <SkeletonCard />;
+  }
 
   if (isApplied) return null; // Don't render the card if the user has already applied
 
