@@ -86,7 +86,8 @@ const ProfileEditModal = ({ open, onClose, user, onSave }) => {
 
   return (
     <Modal open={open} onClose={onClose} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-      <Box sx={{ width: '100%', maxWidth: 1000, height: '80%', overflowY: 'scroll', bgcolor: 'background.paper', p: 4, borderRadius: 2, position: 'relative' }}>
+      <Box sx={{ width: '100%', maxWidth: 1000, height: '80%', overflowY: 'scroll', bgcolor: 'background.paper', p: 4, borderRadius: 2, position: 'relative' }}
+      className="no-scrollbar">
         <Typography variant="h6" sx={{ mb: 2 }}>Edit Profile</Typography>
         <IconButton onClick={onClose} sx={{ position: 'absolute', top: 10, right: 10 }}>
           <FaTimes />

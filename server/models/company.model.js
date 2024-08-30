@@ -44,6 +44,8 @@ companySchema.statics.findByName = function (name) {
   return this.find({ companyName: new RegExp(name, 'i') });
 };
 
+
+
 // Static method for login
 companySchema.statics.login = async function (email, password) {
   const company = await this.findOne({ email });

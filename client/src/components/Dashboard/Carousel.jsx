@@ -39,7 +39,7 @@ const CarouselCard = ({ item }) => (
     className="carousel-card p-4 rounded-lg shadow-md flex flex-col justify-between items-start"
     style={{
       backgroundColor: item.color,
-      width: '400px',  // Fixed width for consistency
+      width: '370px',  // Fixed width for consistency
       height: '250px', // Fixed height for consistency
       margin: '2px',   // Adjust margin to create a 4px gap between cards (2px on each side)
     }}
