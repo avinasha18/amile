@@ -1,7 +1,11 @@
+import React, { useEffect } from 'react';
 import { useSelector } from "react-redux";
+import { Route, Routes } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import Login from "./components/Login";
 import { RouteManagement } from "./components/RouteManagement";
-import { Route, Routes } from "react-router-dom";
 import UserRegisterFlow from "./components/Register";
 import { ThemeProvider } from "./context/ThemeContext";
 import { setAuthToken } from "./hooks/golbalAuth";
@@ -11,11 +15,14 @@ import { ResetPassword } from "./components/resetPassword";
 import { ResendVerification } from "./components/resendVerification";
 import { VerifyAccount } from "./components/verifyAccount";
 import ReportIncident from "./components/reportIncident";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import MentorRouteManagement from "./mentor-components/MentorRouteManagement";
+
 function App() {
   const islogin = useSelector((state) => state.auth.token);
   setAuthToken(islogin);
+
+
+
   return (
     <ThemeProvider>
       <Routes>
@@ -33,18 +40,19 @@ function App() {
           element={!islogin ? <Login /> : <PageNotFound />}
         />
         <Route path="/*" element={<RouteManagement islogin={islogin} />} />
+        <Route path="/mentor/*" element={<MentorRouteManagement />}/>
       </Routes>
       <ToastContainer
-          position="bottom-center"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
+        position="bottom-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </ThemeProvider>
   );
 }

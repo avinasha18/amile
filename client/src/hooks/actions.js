@@ -45,3 +45,15 @@ export const Actions = {
     },
 
 }
+
+// services/api.js
+
+
+export const getApplicationStatistics = async (userId) => {
+  try {
+    const response = await axios.get(`${api}/statistics/${userId}`);
+    return response.data;
+  } catch (error) {
+    throw new Error('Failed to fetch application statistics');
+  }
+};
