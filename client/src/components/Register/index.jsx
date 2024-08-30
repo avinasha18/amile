@@ -15,6 +15,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { Actions } from "../../hooks/actions";
 
 const UserRegisterFlow = () => {
@@ -34,6 +35,8 @@ const UserRegisterFlow = () => {
   const navigate = useNavigate();
   const steps = ["Select Account Type", "Basic Information", "Additional Information"];
 
+  const isDarkMode = useSelector((state) => state.theme.isDarkMode);
+
   const handleNext = () => {
     if (validate()) {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -46,26 +49,47 @@ const UserRegisterFlow = () => {
 
   const validate = () => {
     const newErrors = {};
+  
     if (activeStep === 0 && !accountType) {
       newErrors.accountType = "Account type is required.";
     }
+  
     if (activeStep === 1) {
+      // Email validation
       if (!email) {
         newErrors.email = "Email is required.";
-      } else if (!email.endsWith("@gmail.com")) {
-        newErrors.email = "Email must end with @gmail.com.";
+      } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
+        newErrors.email = "Email must be a valid address.";
       }
-      if (!username) newErrors.username = "Username is required.";
-      if (!name) newErrors.name = "Name is required.";
-      if (!password) newErrors.password = "Password is required.";
+  
+      // Username validation: only lowercase letters, numbers, underscores, and hyphens allowed, no spaces
+      if (!username) {
+        newErrors.username = "Username is required.";
+      } else if (!/^[a-z0-9_-]+$/.test(username)) {
+        newErrors.username = "Username can only contain lowercase letters, numbers, underscores, and hyphens.";
+      }
+  
+      // Name validation
+      if (!name) {
+        newErrors.name = "Name is required.";
+      }
+  
+      // Password validation: 6-20 characters with at least one lowercase letter, one uppercase letter, one number, and one special character
+      if (!password) {
+        newErrors.password = "Password is required.";
+      } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,20}$/.test(password)) {
+        newErrors.password = "Password must be 6-20 characters long and include at least one lowercase letter, one uppercase letter, one number, and one special character.";
+      }
     }
+  
     if (activeStep === 2 && !termsAccepted) {
       newErrors.termsAccepted = "You must accept the terms.";
     }
-
+  
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+  
 
   const handleSubmit = async () => {
     if (!validate()) return;
@@ -95,6 +119,26 @@ const UserRegisterFlow = () => {
       setLoading(false);
     }
   };
+
+  const lightTheme = createTheme({
+    palette: {
+      mode: "light",
+      primary: {
+        main: "#1976d2",
+      },
+      secondary: {
+        main: "#dc004e",
+      },
+      background: {
+        default: "#f5f5f5",
+        paper: "#ffffff",
+      },
+      text: {
+        primary: "#000000",
+        secondary: "#555555",
+      },
+    },
+  });
 
   const darkTheme = createTheme({
     palette: {
@@ -133,13 +177,23 @@ const UserRegisterFlow = () => {
           },
         },
       },
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            borderRadius: 8,
+            textTransform: "none",
+          },
+        },
+      },
     },
   });
+
+  const theme = isDarkMode ? darkTheme : lightTheme;
 
   const isFinalStep = activeStep === steps.length - 1;
 
   return (
-    <ThemeProvider theme={darkTheme}>
+    <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box
         sx={{
@@ -303,7 +357,6 @@ const BasicInfoStep = ({
       <TextField
         fullWidth
         label="Email"
-        type="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         error={!!errors.email}
@@ -341,6 +394,14 @@ const BasicInfoStep = ({
         helperText={errors.password}
       />
     </Grid>
+    <Grid item xs={12}>
+      <TextField
+        fullWidth
+        label="Referral ID"
+        value={refrelid}
+        disabled
+      />
+    </Grid>
   </Grid>
 );
 
@@ -353,30 +414,37 @@ const AdditionalInfoStep = ({
   setTermsAccepted,
   error,
 }) => (
-  <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-    <TextField
-      fullWidth
-      label="GitHub Profile"
-      value={github}
-      onChange={(e) => setGithub(e.target.value)}
-    />
-    <TextField
-      fullWidth
-      label="LinkedIn Profile"
-      value={linkedin}
-      onChange={(e) => setLinkedin(e.target.value)}
-    />
-    <FormControlLabel
-      control={
-        <Checkbox
-          checked={termsAccepted}
-          onChange={(e) => setTermsAccepted(e.target.checked)}
-        />
-      }
-      label="I accept the terms and conditions"
-    />
-    {error && <Typography color="error">{error}</Typography>}
-  </Box>
+  <Grid container spacing={2}>
+    <Grid item xs={12}>
+      <TextField
+        fullWidth
+        label="GitHub Profile"
+        value={github}
+        onChange={(e) => setGithub(e.target.value)}
+      />
+    </Grid>
+    <Grid item xs={12}>
+      <TextField
+        fullWidth
+        label="LinkedIn Profile"
+        value={linkedin}
+        onChange={(e) => setLinkedin(e.target.value)}
+      />
+    </Grid>
+    <Grid item xs={12}>
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={termsAccepted}
+            onChange={(e) => setTermsAccepted(e.target.checked)}
+            color="primary"
+          />
+        }
+        label="I accept the terms and conditions"
+      />
+      {error && <Typography color="error">{error}</Typography>}
+    </Grid>
+  </Grid>
 );
 
 export default UserRegisterFlow;
