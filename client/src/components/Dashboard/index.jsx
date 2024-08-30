@@ -1,25 +1,108 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaUserCircle } from 'react-icons/fa';
 import DashboardBox from './DashboardBox';
 import Carousel from './Carousel';
-import { data, options, Cdata, Coptions } from "./Data";
 import { Bar, Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, ArcElement, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { useTheme } from '../../context/ThemeContext'; // Import the useTheme hook
-// import { PieChartShad } from './PieChart';
-
+import { getApplicationStatistics } from '../../hooks/actions';
+import Cookies from 'js-cookie'
 ChartJS.register(CategoryScale, LinearScale, ArcElement, BarElement, Title, Tooltip, Legend);
 
 const Dashboard = () => {
   const { isDarkMode } = useTheme(); // Hook to get the current theme mode
+  const [statistics, setStatistics] = useState(null);
+
+  useEffect(() => {
+    const fetchStatistics = async () => {
+      try {
+        const currentUserId =  Cookies.get('userId')
+        const data = await getApplicationStatistics(currentUserId); // Replace 'user_id_here' with the actual user ID
+        setStatistics(data);
+        console.log(data)
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchStatistics();
+  }, []);
+
+  if (!statistics) {
+    return <div>Loading...</div>;
+  }
+
+  const data = {
+    labels: ['2017', '2018', '2019', '2020', '2021', '2022'],
+    datasets: [
+      {
+        data: [200, 600, 400, 620, 750, 600],
+        backgroundColor: (context) => {
+          const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#FF8000', '#00FF80', '#F0EF22'];
+          return colors[context.dataIndex % colors.length];
+        },
+        borderColor: (context) => {
+          const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#FF8000', '#00FF80', '#E4EF12'];
+          return colors[context.dataIndex % colors.length];
+        },
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      title: {
+        display: false,
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 800,
+        ticks: {
+          stepSize: 200,
+        },
+      },
+    },
+  };
+
+  const Cdata = {
+    datasets: [{
+      data: [statistics.acceptedApplications, statistics.rejectedApplications],
+      backgroundColor: [
+        'rgb(65, 105, 225)',  // Royal Blue
+        'rgb(230, 230, 250)', // Lavender
+      ],
+      borderWidth: 0,
+    }],
+  };
+
+  const Coptions = {
+    cutout: '70%',
+    plugins: {
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        enabled: false,
+      },
+    },
+    responsive: true,
+    maintainAspectRatio: false,
+  };
 
   return (
     <div className={`right-content overflow-y-auto w-full ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'} p-6`}>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <DashboardBox color={["#1da256", "#48d483"]} icon={<FaUserCircle />} grow={true} />
-        <DashboardBox color={["#c012e2", "#eb64fe"]} icon={<FaUserCircle />} />
-        <DashboardBox color={["#2c78e5", "#60aff5"]} icon={<FaUserCircle />} />
-        <DashboardBox color={["#e1950e", "#f3cd29"]} icon={<FaUserCircle />} />
+        <DashboardBox color={["#1da256", "#48d483"]} icon={<FaUserCircle />} title={'Total Applications'} grow={true} percentage={Math.round((statistics.acceptedApplications / statistics.totalApplications) * 100)} />
+        <DashboardBox color={["#c012e2", "#eb64fe"]} icon={<FaUserCircle />} title={'Pending'} value={statistics.pendingApplications} percentage={Math.round((statistics.rejectedApplications / statistics.totalApplications) * 100)} />
+        <DashboardBox color={["#2c78e5", "#60aff5"]} icon={<FaUserCircle />} title={'Accepted'}  value={statistics.acceptedApplications} percentage={Math.round((statistics.pendingApplications / statistics.totalApplications) * 100)} />
+        <DashboardBox color={["#e1950e", "#f3cd29"]} icon={<FaUserCircle />} title={'Rejected'}  value={statistics.rejectedApplications} percentage={Math.round((statistics.totalApplications / statistics.totalApplications) * 100)} />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
@@ -36,13 +119,12 @@ const Dashboard = () => {
           </div>
           <Bar data={data} options={options} />
         </div>
-    {/* <PieChartShad/> */}
         <div className={`rounded-lg shadow-lg p-6 ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
           <h2 className="text-xl font-semibold text-center mb-4">Course Activities</h2>
           <div className="relative h-64">
             <Doughnut data={Cdata} options={Coptions} />
             <div className="absolute inset-0 flex items-center justify-center text-2xl font-bold">
-              75%
+              {Math.round((statistics.acceptedApplications / statistics.totalApplications) * 100)}%
             </div>
           </div>
           <div className="flex justify-center mt-4">
