@@ -1,97 +1,113 @@
-import React, { useState } from 'react';
-import { MdMenuOpen, MdOutlineLightMode, MdDarkMode, MdOutlineMenu } from "react-icons/md";
-import { AiOutlineMessage } from "react-icons/ai";
-import { FaRegBell } from "react-icons/fa";
-import { IoShieldHalfSharp } from "react-icons/io5";
-import Avatar from '@mui/material/Avatar';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
+import React, { useState, useRef, useEffect } from "react";
+import { FaUserCircle } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import './index.css';
+import { logout } from "../../services/redux/AuthSlice";
+import Badge from '@mui/material/Badge';
+import MailIcon from '@mui/icons-material/Mail';
+import { setAuthToken } from "../../hooks/golbalAuth";
+import { MdOutlineLightMode } from 'react-icons/md';
+import { FaRegBell } from 'react-icons/fa';
+import { AiOutlineMessage } from 'react-icons/ai';
+import { Avatar, Menu, MenuItem as MuiMenuItem, ListItemIcon } from '@mui/material';
 import PersonAdd from '@mui/icons-material/PersonAdd';
 import Logout from '@mui/icons-material/Logout';
 
 const MentorNavbar = () => {
+  const [isMenuOpen, setMenu] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
+  const [open, setOpen] = useState(false);
+  const menuRef = useRef(null);
   
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await dispatch(logout());
+    setAuthToken(); // This clears the token from the axios headers
+    navigate("/login");
+  };
+
   const handleOpenMyAccDrop = (event) => {
     setAnchorEl(event.currentTarget);
+    setOpen(true);
   };
+
   const handleCloseMyAccDrop = () => {
     setAnchorEl(null);
+    setOpen(false);
   };
+  
+  // Close the menu when clicking outside of it
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [menuRef]);
 
   return (
-    <header className="fixed w-full h-16 bg-white shadow z-10 flex items-center justify-between px-4">
-      {/* Logo and Search */}
-      <div className="flex items-center">
-        <span className="text-2xl font-bold text-gray-800">Amile</span>
-        <button className="ml-4 p-2 rounded-full bg-gray-200 hover:bg-gray-300">
-          <MdMenuOpen className="text-gray-800 text-lg" />
-        </button>
-        <div className="ml-4 bg-gray-100 rounded flex items-center px-3 py-1">
-          <input
-            type="text"
-            placeholder="Search..."
-            className="bg-transparent outline-none text-gray-800 ml-2"
-          />
-          <MdOutlineMenu className="text-gray-800" />
+    <header className="bg-[#000] text-gray-100 shadow-md z-50 px-5 h-[70px] border-b border-gray-700">
+      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+        <Link to="/mentor">
+          <h1 className=" text-[30px] font-bold animate-gradient bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-500 bg-clip-text text-transparent">
+            Amile
+          </h1>
+        </Link>
+        <nav className="hidden md:flex space-x-6">
+          <NavItem>Dashboard</NavItem>
+        </nav>
+        <div className="relative flex flex-row gap-10 items-center" ref={menuRef}>
+          <Link to="/messages">
+            <Badge badgeContent={4} color="primary" variant="dot" anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}>
+              <MailIcon />
+            </Badge>
+          </Link>
+          <button
+            onClick={() => setMenu(!isMenuOpen)}
+            className="flex items-center space-x-2"
+          >
+            <FaUserCircle className="text-4xl" />
+          </button>
+          {isMenuOpen && <UserMenu onLogout={handleLogout}/>}
         </div>
-      </div>
-
-      {/* Action Buttons and Account Menu */}
-      <div className="flex items-center">
-        <button className="p-2 rounded-full bg-gray-200 hover:bg-gray-300 mr-2">
-          <MdOutlineLightMode className="text-gray-800 text-lg" />
-        </button>
-        <button className="p-2 rounded-full bg-gray-200 hover:bg-gray-300 mr-2">
-          <FaRegBell className="text-gray-800 text-lg" />
-        </button>
-        <button className="p-2 rounded-full bg-gray-200 hover:bg-gray-300 mr-2">
-          <AiOutlineMessage className="text-gray-800 text-lg" />
-        </button>
-        
-        {/* Account Dropdown */}
-        <div className="flex items-center cursor-pointer" onClick={handleOpenMyAccDrop}>
-          <Avatar alt="User" src="https://yt3.ggpht.com/yti/ANjgQV8o4R3r61DocNKC7tWs43p6uEM953AY3eSo1DLhX3M=s88-c-k-c0x00ffffff-no-rj-mo" />
-          <div className="ml-2">
-            <h4 className="text-sm font-semibold text-gray-800">yogini</h4>
-            <p className="text-xs text-gray-600">@yogini</p>
-          </div>
-        </div>
-
-        {/* Account Menu */}
-        <Menu
-          anchorEl={anchorEl}
-          id="account-menu"
-          open={open}
-          onClose={handleCloseMyAccDrop}
-          onClick={handleCloseMyAccDrop}
-          transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-        >
-          <MenuItem onClick={handleCloseMyAccDrop}>
-            <ListItemIcon>
-              <PersonAdd fontSize="small" />
-            </ListItemIcon>
-            My account
-          </MenuItem>
-          <MenuItem onClick={handleCloseMyAccDrop}>
-            <ListItemIcon>
-              <IoShieldHalfSharp />
-            </ListItemIcon>
-            Reset Password
-          </MenuItem>
-          <MenuItem onClick={handleCloseMyAccDrop}>
-            <ListItemIcon>
-              <Logout fontSize="small" />
-            </ListItemIcon>
-            Logout
-          </MenuItem>
-        </Menu>
       </div>
     </header>
   );
 };
+
+const NavItem = ({ children }) => (
+  <a href="#" className="hover:text-blue-400 transition-colors">
+    {children}
+  </a>
+);
+
+const UserMenu = ({onLogout}) => (
+  <div className="absolute top-10 right-0 mt-2 w-48 bg-slate-900 rounded-md shadow-lg py-1 text-gray-100">
+    <MenuItem to="/mentor/profile">Your Profile</MenuItem>
+    <MenuItem>Settings</MenuItem>
+    <MenuItem onClick={onLogout}>Sign out</MenuItem>
+  </div>
+);
+
+const MenuItem = ({ children, to, onClick }) => (
+  <Link
+    to={to}
+    onClick={onClick}
+    className="block px-4 py-2 text-sm hover:bg-gray-600 transition-colors"
+  >
+    {children}
+  </Link>
+);
 
 export default MentorNavbar;

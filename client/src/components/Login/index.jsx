@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { FaUser, FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaUser, FaEye, FaEyeSlash } from "react-icons/fa"; // Importing React Icons
 import { styled, ThemeProvider, createTheme } from "@mui/material/styles";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -68,7 +68,7 @@ const Login = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [userType, setUserType] = useState("student");
+  const [userType, setUserType] = useState("student"); // Initial value set to "student"
   const [rememberMe, setRememberMe] = useState(false);
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
@@ -107,9 +107,8 @@ const Login = () => {
       const response = await Actions.Login({
         username: email.trim(),
         password,
-        userType,
+        userType, // Include the selected userType in the request
       });
-
       if (response.data.success) {
         const cookieExpires = rememberMe ? 10 : 1;
         dispatch(
@@ -125,7 +124,12 @@ const Login = () => {
         if (isnext) {
           nav(isnext, { replace: true });
         } else {
-          nav("/", { replace: true });
+          console.log(userType)
+          if(userType === "mentor") {
+            nav("/mentor/", { replace: true });
+          } else {
+            nav("/", { replace: true });
+          }
         }
 
         toast.success("Login successful");
@@ -142,13 +146,14 @@ const Login = () => {
     <ThemeProvider theme={theme}>
       <div className={`bg-${isDarkMode ? 'gray-900' : 'gray-50'} font-[sans-serif] min-h-screen flex flex-col items-center justify-center py-6 px-4`}>
         <div className="max-w-md w-full">
-          <div className={`p-8 rounded-2xl bg-${isDarkMode ? 'gray-800' : 'white'} shadow`}>
-            <h2 className={`text-${isDarkMode ? 'white' : 'gray-800'} text-center text-2xl font-bold`}>
+         
+          <div className="p-8 rounded-2xl bg-white shadow">
+            <h2 className="text-gray-800 text-center text-2xl font-bold">
               Sign in
             </h2>
             <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
               <div>
-                <label className={`text-${isDarkMode ? 'white' : 'gray-800'} text-sm mb-2 block`}>
+                <label className="text-gray-800 text-sm mb-2 block">
                   User name
                 </label>
                 <div className="relative flex items-center">

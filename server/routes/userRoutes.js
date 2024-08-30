@@ -2,6 +2,7 @@ import express from 'express';
 import { registerStudent, loginUser, VerifyUserAccountwithToken, getUser, updateStudent, resetPassword, forgotPassword, resendVerification, reportIncident} from '../controllers/userController.js';
 import { connectPlugin, disconnectPlugin } from '../controllers/pluginController.js';
 import {CheckAuthorization} from "../middleware/authMiddleware.js"
+
 const router = express.Router();
 
 router.post('/register/student', registerStudent);

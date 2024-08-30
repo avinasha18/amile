@@ -22,6 +22,7 @@ const studentSchema = new mongoose.Schema({
 
 // Define the schema for a mentor
 const mentorSchema = new mongoose.Schema({
+  email: { type: String, required: true, unique: true },
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   name: { type: String, required: true },
@@ -135,36 +136,6 @@ export const updateUser = async (userData) => {
   return updatedUser;
 };
 
-export const createMentor = async (mentorData) => {
-  const {
-    username,
-    password,
-    name,
-    qualifications,
-    certifications,
-    workExperience,
-    github,
-    linkedin,
-    portfolio,
-  } = mentorData;
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  const newMentor = new Mentor({
-    username,
-    name,
-    password: hashedPassword,
-    qualifications,
-    certifications,
-    workExperience,
-    github,
-    linkedin,
-    portfolio,
-  });
-
-  await newMentor.save();
-};
-
 
 
 // Function to find a user by username in a specific collection
@@ -228,11 +199,6 @@ export const updateAccountStatus = async (username) => {
     return { success: false, message: "An error occurred while updating account status" };
   }
 };
-
-
-
-
-
 
 
 // Function to remove a user verification token

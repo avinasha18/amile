@@ -1,59 +1,56 @@
-import { ForgotPassword } from "../components/forgotPassword";
-import { api } from "./apis"
 import axios from "axios";
+import { api } from "./apis";
 
 export const Actions = {
-    Login : async(data)=>{
-        return await axios.post(api+"/login",{...data})
+    Login: async (data) => {
+        return await axios.post(`${api}/login`, { ...data });
     },
-    Register : async(data)=>{
-        if(data.accountType === "Student"){
-            return await axios.post(api+`/register/student?refrelid=${data.refrelid}`,{...data})
-
-        }else {
-            return await axios.post(api+"/register",{...data})
-
-        }
+    Register: async (data) => {
+        const endpoint = data.accountType === "Student"
+            ? `/register/student?refrelid=${data.refrelid}`
+            : `/register/mentor?refrelid=${data.refrelid}`;
+        return await axios.post(`${api}${endpoint}`, { ...data });
     },
-    VerifyAccount : async(data)=>{
-        return await axios.post(api+`/verifyaccount?token=${data.accountid}`)
+    VerifyAccount: async (data) => {
+        return await axios.post(`${api}/verifyaccount?token=${data.accountid}`);
     },
     FetchMyReferals: async (data) => {
-        return await axios.get(api + `/myreferals?page=${data.page || 1}`);
+        return await axios.get(`${api}/myreferals?page=${data.page || 1}`);
     },
-    ConnectPlugin : async (data) => {
-        return await axios.post(api + "/connectplugin",{...data})
+    ConnectPlugin: async (data) => {
+        return await axios.post(`${api}/connectplugin`, { ...data });
     },
     fetchUser: async () => {
-        return await axios.get(api+"/userdata");
+        return await axios.get(`${api}/userdata`);
+    },
+    fetchMentor: async () => {
+        return await axios.get(`${api}/mentordata`);
     },
     UpdateStudent: async (data) => {
-        return await axios.post(api+"/updateuser",{...data});
+        return await axios.post(`${api}/updateuser`, { ...data });
+    },
+    updateMentor: async (data) => {
+        return await axios.post(`${api}/updatementor`, { ...data });
     },
     resetPassword: async (data) => {
-        return await axios.post(api+"/resetpassword",{...data});
+        return await axios.post(`${api}/resetpassword`, { ...data });
     },
     forgotPassword: async (data) => {
-        return await axios.post(api+"/forgotpassword",{...data});
+        return await axios.post(`${api}/forgotpassword`, { ...data });
     },
     resendVerification: async (data) => {
-        return await axios.post(api+"/resendverification",{...data});
+        return await axios.post(`${api}/resendverification`, { ...data });
     },
-    reportIncident : async (data) => {
-        return await axios.post(api+"/reportincident",{...data});
-
+    reportIncident: async (data) => {
+        return await axios.post(`${api}/reportincident`, { ...data });
     },
-
-}
-
-// services/api.js
-
+};
 
 export const getApplicationStatistics = async (userId) => {
-  try {
-    const response = await axios.get(`${api}/statistics/${userId}`);
-    return response.data;
-  } catch (error) {
-    throw new Error('Failed to fetch application statistics');
-  }
+    try {
+        const response = await axios.get(`${api}/statistics/${userId}`);
+        return response.data;
+    } catch (error) {
+        throw new Error('Failed to fetch application statistics');
+    }
 };

@@ -101,7 +101,7 @@ export const PluginConnectButton = ({
         acc[value] = key;
         return acc;
       }, {});
-
+  
       const convertKeys = (data) => {
         return Object.entries(data).reduce((acc, [key, value]) => {
           const mappedKey = valueToKeyMap[key];
@@ -111,16 +111,23 @@ export const PluginConnectButton = ({
           return acc;
         }, {});
       };
-
+  
       const convertedSelectedData = convertKeys(selectedData);
       const convertedEditedData = convertKeys(editedData);
-
-      await Actions.UpdateStudent({ ...convertedSelectedData, ...convertedEditedData });
+  
+      // Check user role and update data accordingly
+      if (user.role === "student") {
+        await Actions.UpdateStudent({ ...convertedSelectedData, ...convertedEditedData });
+      } else if (user.role === "mentor") {
+        await Actions.updateMentor({ ...convertedSelectedData, ...convertedEditedData });
+      }
+  
       setOpenModal(false);
     } catch (e) {
       console.log(e);
     }
   };
+  
 
   const handleCheckboxChange = (field) => {
     const mappedField = fieldMapping[field];
