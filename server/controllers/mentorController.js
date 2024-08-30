@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken"
 
 import {
-   findUserByUsername, Mentor,
+    findUserByUsername, Mentor,
     addUserVerificationToken,
     findTokenByUsername,
     removeUserVerificationToken,
@@ -17,67 +17,67 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 export const updateUserMentor = async (userData) => {
     const {
-      username,
-      name,
-      qualifications,
-      workExperience,
-      certifications,
-      skills,
-      title,
+        username,
+        name,
+        qualifications,
+        workExperience,
+        certifications,
+        skills,
+        title,
     } = userData;
-  
+
     const updateData = {};
-  
+
     if (name) updateData.name = name;
     if (workExperience) updateData.workExperience = workExperience;
     if (qualifications) updateData.qualifications = qualifications;
     if (skills) updateData.skills = skills;
     if (title) updateData.title = title;
     if (certifications) updateData.certifications = certifications;
-  
+
     const updatedUser = await Mentor.findOneAndUpdate(
-      { username },
-      { $set: updateData },
-      { new: true, runValidators: true }
+        { username },
+        { $set: updateData },
+        { new: true, runValidators: true }
     );
-  
+
     return updatedUser;
-  }
-  export const createMentor = async (mentorData) => {
+}
+export const createMentor = async (mentorData) => {
     const {
-      email,
-      username,
-      password,
-      name,
-      qualifications,
-      certifications,
-      workExperience,
-      github,
-      linkedin,
-      portfolio,
+        email,
+        username,
+        password,
+        name,
+        qualifications,
+        certifications,
+        workExperience,
+        github,
+        linkedin,
+        portfolio,
     } = mentorData;
-  
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const newMentor = new Mentor({
-      email,
-      username,
-      name,
-      password: hashedPassword,
-      qualifications,
-      certifications,
-      workExperience,
-      github,
-      linkedin,
-      portfolio,
+        email,
+        username,
+        name,
+        password: hashedPassword,
+        qualifications,
+        certifications,
+        workExperience,
+        github,
+        linkedin,
+        portfolio,
     });
-  
+
     await newMentor.save();
-  };
-  
-  
-  
-  
-  
+};
+
+
+
+
+
 export const registerMentor = async (req, res) => {
     const { email, username, ...otherDetails } = req.body;
     const { refrelid } = req.query;

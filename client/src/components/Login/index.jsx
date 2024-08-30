@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import { FaUser, FaEye, FaEyeSlash } from "react-icons/fa"; // Importing React Icons
 import { styled, ThemeProvider, createTheme } from "@mui/material/styles";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -121,15 +124,10 @@ const Login = () => {
 
         const isnext = params.get("nextpath");
 
-        if (isnext) {
-          nav(isnext, { replace: true });
+        if (userType === "mentor") {
+          nav("/mentor/", { replace: true });
         } else {
-          console.log(userType)
-          if(userType === "mentor") {
-            nav("/mentor/", { replace: true });
-          } else {
-            nav("/", { replace: true });
-          }
+          nav("/", { replace: true });
         }
 
         toast.success("Login successful");
@@ -146,13 +144,49 @@ const Login = () => {
     <ThemeProvider theme={theme}>
       <div className={`bg-${isDarkMode ? 'gray-900' : 'gray-50'} font-[sans-serif] min-h-screen flex flex-col items-center justify-center py-6 px-4`}>
         <div className="max-w-md w-full">
-         
-          <div className="p-8 rounded-2xl bg-white shadow">
+          <div className="p-8 rounded-2xl bg-white shadow ">
             <h2 className="text-gray-800 text-center text-2xl font-bold">
               Sign in
             </h2>
             <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
               <div>
+                <RadioGroup
+                  row
+                  aria-labelledby="demo-row-radio-buttons-group-label"
+                  name="row-radio-buttons-group"
+                  className="mb-3"
+                  value={userType} // Bind to userType state
+                  onChange={(e) => setUserType(e.target.value)} // Update userType state on change
+                >
+                  <FormControlLabel
+                    value="student"
+                    control={
+                      <Radio
+                        sx={{
+                          color: 'black', // Unchecked color
+                          '&.Mui-checked': {
+                            color: '#1976d2', // Checked color (blue)
+                          },
+                        }}
+                      />
+                    }
+                    label="Student"
+                  />
+                  <FormControlLabel
+                    value="mentor"
+                    control={
+                      <Radio
+                        sx={{
+                          color: 'black', // Unchecked color
+                          '&.Mui-checked': {
+                            color: '#1976d2', // Checked color (blue)
+                          },
+                        }}
+                      />
+                    }
+                    label="Mentor"
+                  />
+                </RadioGroup>
                 <label className="text-gray-800 text-sm mb-2 block">
                   User name
                 </label>

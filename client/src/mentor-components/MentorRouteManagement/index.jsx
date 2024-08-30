@@ -6,6 +6,7 @@ import { Route, Routes } from 'react-router-dom';
 import MentorNavbar from '../Navbar/Navbar'; // If this navbar is not needed, remove this import
 import MentorSidebar from '../Sidebar/Sidebar';
 import MentorProfile from '../Profile/Profile';
+import Dashboard from '../Dashboard';
 
 const MentorRouteManagement = () => {
   return (
@@ -18,6 +19,7 @@ const MentorRouteManagement = () => {
           <Route path="/" element={<MentorHome />} />
           <Route path="/profile" element={<MentorProfile />} />
           <Route path="/courses" element={<MentorCourses />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/courses/:id" element={<MentorCourseDetails />} />
         </Routes>
       </div>
