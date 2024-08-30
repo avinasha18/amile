@@ -2,6 +2,11 @@ import {Government} from '../models/government.model.js'
 // Controller to create a job posting
 import { ObjectId } from 'mongodb';
 import {GovernmentApplication} from '../models/government.model.js'
+import {sendEmail} from "../services/mailServices.js"
+import { Student } from '../models/auth.model.js';
+import Company  from "../models/company.model.js"
+import { findInternshipById, Internship } from '../models/intern.model.js';
+import { HtmlTemplates } from '../services/htmlTemplates.js';
 export const createJobPosting = async (req, res) => {
   try {
     const {
@@ -118,8 +123,13 @@ export const getJobPostingById = async (req, res) => {
         studentId: new ObjectId(studentId),
         companyId: new ObjectId(companyId),
       });
-  
+
+      const {name, email} = await  Student.findById(studentId,"name email");
+      const {companyName, jobTitle} = await Government.findById(internshipId);
+      const subject = "Application submitted successfully";
+
       await newApplication.save();
+     await  sendEmail(email,subject, HtmlTemplates.appliedInternship(name,jobTitle,companyName))
       res.status(201).json({ message: "Application submitted successfully" });
     } catch (error) {
       res.status(500).json({ message: `Error: ${error.message}` });
