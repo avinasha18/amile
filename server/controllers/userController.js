@@ -245,7 +245,7 @@ export const loginUser = async (req, res) => {
       });
       console.log(user)
       // res.json({ success: true, token, user: user.username });
-      res.json({ success: true, token, user: user,userId : user._id });
+      res.json({ success: true, token, user : user,userId : user._id });
 
     } else {
       return res.json({ success: false, message: "Invalid password" });

@@ -11,13 +11,13 @@ const authSlice = createSlice({
   },
   reducers: {
     loginSuccess: (state, action) => {
-      const { token, user ,userId} = action.payload;
+      const { token ,user,userId} = action.payload;
       console.log(action)
       state.token = token;
-      state.user = user;
+      state.user = user.username;
       console.log(action.payload.userId,"user id")
       Cookies.set('token', token, { expires: action.payload.cookieExpires || 1});
-      Cookies.set('user', JSON.stringify(user), { expires: action.payload.cookieExpires || 1}); 
+      Cookies.set('user', user.username, { expires: action.payload.cookieExpires || 1}); 
       Cookies.set('userId', user._id, { expires: action.payload.cookieExpires || 1}); 
 
     },
