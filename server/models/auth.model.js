@@ -131,8 +131,6 @@ export const createUser = async (userData) => {
 
   await newUser.save();
 
-
-
 };
 
 //Function to update new student
@@ -324,12 +322,6 @@ export const updateAccountStatus = async (username) => {
     return { success: false, message: "An error occurred while updating account status" };
   }
 };
-
-
-
-
-
-
 
 // Function to remove a user verification token
 export const removeUserVerificationToken = async (username) => {

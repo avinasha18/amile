@@ -84,7 +84,7 @@ const MentorSidebar = () => {
           <SidebarItem
             icon={FaBook}
             label="Courses"
-            to="/courses"
+            to="/mentor/courses"
             isCollapsed={isCollapsed}
           />
         </SidebarSection>

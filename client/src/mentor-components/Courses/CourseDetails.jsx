@@ -1,60 +1,6 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-const courseData = {
-    1: {
-        title: 'React for Beginners',
-        description: `Master React by building real-world applications with functional components, hooks, and more.`,
-        lastUpdated: '08/2024',
-        language: 'English',
-        rating: '4.8',
-        students: '10,000+',
-        modules: [
-            {
-                id: 1,
-                title: 'Introduction to React and Class Components',
-                duration: '3 hours',
-                details: `In this module, you begin exploring frameworks and their use in React web development. You will start by comparing libraries and frameworks and then explore front-end frameworks further by learning about prominent features of React. Additionally, the module will introduce the Vite build tool for React project creation and guide you through setting up a React application. Understanding the directory structure will streamline your workflow. Additionally, the module will cover EcmaScript6 (ES6), and JSX fundamentals, including syntax and compilation, empowering you to create dynamic React components effortlessly. Moving forward, you will delve into the concepts of state management, using props, and handling events for each type. Finally, you will master the concept of state and props, understanding how data flows within your components.`,
-                included: [
-                    '11 videos',
-                    '3 readings',
-                    '3 assignments',
-                    '2 app items',
-                    '1 discussion prompt',
-                    '4 plugins',
-                ]
-            },
-            {
-                id: 2,
-                title: 'Understanding Function Components with Array and DOM Manipulation',
-                duration: '3 hours',
-                details: `Detailed description of the module goes here.`,
-                included: ['Details about the module...']
-            },
-            // Add other modules similarly
-        ],
-    },
-    2: {
-        title: 'Advanced React',
-        description: `Take your React skills to the next level with advanced patterns, state management, and performance optimization.`,
-        lastUpdated: '08/2024',
-        language: 'English',
-        rating: '4.7',
-        students: '7,500+',
-        modules: [
-            {
-                id: 1,
-                title: 'React Hooks Deep Dive',
-                duration: '3 hours',
-                details: `Detailed description of the module goes here.`,
-                included: ['Details about the module...']
-            },
-            // Add other modules similarly
-        ],
-    },
-    // Add more course data as needed
-};
-
 const MentorCourseDetails = () => {
     const { id } = useParams();
     const course = courseData[id];

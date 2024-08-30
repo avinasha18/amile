@@ -7,12 +7,6 @@ import { logout } from "../../services/redux/AuthSlice";
 import Badge from '@mui/material/Badge';
 import MailIcon from '@mui/icons-material/Mail';
 import { setAuthToken } from "../../hooks/golbalAuth";
-import { MdOutlineLightMode } from 'react-icons/md';
-import { FaRegBell } from 'react-icons/fa';
-import { AiOutlineMessage } from 'react-icons/ai';
-import { Avatar, Menu, MenuItem as MuiMenuItem, ListItemIcon } from '@mui/material';
-import PersonAdd from '@mui/icons-material/PersonAdd';
-import Logout from '@mui/icons-material/Logout';
 
 const MentorNavbar = () => {
   const [isMenuOpen, setMenu] = useState(false);
