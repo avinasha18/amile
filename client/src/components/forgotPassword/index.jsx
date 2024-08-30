@@ -70,7 +70,6 @@ export const ForgotPassword = () => {
                 >
                     <MenuItem value="student">Student</MenuItem>
                     <MenuItem value="mentor">Mentor</MenuItem>
-                    <MenuItem value="company">Company</MenuItem>
                 </TextField>
                 <Button
                     variant="contained"
