@@ -195,13 +195,11 @@ console.log(response);
 
   return (
     <div
-      className={`min-h-screen ${themeStyles.background} ${themeStyles.text} p-8 overflow-auto w-full`}
+      className={`min-h-screen ${themeStyles.background} ${themeStyles.text} p-8 overflow-auto w-full no-scrollbar`}
     >
-      <div className="max-w-6xl mx-auto flex gap-1">
+      <div className="max-w-6xl mx-auto flex lg:gap-5 flex-col lg:flex-row">
         {/* Profile Section */}
-        <div
-          className={`${themeStyles.card} rounded-lg p-6 mb-8 w-3/4 border-2 ${themeStyles.cardBorder}`}
-        >
+        <div className={`${themeStyles.card} rounded-lg p-6 mb-8 lg:w-3/4 md:w-100 border-2 ${themeStyles.cardBorder}`} >
           {user?.name ? (
             <>
               {" "}
@@ -268,7 +266,7 @@ console.log(response);
           )}
 
           {/* Tabs */}
-          <div className={`${themeStyles.card} rounded-lg p-6 mb-8 mt-6`}>
+          <div className={`${themeStyles.card} rounded-lg lg:p-6 mb-8 mt-6`}>
             <ul className="flex mb-4 gap-4 overflow-scroll no-scrollbar">
               {tabs.map((tab, index) => (
                 <li key={index} className="flex items-center justify-center">
@@ -290,9 +288,7 @@ console.log(response);
         </div>
 
         {/* Right Side Section */}
-        <div
-          className={`${themeStyles.card} rounded-lg p-6 mb-8 ml-8 w-1.5/3 border-2 ${themeStyles.cardBorder}`}
-        >
+        <div className={`${themeStyles.card} rounded-lg p-6 mb-8  lg:w-1/4 border-2 ${themeStyles.cardBorder}`}>
           {/* Social */}
           <div className="mb-6">
             <h3 className={`text-lg font-semibold ${themeStyles.heading} mb-2`}>
@@ -318,21 +314,16 @@ console.log(response);
               </>
             </div>
           </div>
-          <div className="mb-6">
-            <h3 className={`text-lg font-semibold ${themeStyles.heading} mb-2`}>
-              Tagline
-            </h3>
-            <p>{user?.tagline}</p>
-          </div>
+       
 
           {/* Skills */}
-          <div className="mb-6">
+          <div className="mb-6 ">
             <h3 className={`text-lg font-semibold ${themeStyles.heading} mb-2`}>
               Skills
             </h3>
-            <div className="flex flex-wrap gap-2 mb-2">
+            <div className="flex flex-wrap gap-2 mb-2 justify-between">
               {user?.skills?.map((skill, index) => (
-                <div key={index} className="flex items-center">
+                <div key={index} className="flex items-center ">
                   <span
                     className={`${themeStyles.skillTag} px-2 py-1 rounded text-sm mr-2`}
                   >
@@ -343,6 +334,9 @@ console.log(response);
             </div>
           </div>
         </div>
+
+
+
       </div>
       <ProfileEditModal
         open={isEditing}
