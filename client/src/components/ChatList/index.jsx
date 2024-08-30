@@ -17,7 +17,7 @@ function ChatList({ chats, setActiveChat, activeChat }) {
         {chats.map(chat => (
           <li
             key={chat._id}
-            className={`p-4 cursor-pointer ${activeChat && activeChat._id === chat._id ? 'bg-blue-100' : 'hover:bg-gray-200'}`}
+            className={`p-4 cursor-pointer ${activeChat && activeChat._id === chat._id ? isDarkMode ? 'bg-gray-700' : 'bg-blue-200' : 'hover:bg-gray-200'}`}
             onClick={() => setActiveChat(chat)}
           >
             <div className="flex justify-between items-center">
