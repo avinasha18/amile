@@ -16,6 +16,7 @@ import { ResendVerification } from "./components/resendVerification";
 import { VerifyAccount } from "./components/verifyAccount";
 import ReportIncident from "./components/reportIncident";
 import MentorRouteManagement from "./mentor-components/MentorRouteManagement";
+import Compiler from './components/Compiler/components/Compiler';
 
 function App() {
   const islogin = useSelector((state) => state.auth.token);
@@ -31,6 +32,7 @@ function App() {
         <Route path="/resetpassword" element={<ResetPassword />} />
         <Route path="/resendverify" element={<ResendVerification />} />
         <Route path="/report" element={<ReportIncident />} />
+
         <Route
           path="/signup"
           element={!islogin ? <UserRegisterFlow /> : <PageNotFound />}
