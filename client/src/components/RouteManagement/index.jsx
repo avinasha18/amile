@@ -15,6 +15,7 @@ import InterviewApp from "../Mock-Interview/InterviewApp";
 import Feedback from "../Mock-Interview/Feedback"
 import PageNotFound from "../noinfopage";
 import Dashboard from "../Dashboard";
+import CompanyChatStart from "../CompanyStartChart";
 
 export const RouteManagement = ({ islogin }) => {
   const location = useLocation(window.location);
@@ -114,6 +115,7 @@ export const RouteManagement = ({ islogin }) => {
               <PageNotFound/>
             }
           />
+          <Route path="/companyChat" element={< CompanyChatStart />} />
         </Routes>
       </div>
     </div>

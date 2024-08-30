@@ -14,8 +14,9 @@ function MessageInput({ sendMessage }) {
       setMessage('');
     }
   };
+
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSubmit(e);
     }
@@ -32,7 +33,7 @@ function MessageInput({ sendMessage }) {
         gap: 1,
         p: 1,
         width: '100%',
-        maxWidth: '650px',
+        marginBottom : '80px'
       }}
     >
       <TextField
@@ -45,7 +46,6 @@ function MessageInput({ sendMessage }) {
         fullWidth
         onKeyDown={handleKeyDown}
         sx={{
-          flexGrow: 1,
           backgroundColor: isDarkMode ? '#333' : '#fff',
           color: isDarkMode ? '#fff' : '#000',
           '& .MuiInputBase-root': {

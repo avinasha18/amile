@@ -252,7 +252,7 @@ export const loginUser = async (req, res) => {
       return res.json({ success: false, message: "Invalid password" });
     }
   } catch (e) {
-    res.status(500).send("Server error", e);
+    res.status(500).send("Server error");
   }
 };
 
