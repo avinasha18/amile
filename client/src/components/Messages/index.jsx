@@ -1,52 +1,79 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import ChatList from '../ChatList';
 import ChatWindow from '../ChatWindow';
 import { useTheme } from '../../context/ThemeContext';
-
-const initialChats = [
-  { id: 1, name: 'Arpit', company: 'ZuPay', message: 'Thank you for applying fo...', time: '11:48 AM', type: 'Internship' },
-  { id: 2, name: 'Raghav', company: 'Masters-Connect', message: 'Hi, below is the link to ...', time: '08/21/2024', type: 'Internship' },
-  { id: 3, name: 'Shidharth', company: 'Byproduct Ventures L...', message: 'Hey, Thank you for applying...', time: '05/14/2024', type: 'Internship' },
-  { id: 4, name: 'Pranita', company: 'Techwondoe', message: 'Dear Candidate, Thank you...', time: '08/13/2024', type: 'Internship' },
-  { id: 5, name: 'Priyanka', company: 'Mikado Solutions', message: 'Dear Candidate, Thank you...', time: '09/10/2024', type: 'Job' },
-];
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Cookies from 'js-cookie';
 
 function Messages() {
-  const [chats, setChats] = useState(initialChats);
+  const [chats, setChats] = useState([]);
   const [activeChat, setActiveChat] = useState(null);
   const { isDarkMode } = useTheme();
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const userType = 'student';
+  const userId = Cookies.get('userId');
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
+    // Function to fetch chats from the server
+    const fetchChats = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3000/${userType}/${userId}`);
+        setChats(response.data);
+
+        // Update the active chat with the latest data
+        if (activeChat) {
+          const updatedActiveChat = response.data.find(chat => chat._id === activeChat._id);
+          if (updatedActiveChat) {
+            setActiveChat(updatedActiveChat);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching chats:', error);
+      }
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    // Initial fetch to get chats
+    fetchChats();
+
+    // Polling: Check for new messages every 1 second (1000 ms)
+    const pollingInterval = setInterval(fetchChats, 1000); // Adjust the interval as needed
+
+    // Cleanup function to clear the interval on component unmount
+    return () => {
+      clearInterval(pollingInterval);
+    };
+  }, [userId, userType, activeChat]); // Add activeChat to the dependency array
 
   const sendMessage = (message) => {
     if (activeChat) {
-      const updatedChats = chats.map(chat =>
-        chat.id === activeChat.id
-          ? { ...chat, message: message, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }
-          : chat
-      );
-      setChats(updatedChats);
+      axios
+        .post('http://localhost:3000/send', {
+          companyId: activeChat.companyId,
+          studentId: activeChat.studentId,
+          text: message,
+          sender: userType,
+        })
+        .then((response) => {
+          setChats((prevChats) =>
+            prevChats.map((chat) =>
+              chat._id === response.data._id ? response.data : chat
+            )
+          );
+          setActiveChat(response.data); // Update the active chat with the new message
+        })
+        .catch((error) => console.error('Error sending message:', error));
     }
   };
 
   return (
     <div className={`flex h-screen w-screen ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'}`}>
-      {/* Chat List */}
       {!activeChat || !isMobile ? (
         <div className={`flex-none h-full ${isMobile ? 'w-full' : 'w-2/6'} border-r`}>
           <ChatList chats={chats} setActiveChat={setActiveChat} activeChat={activeChat} />
         </div>
       ) : null}
-
-      {/* Chat Window */}
       {(activeChat || !isMobile) && (
         <div className={`flex-grow h-full ${isMobile ? 'w-full' : 'w-4/6'}`}>
           <ChatWindow activeChat={activeChat} sendMessage={sendMessage} onBack={() => setActiveChat(null)} />

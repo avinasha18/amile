@@ -103,3 +103,23 @@ export const updateApplicationStatusController = async (req, res) => {
     res.status(500).send(`Error: ${error.message}`);
   }
 };
+
+
+export const getApplicationStatistics = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const totalApplications = await Application.countDocuments({ studentId: userId });
+    const acceptedApplications = await Application.countDocuments({ studentId: userId, status: 'selected' });
+    const rejectedApplications = await Application.countDocuments({ studentId: userId, status: 'rejected' });
+    const pendingApplications = await Application.countDocuments({ studentId: userId, status: 'pending' });
+
+    res.json({
+      totalApplications,
+      acceptedApplications,
+      rejectedApplications,
+      pendingApplications,
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch application statistics' });
+  }
+};

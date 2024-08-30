@@ -22,6 +22,7 @@
     "axios": "^1.7.5",
     "babel-runtime": "^6.26.0",
     "chart.js": "^4.4.4",
+    "firebase": "^10.13.0",
     "framer-motion": "^11.3.29",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.436.0",
@@ -40,7 +41,8 @@
     "recharts": "^2.12.7",
     "redux": "^5.0.1",
     "regenerator-runtime": "^0.14.1",
-    "slick-carousel": "^1.8.1"
+    "slick-carousel": "^1.8.1",
+    "socket.io-client": "^4.7.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",

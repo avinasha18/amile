@@ -5,12 +5,14 @@ export const data = {
       {
         data: [200, 600, 400, 620, 750, 600],
         backgroundColor: (context) => {
-          return context.dataIndex === 3 ? 'rgba(153, 102, 255, 0.8)' : 'rgba(173, 216, 230, 0.8)';
+          const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#FF8000', '#00FF80', '#F0EF22'];
+          return colors[context.dataIndex % colors.length];
         },
         borderColor: (context) => {
-          return context.dataIndex === 3 ? 'rgb(153, 102, 255)' : 'rgb(173, 216, 230)';
+          const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#FF8000', '#00FF80', '#E4EF12'];
+          return colors[context.dataIndex % colors.length];
         },
-        borderWidth: 2,
+        borderWidth: 1,
       },
     ],
   };
