@@ -240,7 +240,7 @@ console.log(response);
                 <a href={user?.linkedin} className="text-blue-400">
                   <FaLinkedin size={24} />
                 </a>
-                <a href={user?.github} className={themeStyles.heading}>
+                <a href={`https://github.com/${user?.github}`} className={themeStyles.heading} target="_blank">
                   <FaGithub size={24} />
                 </a>
                 <a href={user?.portfolio} className="text-green-400">
@@ -300,13 +300,13 @@ console.log(response);
             </h3>
             <div className="flex gap-4 mb-2">
               <>
-                <a href={user?.linkedin} className="text-blue-400">
+                <a href={user?.linkedin} target="_blank" className="text-blue-400">
                   <FaLinkedin size={24} />
                 </a>
-                <a href={user?.github} className={themeStyles.heading}>
+                <a href={`https://github.com/${user?.github}`} target="_blank" className={themeStyles.heading}>
                   <FaGithub size={24} />
                 </a>
-                <a href={user?.portfolio} className="text-green-400">
+                <a href={user?.portfolio} target="_blank" className="text-green-400">
                   <FaGlobe size={24} />
                 </a>
                 <PluginConnectButton
