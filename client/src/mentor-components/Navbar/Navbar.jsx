@@ -1,14 +1,26 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FaUserCircle } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import './index.css';
+import { logout } from "../../services/redux/AuthSlice";
 import Badge from '@mui/material/Badge';
 import MailIcon from '@mui/icons-material/Mail';
+import { setAuthToken } from "../../hooks/golbalAuth";
 
 const MentorNavbar = () => {
   const [isMenuOpen, setMenu] = useState(false);
   const menuRef = useRef(null);
+  
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
+  const handleLogout = async () => {
+    await dispatch(logout());
+    setAuthToken(); // This clears the token from the axios headers
+    navigate("/login");
+  };
+  
   // Close the menu when clicking outside of it
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -26,7 +38,7 @@ const MentorNavbar = () => {
   return (
     <header className="bg-[#000] text-gray-100 shadow-md z-50 px-5 h-[70px] border-b border-gray-700">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-        <Link to="/">
+        <Link to="/mentor">
           <h1 className=" text-[30px] font-bold animate-gradient bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-500 bg-clip-text text-transparent">
             Amile
           </h1>
@@ -49,7 +61,7 @@ const MentorNavbar = () => {
           >
             <FaUserCircle className="text-4xl" />
           </button>
-          {isMenuOpen && <UserMenu />}
+          {isMenuOpen && <UserMenu onLogout={handleLogout}/>}
         </div>
       </div>
     </header>
@@ -62,21 +74,22 @@ const NavItem = ({ children }) => (
   </a>
 );
 
-const UserMenu = () => (
+const UserMenu = ({onLogout}) => (
   <div className="absolute top-10 right-0 mt-2 w-48 bg-slate-900 rounded-md shadow-lg py-1 text-gray-100">
-    <MenuItem>Your Profile</MenuItem>
+    <MenuItem to="/mentor/profile">Your Profile</MenuItem>
     <MenuItem>Settings</MenuItem>
-    <MenuItem>Sign out</MenuItem>
+    <MenuItem onClick={onLogout}>Sign out</MenuItem>
   </div>
 );
 
-const MenuItem = ({ children }) => (
-  <a
-    href="#"
+const MenuItem = ({ children, to, onClick }) => (
+  <Link
+    to={to}
+    onClick={onClick}
     className="block px-4 py-2 text-sm hover:bg-gray-600 transition-colors"
   >
     {children}
-  </a>
+  </Link>
 );
 
 export default MentorNavbar;

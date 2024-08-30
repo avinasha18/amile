@@ -84,7 +84,7 @@ const UserRegisterFlow = () => {
       });
 
       if (response.data.success) {
-        console.log(response.data.message);
+        console.log(response);
         navigate("/login", { replace: true });
       } else {
         console.log(response.data.message);

@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import { FaUser, FaEye, FaEyeSlash } from "react-icons/fa"; // Importing React Icons
 import { styled, ThemeProvider, createTheme } from "@mui/material/styles";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -61,7 +64,7 @@ const Login = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [userType, setUserType] = useState("student");
+  const [userType, setUserType] = useState("student"); // Initial value set to "student"
   const [rememberMe, setRememberMe] = useState(false);
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
@@ -100,9 +103,8 @@ const Login = () => {
       const response = await Actions.Login({
         username: email.trim(),
         password,
-        userType,
+        userType, // Include the selected userType in the request
       });
-
       if (response.data.success) {
         const cookieExpires = rememberMe ? 10 : 1;
         dispatch(
@@ -118,7 +120,12 @@ const Login = () => {
         if (isnext) {
           nav(isnext, { replace: true });
         } else {
-          nav("/", { replace: true });
+          console.log(userType)
+          if(userType === "mentor") {
+            nav("/mentor/", { replace: true });
+          } else {
+            nav("/", { replace: true });
+          }
         }
 
         toast.success("Login successful");
@@ -135,13 +142,50 @@ const Login = () => {
     <ThemeProvider theme={theme}>
       <div className="bg-gray-50 font-[sans-serif] min-h-screen flex flex-col items-center justify-center py-6 px-4">
         <div className="max-w-md w-full">
-         
+
           <div className="p-8 rounded-2xl bg-white shadow">
             <h2 className="text-gray-800 text-center text-2xl font-bold">
               Sign in
             </h2>
             <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
               <div>
+                <RadioGroup
+                  row
+                  aria-labelledby="demo-row-radio-buttons-group-label"
+                  name="row-radio-buttons-group"
+                  className="mb-3"
+                  value={userType} // Bind to userType state
+                  onChange={(e) => setUserType(e.target.value)} // Update userType state on change
+                >
+                  <FormControlLabel
+                    value="student"
+                    control={
+                      <Radio
+                        sx={{
+                          color: 'black', // Unchecked color
+                          '&.Mui-checked': {
+                            color: '#1976d2', // Checked color (blue)
+                          },
+                        }}
+                      />
+                    }
+                    label="Student"
+                  />
+                  <FormControlLabel
+                    value="mentor"
+                    control={
+                      <Radio
+                        sx={{
+                          color: 'black', // Unchecked color
+                          '&.Mui-checked': {
+                            color: '#1976d2', // Checked color (blue)
+                          },
+                        }}
+                      />
+                    }
+                    label="Mentor"
+                  />
+                </RadioGroup>
                 <label className="text-gray-800 text-sm mb-2 block">
                   User name
                 </label>

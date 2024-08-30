@@ -25,13 +25,41 @@ const mentorSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   name: { type: String, required: true },
-  qualifications: String,
-  certifications: String,
-  workExperience: String,
+  email: { type: String, required: true, unique: true },
+  status: { type: String, required: true, default: "inactive" },
+  title: String, 
+  qualifications: [
+    {
+      name: { type: String, required: true },
+      institution: { type: String, required: true },
+      year: { type: String, required: true },
+      description: { type: String, required: true },
+      collegeLogo: { type: String, required: true }
+    }
+  ],
+  skills: [String],
+  certifications: [
+    {
+      name: { type: String, required: true },
+      issuedBy: { type: String, required: true },
+      description: { type: String, required: true },
+      organizationLogo: { type: String, required: true }
+    }
+  ],
+  
+  workExperience: [
+    {
+      position: { type: String, required: true },
+      company: { type: String, required: true },
+      duration: { type: String, required: true }
+    }
+  ],
   github: String,
   linkedin: String,
   portfolio: String,
+  myPortfolioPlugin: { type: String },
 });
+
 
 // Define the schema for a company
 const companySchema = new mongoose.Schema({
@@ -145,9 +173,37 @@ export const updateUser = async (userData) => {
 
   return updatedUser;
 };
+export const updateUserMentor = async (userData) => {
+  const {
+    username,
+    name,
+    qualifications,
+    workExperience,
+    certifications,
+    skills,
+    title,
+  } = userData;
 
+  const updateData = {};
+
+  if (name) updateData.name = name;
+  if (workExperience) updateData.workExperience = workExperience;
+  if (qualifications) updateData.qualifications = qualifications;
+  if (skills) updateData.skills = skills;
+  if (title) updateData.title = title;
+  if (certifications) updateData.certifications = certifications;
+
+  const updatedUser = await Mentor.findOneAndUpdate(
+    { username },
+    { $set: updateData },
+    { new: true, runValidators: true }
+  );
+
+  return updatedUser;
+}
 export const createMentor = async (mentorData) => {
   const {
+    email,
     username,
     password,
     name,
@@ -162,6 +218,7 @@ export const createMentor = async (mentorData) => {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const newMentor = new Mentor({
+    email,
     username,
     name,
     password: hashedPassword,
@@ -204,6 +261,7 @@ export const createCompany = async (companyData) => {
 
   await newCompany.save();
 };
+
 
 // Function to find a user by username in a specific collection
 export const findUserByUsername = async (username, model) => {
