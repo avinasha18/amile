@@ -303,14 +303,24 @@ export const findTokenByUsername = async (username) => {
   }
 };
 
-export const updateAccountStatus = async (username) => {
+export const updateAccountStatus = async (username,userType) => {
   try {
-    const result = await Student.findOneAndUpdate(
+    console.log(userType)
+    let result;
+    if(userType === 'mentor'){
+       result = await Mentor.findOneAndUpdate(
+        { username }, 
+        { $set: { status: 'active' } },
+        { new: true } 
+      );
+    }
+    else {
+     result = await Student.findOneAndUpdate(
       { username }, 
       { $set: { status: 'active' } },
       { new: true } 
     );
-
+  }
     if (!result) {
       return { success: false, message: "User not found" };
     }

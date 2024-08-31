@@ -17,6 +17,7 @@ import { VerifyAccount } from "./components/verifyAccount";
 import ReportIncident from "./components/reportIncident";
 import MentorRouteManagement from "./mentor-components/MentorRouteManagement";
 import Compiler from './components/Compiler/components/Compiler';
+import { VerifyMentor } from './components/verifyAccount/verifyMentor';
 
 function App() {
   const islogin = useSelector((state) => state.auth.token);
@@ -28,6 +29,8 @@ function App() {
     <ThemeProvider>
       <Routes>
         <Route path="/verifyaccount" element={<VerifyAccount />} />
+        <Route path="/mentor/verifyaccount" element={<VerifyMentor />} />
+
         <Route path="/forgotpassword" element={<ForgotPassword />} />
         <Route path="/resetpassword" element={<ResetPassword />} />
         <Route path="/resendverify" element={<ResendVerification />} />

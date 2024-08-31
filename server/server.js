@@ -13,6 +13,7 @@ import internshipRoutes from "./routes/internshipRoutes.js";
 import referalRoutes from "./routes/referalRoutes.js";
 import applicationRoutes from './routes/applicaionRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
+import { VerifyMentorAccountwithToken } from './controllers/mentorController.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -41,9 +42,8 @@ app.use("/", referalRoutes);
 app.use('/', applicationRoutes);
 app.use('/', dashboardRoutes);
 app.use('/', chatRoutes(io));
-
 io.on('connection', (socket) => {
-  console.log('A user connected:', socket.id);
+  // console.log('A user connected:', socket.id);
 
   socket.on('joinRoom', (room) => {
     socket.join(room);
@@ -56,7 +56,7 @@ io.on('connection', (socket) => {
 
 
   socket.on('disconnect', () => {
-    console.log('User disconnected:', socket.id);
+    // console.log('User disconnected:', socket.id);
   });
 });
 
