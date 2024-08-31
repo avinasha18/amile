@@ -1,14 +1,16 @@
 import React from 'react';
 import { Box, Typography, Card, CardContent } from '@mui/material';
 import { Person, Feedback, School } from '@mui/icons-material'; // Importing icons from Material-UI
+import { PiStudentFill } from "react-icons/pi";
+import { GiMoneyStack } from "react-icons/gi";
+import { FiInfo } from "react-icons/fi";
 import MentorProgress from './MentorProgress';
+import { useTheme } from '../../context/ThemeContext';
 
 const Dashboard = () => {
-    const students = [
-        { name: 'John Doe', progress: '75%' },
-        { name: 'Jane Smith', progress: '85%' },
-        { name: 'Alice Johnson', progress: '95%' },
-    ];
+    const { isDarkMode } = useTheme();
+
+    const studentsAssigned = 1234;
 
     const feedback = [
         { date: '2024-08-01', comment: 'Great mentor, very helpful!' },
@@ -26,12 +28,11 @@ const Dashboard = () => {
         <Box
             sx={{
                 minHeight: '100vh',
-                background: 'transparent',
+                background: `${isDarkMode ? 'black' : '#f8f8f8'}`,
+                color: `${isDarkMode ? 'white' : 'black'}`,
                 display: 'flex',
                 flexDirection: 'column',
-                borderRadius: '10px',
                 padding: '24px',
-                perspective: '1000px', // Perspective for 3D effect
                 paddingBottom: '30px'
             }}
         >
@@ -41,7 +42,6 @@ const Dashboard = () => {
                 sx={{
                     fontWeight: 'bold',
                     textAlign: 'center',
-                    color: 'violet',
                     mb: '20px',
                     fontSize: '1.5rem',
                 }}
@@ -61,103 +61,84 @@ const Dashboard = () => {
                 {/* Students Card */}
                 <Card
                     sx={{
-                        background: 'linear-gradient(to right, #43cea2, #185a9d)',
+                        background: `${isDarkMode ? 'linear-gradient(to right, #03346E, #021526)' : 'white'}`,
                         backgroundSize: 'cover',
                         backgroundRepeat: 'no-repeat',
                         backgroundPosition: 'center',
-                        color: 'white',
-                        borderRadius: '15px',
-                        boxShadow: '0 15px 45px rgba(0, 0, 0, 0.4)', // Enhanced shadow
+                        color: `${isDarkMode ? 'white' : 'black'}`,
+                        borderRadius: '10px',
                         width: '31%',
                         height: '150px',
-                        transformStyle: 'preserve-3d',
                         transition: 'transform 0.3s ease, box-shadow 0.3s ease'
                     }}
                 >
-                    <CardContent>
-                        <Typography
-                            variant="h6"
-                            gutterBottom
-                            sx={{ fontWeight: 'bold', fontSize: '1rem', display: 'flex', alignItems: 'center' }}
-                        >
-                            <Person sx={{ mr: 1 }} /> Students Assigned
-                        </Typography>
-                        <ul style={{ listStyleType: 'none', padding: 0, fontSize: '0.8rem' }}>
-                            {students.map((student, index) => (
-                                <li key={index}>
-                                    {student.name} - Progress: {student.progress}
-                                </li>
-                            ))}
-                        </ul>
-                    </CardContent>
+                    <div className='p-8'>
+                        <div className='flex items-center justify-between'>
+                            <div className='flex flex-shrink-0 items-center gap-2 mb-2'>
+                                <PiStudentFill className='text-2xl'/>
+                                <h1 className='text-lg font-semibold'>Students Assigned</h1>
+                            </div>
+                            <button className='p-1 rounded-full hover:bg-gray-200'>
+                                <FiInfo className='text-xl opacity-40'/>
+                            </button>
+                        </div>
+                        <p className='text-2xl font-semibold font-mono'>{studentsAssigned}</p>
+                    </div>
                 </Card>
 
-                {/* Feedback Card */}
                 <Card
                     sx={{
-                        background: 'linear-gradient(to right, #ff9966, #ff5e62)',
+                        background: `${isDarkMode ? 'linear-gradient(to right, #03346E, #021526)' : 'white'}`,
                         backgroundSize: 'cover',
                         backgroundRepeat: 'no-repeat',
                         backgroundPosition: 'center',
-                        color: 'white',
-                        borderRadius: '15px',
-                        boxShadow: '0 15px 45px rgba(0, 0, 0, 0.4)', // Enhanced shadow
+                        color: `${isDarkMode ? 'white' : 'black'}`,
+                        borderRadius: '10px',
                         width: '31%',
                         height: '150px',
-                        transformStyle: 'preserve-3d',
                         transition: 'transform 0.3s ease, box-shadow 0.3s ease'
                     }}
                 >
-                    <CardContent>
-                        <Typography
-                            variant="h6"
-                            gutterBottom
-                            sx={{ fontWeight: 'bold', fontSize: '1rem', display: 'flex', alignItems: 'center' }}
-                        >
-                            <Feedback sx={{ mr: 1 }} /> Feedback
-                        </Typography>
-                        <ul style={{ listStyleType: 'none', padding: 0, fontSize: '0.8rem' }}>
-                            {feedback.map((item, index) => (
-                                <li key={index}>
-                                    {item.date}: {item.comment}
-                                </li>
-                            ))}
-                        </ul>
-                    </CardContent>
+                    <div className='p-8'>
+                        <div className='flex items-center justify-between'>
+                            <div className='flex flex-shrink-0 items-center gap-2 mb-2'>
+                                <PiStudentFill className='text-2xl'/>
+                                <h1 className='text-lg font-semibold'>Students Assigned</h1>
+                            </div>
+                            <button className='p-1 rounded-full hover:bg-gray-200'>
+                                <FiInfo className='text-xl opacity-40'/>
+                            </button>
+                        </div>
+                        <p className='text-2xl font-semibold font-mono'>{studentsAssigned}</p>
+                    </div>
                 </Card>
 
                 {/* Courses Card */}
                 <Card
                     sx={{
-                        background: 'linear-gradient(to right, #ff512f, #f09819)',
+                        background: `${isDarkMode ? 'linear-gradient(to right, #03346E, #021526)' : 'white'}`,
                         backgroundSize: 'cover',
                         backgroundRepeat: 'no-repeat',
                         backgroundPosition: 'center',
-                        color: 'white',
-                        borderRadius: '15px',
-                        boxShadow: '0 15px 45px rgba(0, 0, 0, 0.4)', // Enhanced shadow
+                        color: `${isDarkMode ? 'white' : 'black'}`,
+                        borderRadius: '10px',
                         width: '31%',
                         height: '150px',
-                        transformStyle: 'preserve-3d',
                         transition: 'transform 0.3s ease, box-shadow 0.3s ease'
                     }}
                 >
-                    <CardContent>
-                        <Typography
-                            variant="h6"
-                            gutterBottom
-                            sx={{ fontWeight: 'bold', fontSize: '1rem', display: 'flex', alignItems: 'center' }}
-                        >
-                            <School sx={{ mr: 1 }} /> Courses
-                        </Typography>
-                        <ul style={{ listStyleType: 'none', padding: 0, fontSize: '0.8rem' }}>
-                            {courses.map((course, index) => (
-                                <li key={index}>
-                                    {course.title} - Students: {course.students}
-                                </li>
-                            ))}
-                        </ul>
-                    </CardContent>
+                    <div className='p-8'>
+                        <div className='flex items-center justify-between'>
+                            <div className='flex flex-shrink-0 items-center gap-2 mb-2'>
+                                <GiMoneyStack className='text-2xl'/>
+                                <h1 className='text-lg font-semibold'>Total Revenue</h1>
+                            </div>
+                            <button className='p-1 rounded-full hover:bg-gray-200'>
+                                <FiInfo className='text-xl opacity-40'/>
+                            </button>
+                        </div>
+                        <p className='text-2xl font-semibold font-mono'>{studentsAssigned}</p>
+                    </div>
                 </Card>
             </Box>
 
@@ -172,10 +153,9 @@ const Dashboard = () => {
             >
                 <Card
                     sx={{
-                        width: '90%',
+                        width: '70%',
                         height: '500px',
-                        backgroundColor: 'transparent',
-                        transformStyle: 'preserve-3d',
+                        borderRadius: '20px',
                         transition: 'transform 0.3s ease, box-shadow 0.3s ease'
                     }}
                 >

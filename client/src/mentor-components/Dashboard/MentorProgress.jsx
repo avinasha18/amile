@@ -86,13 +86,7 @@ const lineChartOptions = {
             marker: {
                 enabled: false, // Disable markers
             },
-            color: {
-                linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
-                stops: [
-                    [0, '#FF66B2'],
-                    [1, '#FF3366'],
-                ],
-            },
+            color: '#6EACDA'
         },
     },
     series: [
@@ -194,7 +188,7 @@ const MentorProgress = () => {
         <Box
             sx={{
                 padding: '20px',
-                background: 'linear-gradient(135deg, #2b5876, #4e4376)',
+                background: 'linear-gradient(135deg, #021526, #03346E)',
                 borderRadius: '12px',
                 boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)', // Enhanced shadow
                 margin: '0 auto',

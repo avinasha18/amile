@@ -3,11 +3,14 @@ import { FaUserCircle, FaSun, FaMoon } from "react-icons/fa";
 import { useTheme } from "../../context/ThemeContext";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { FaRegBell } from "react-icons/fa";
+import { TfiDashboard } from "react-icons/tfi";
 import './index.css';
 import { logout } from "../../services/redux/AuthSlice";
 import Badge from '@mui/material/Badge';
 import MailIcon from '@mui/icons-material/Mail';
 import { setAuthToken } from "../../hooks/golbalAuth";
+import SearchBox from "./SearchBox";
 
 const MentorNavbar = () => {
   const [isMenuOpen, setMenu] = useState(false);
@@ -15,7 +18,7 @@ const MentorNavbar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
   const menuRef = useRef(null);
-  
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -25,20 +28,6 @@ const MentorNavbar = () => {
     navigate("/login");
   };
 
-  const handleMenuToggle = () => {
-    setMenu(!isMenuOpen);
-  };
-
-  const handleOpenMyAccDrop = (event) => {
-    setAnchorEl(event.currentTarget);
-    setOpen(true);
-  };
-
-  const handleCloseMyAccDrop = () => {
-    setAnchorEl(null);
-    setOpen(false);
-  };
-  
   // Close the menu when clicking outside of it
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -54,23 +43,17 @@ const MentorNavbar = () => {
   }, [menuRef]);
 
   return (
-    <header className={`${
-        isDarkMode ? "bg-black text-gray-100" : "bg-white text-gray-800"
-      } shadow-md z-50 px-5 h-[70px] border-b ${
-        isDarkMode ? "border-gray-700" : "border-gray-200"
-      }`}>
+    <header className={`${isDarkMode ? "bg-black text-gray-100" : "bg-white text-gray-800"
+      } shadow-md z-50 px-5 h-[70px] border-b ${isDarkMode ? "border-gray-700" : "border-gray-200"
+      } sticky top-0`}>
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-        <Link to="/mentor">
-          <h1 className=" text-[30px] font-bold animate-gradient bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-500 bg-clip-text text-transparent">
-            Amile
-          </h1>
-        </Link>
+        <SearchBox />
         <nav className="hidden md:flex space-x-6">
-          <Link to="/mentor/dashboard">
-            <NavItem>Dashboard</NavItem>
-          </Link>
         </nav>
         <div className="relative flex flex-row gap-10 items-center" ref={menuRef}>
+          <Link to="/mentor/dashboard">
+            <TfiDashboard className="text-2xl"/>
+          </Link>
           <button
             onClick={toggleTheme}
             className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
@@ -87,7 +70,7 @@ const MentorNavbar = () => {
               vertical: 'bottom',
               horizontal: 'right',
             }}>
-              <MailIcon />
+              <FaRegBell className="text-xl" />
             </Badge>
           </Link>
           <button
@@ -96,7 +79,7 @@ const MentorNavbar = () => {
           >
             <FaUserCircle className="text-4xl" />
           </button>
-          {isMenuOpen && <UserMenu onLogout={handleLogout}/>}
+          {isMenuOpen && <UserMenu onLogout={handleLogout} />}
         </div>
       </div>
     </header>
@@ -109,7 +92,7 @@ const NavItem = ({ children }) => (
   </a>
 );
 
-const UserMenu = ({onLogout}) => (
+const UserMenu = ({ onLogout }) => (
   <div className="absolute top-10 right-0 mt-2 w-48 bg-slate-900 rounded-md shadow-lg py-1 text-gray-100">
     <MenuItem to="/mentor/profile">Your Profile</MenuItem>
     <MenuItem>Settings</MenuItem>
