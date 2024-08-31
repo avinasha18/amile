@@ -14,6 +14,9 @@ export const Actions = {
     VerifyAccount: async (data) => {
         return await axios.post(`${api}/verifyaccount?token=${data.accountid}`);
     },
+    VerifyMentorAccount: async (data) => {
+        return await axios.post(`${api}/mentor/verifyaccount?token=${data.accountid}`);
+    },
     FetchMyReferals: async (data) => {
         return await axios.get(`${api}/myreferals?page=${data.page || 1}`);
     },
