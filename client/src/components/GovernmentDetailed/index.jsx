@@ -35,6 +35,7 @@ const GovernmentDetailedPage = () => {
     const checkApplication = async () => {
       try {
         const response = await axios.get(`http://localhost:3000/government/applications/${currentUser.id}`);
+        console.log(response)
         const appliedJobs = response.data.map(app => app._id);
         setIsApplied(appliedJobs.includes(job?._id));
       } catch (error) {

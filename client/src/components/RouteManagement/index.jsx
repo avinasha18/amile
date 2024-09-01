@@ -17,6 +17,7 @@ import PageNotFound from "../noinfopage";
 import Dashboard from "../Dashboard";
 import CompanyChatStart from "../CompanyStartChart";
 import Compiler from "../Compiler/components/Compiler";
+import AIRecommendations from "../AI_Recommendations";
 
 export const RouteManagement = ({ islogin }) => {
   const location = useLocation(window.location);
@@ -35,13 +36,29 @@ export const RouteManagement = ({ islogin }) => {
       <div className={`h-screen flex flex-1 overflow-hidden no-scrollbar`}>
         <Sidebar isLogin={islogin} />
         <Routes>
-          <Route path="/" element={<JobsPage />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          {/* <Route path="/" element={<JobsPage />} />
+          <Route path="/dashboard" element={<Dashboard />} /> */}
           <Route
             path="/messages"
             element={
               <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
                 <Messages />
+              </ProtectedRoute>
+            }
+          />
+            <Route
+            path="/"
+            element={
+              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+                <JobsPage />
+              </ProtectedRoute>
+            }
+          />
+            <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+                <Dashboard />
               </ProtectedRoute>
             }
           />
@@ -99,6 +116,14 @@ export const RouteManagement = ({ islogin }) => {
             element={
               <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
                 <InterviewApp />
+              </ProtectedRoute>
+            }
+          />
+           <Route
+            path="/airecommendations"
+            element={
+              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+                <AIRecommendations />
               </ProtectedRoute>
             }
           />

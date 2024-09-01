@@ -7,7 +7,7 @@ const authSlice = createSlice({
   initialState: {
     token: Cookies.get('token') || null,
     user:Cookies.get('user') || null,
-    // userData: JSON.parse(Cookies.get('userData') || null) || {}
+    userData: JSON.parse(Cookies.get('userData') || null) || {}
   },
   reducers: {
     loginSuccess: (state, action) => {

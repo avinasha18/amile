@@ -4,6 +4,7 @@ import { ObjectId } from 'mongodb';
 import { sendEmail } from "../services/mailServices.js";
 import { Student } from "../models/auth.model.js";
 import { HtmlTemplates } from "../services/htmlTemplates.js";
+import {findUserById} from '../models/auth.model.js'
 
 export const createApplicationController = async (req, res) => {
   const { internshipId, studentId, companyId } = req.body;
@@ -24,22 +25,34 @@ export const createApplicationController = async (req, res) => {
       companyId: new ObjectId(companyId),
     });
 
-    const {name, email} = await  Student.findById(studentId,"name email");
-    const {companyName, role} = await Internship.findById(internshipId);
-    const subject = "Application submitted successfully";
     await newApplication.save();
-    await  sendEmail(email,subject, HtmlTemplates.appliedInternship(name,role,companyName))
 
-
-
-
+    // Send the response immediately
     res.status(201).json({ message: "Application submitted successfully" });
+
+    // Now, send the email in the background
+    setImmediate(async () => {
+      try {
+        console.log(studentId, companyId);
+        const student = await Student.findById(studentId);
+        console.log(student, "student data");
+
+        const internship = await Internship.findById(internshipId);
+        const { companyName, role } = internship;
+        const subject = "Application submitted successfully";
+        console.log(companyId, companyName, studentId, student.email, student.name);
+
+        await sendEmail(student.email, subject, HtmlTemplates.appliedInternship(student.name, role, companyName));
+      } catch (emailError) {
+        console.error("Error sending email:", emailError);
+        // Optionally, log this error to a monitoring service or database
+      }
+    });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({ message: `Error: ${error.message}` });
   }
 };
-
 
 export const getStudentApplicationsController = async (req, res) => {
   const { studentId } = req.params;
