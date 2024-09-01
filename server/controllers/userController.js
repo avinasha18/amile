@@ -72,6 +72,24 @@ export const AccountVerification = async (username, email) => {
   }
 };
 
+export const getUserSkills = async (req,res)=>{
+  console.log('in get skills')
+  const {id} = req.params
+  console.log(req.params,'params')
+  try{
+    const data = await Student.findOne({_id:id})
+    console.log(data)
+    res.status(200).json({skills : data.skills})
+
+  }
+  catch(e){
+    console.log(e.message)
+    res.status(200).json({message : 'server error'})
+
+  }
+
+}
+
 export const resendVerification = async (req, res) => {
   const { username } = req.body;
 
