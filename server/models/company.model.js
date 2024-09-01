@@ -4,9 +4,16 @@ import bcrypt from 'bcrypt';
 const companySchema = new mongoose.Schema({
   companyName: { type: String, required: true },
   crnNumber: { type: String, required: true, unique: true },
-  address: { type: String, required: true },
+  address: {
+    street: String,
+    city: String,
+    state: String,
+    zip: String,
+    country: String,
+  },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  incorporationDate: { type: Date, required: true },
   linkedin: String,
   instagram: String,
   website: String,
@@ -22,9 +29,16 @@ const companySchema = new mongoose.Schema({
   companyDescription: String,
   companyType: { type: String, enum: ['startup', 'service-based', 'product-based'] },
   companyCategories: [String],
+  contactPerson: {
+    name: String,
+    phone: String,
+  },
   status: { type: String, enum: ['pending', 'active'], default: 'pending' },
   dateOfRegistration: { type: Date, default: Date.now },
+  termsAccepted: { type: Boolean, required: true },
+
   verificationToken: String,
+
   resetPasswordToken: { type: String },
   resetPasswordExpires: { type: Date },
 });
@@ -50,7 +64,6 @@ companySchema.statics.findByName = function (name) {
 companySchema.statics.login = async function (email, password) {
   const company = await this.findOne({ email });
   if (!company) throw Error('Incorrect email or password');
-
   const match = await bcrypt.compare(password, company.password);
   if (!match) throw Error('Incorrect email or password');
 
