@@ -266,6 +266,10 @@ export const findUserByUsername = async (username, model) => {
   return await model.findOne({ username });
 };
 
+export const findUserById = async (model,userId)=> {
+  return await model.findOne({ userId });
+
+}
 
 export const addUserVerificationToken = async (username, token) => {
     try {

@@ -42,19 +42,19 @@ const SkeletonCard = () => {
   );
 };
 
-const JobCard = ({ job, onApply }) => {
+const AIJobCard = ({ job, onApply }) => {
   const { isDarkMode } = useTheme();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [isApplied, setIsApplied] = useState(false);
   const currentUser = Cookies.get('userId');
   const location = useLocation();
-
   useEffect(() => {
     // Check if the user has already applied for this job
     const checkApplication = async () => {
       try {
         const response = await axios.get(`http://localhost:3000/applications/student/${currentUser}`);
+        console.log(response)
         const appliedJobs = response?.data?.appliedInternshipsWithDetails.map(app => app._id);
         setIsApplied(appliedJobs.includes(job._id));
       } catch (error) {
@@ -161,4 +161,4 @@ const JobCard = ({ job, onApply }) => {
   );
 };
 
-export default JobCard;
+export default AIJobCard;

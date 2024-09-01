@@ -9,6 +9,8 @@ import {
   FaBook,
   FaCog,
 } from "react-icons/fa";
+import { AiOutlineRobot } from 'react-icons/ai';
+
 import { SiCompilerexplorer } from "react-icons/si";
 
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -79,7 +81,16 @@ const Sidebar = () => {
             isCollapsed={isCollapsed}
           />
         </SidebarSection>
+      
         <SidebarSection title="Internships" isCollapsed={isCollapsed}>
+        <SidebarItem
+            icon={AiOutlineRobot}
+            label="For you 🔥"
+            isDarkMode={isDarkMode}
+            to="/airecommendations"
+            isCollapsed={isCollapsed}
+            gradient
+          />
           <SidebarItem
             icon={FaSearch}
             isDarkMode={isDarkMode}
@@ -110,6 +121,7 @@ const Sidebar = () => {
             to="/compiler"
             isCollapsed={isCollapsed}
           />
+           
         </SidebarSection>
         <SidebarSection title="Courses" isCollapsed={isCollapsed}>
           <SidebarItem

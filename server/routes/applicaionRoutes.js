@@ -4,9 +4,10 @@ import {
   getStudentApplicationsController,
   getCompanyApplicantsController,
   updateApplicationStatusController,
+  
 } from '../controllers/applicationController.js';
+import {getUserSkills} from '../controllers/userController.js'
 import { createJobPosting, getAllJobPostings, getJobPostingById, createGovtApplicationController, getGovtStudentApplicationsController } from '../controllers/governmentController.js';
-
 const router = express.Router();
 
 // Route to apply for an internship
@@ -16,7 +17,7 @@ router.post('/government', createJobPosting);
 router.get('/government', getAllJobPostings);
 router.post('/government/apply', createGovtApplicationController);
 router.get('/government/applications/:id', getGovtStudentApplicationsController);
-
+router.get('/getSkills/:id',getUserSkills)
 // Route to get applications for a student
 router.get('/applications/student/:studentId', getStudentApplicationsController);
 
