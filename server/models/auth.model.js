@@ -10,14 +10,15 @@ const studentSchema = new mongoose.Schema({
   status: { type: String, required: true, default: "inactive" },
   education: [String],
   workExperience: [String],
-  projects: [{ title:{type:String},description:{type:String},link:{type:String}}],
+  projects: [{ title: { type: String }, description: { type: String }, link: { type: String } }],
   skills: [String],
   achievements: [String],
-  certifications:  [{ title:{type:String},description:{type:String},link:{type:String}}],
+  certifications: [{ title: { type: String }, description: { type: String }, link: { type: String } }],
   github: String,
   linkedin: String,
   portfolio: String,
   myPortfolioPlugin: { type: String },
+  enrolledCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }]  // Storing references to Course documents
 });
 
 // Define the schema for a mentor

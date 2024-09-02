@@ -49,6 +49,12 @@ export const Actions = {
     },
     fetchCourse: async (data) => {
         return await axios.get(`${api}/courses`);
+    },
+    enrollCourse: async (data) => {
+        return await axios.post(`${api}/enrollcourse`, { ...data });
+    },
+    checkEnrollment: async (data) => {
+        return await axios.post(`${api}/checkenrollment`, data);
     }
 };
 

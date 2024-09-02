@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { useLocation } from "react-router-dom"; // Import useLocation
 import { FaUser, FaClipboardList, FaEnvelope, FaSearch, FaBrain, FaBook, FaCog  , FaRobot
 } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
@@ -125,8 +124,8 @@ const Sidebar = () => {
         <SidebarSection title="Courses" isCollapsed={isCollapsed}>
           <SidebarItem
             icon={FaBook}
-            label="Courses"
-            to="/courses"
+            label="Your Courses"
+            to="/my-courses"
             isCollapsed={isCollapsed}
           />
         </SidebarSection>
