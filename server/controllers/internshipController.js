@@ -6,7 +6,8 @@ import {
   deleteInternship,
   Internship,
   Application,
-  findInternshipByUserName
+  findInternshipByUserName,
+  getInternshipsByCompanyId
 } from '../models/intern.model.js';
 
 export const getAllInternshipsController = async (req, res) => {
@@ -77,9 +78,10 @@ export const getInternshipByIdController = async (req, res) => {
 };
 
 export const createInternshipController = async (req, res) => {
+  const {companyId}  = req;
   try {
-    await createInternship(req.body);
-    res.status(201).send("Internship created successfully");
+    await createInternship({...req.body,companyId });
+    res.json({success:true,message:"Internship created successfully"});
   } catch (error) {
     res.status(500).send(`Error: ${error.message}`);
   }
@@ -104,3 +106,18 @@ export const deleteInternshipController = async (req, res) => {
     res.status(500).send(`Error: ${error.message}`);
   }
 };
+
+export const getAllInternshipsByCompany =async (req, res)=>{
+  const {companyId} = req;
+  try {
+    const internship = await getInternshipsByCompanyId(companyId);
+    if (!internship) return res.json({message:"Internship not found", success: false});
+    res.json({success:true,data:internship});
+  } catch (error) {
+    console.log(error);
+    res.json(`Error: ${error.message}`);
+  }
+
+
+
+}

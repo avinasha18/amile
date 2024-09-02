@@ -9,6 +9,9 @@ import {
   FaBook,
   FaCog,
   FaRobot
+import React, { useEffect } from "react";
+import { useLocation } from "react-router-dom"; // Import useLocation
+import { FaUser, FaClipboardList, FaEnvelope, FaSearch, FaBrain, FaBook, FaCog  , FaRobot
 } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 

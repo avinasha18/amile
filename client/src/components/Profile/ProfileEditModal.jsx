@@ -332,7 +332,7 @@ const ProfileEditModal = ({ open, onClose, user, onSave }) => {
           label="Add Skill"
           fullWidth
           margin="normal"
-          value={editableUser.newSkill || ''}
+          value={editableUser?.newSkill || ''}
           onChange={(e) => setEditableUser({ ...editableUser, newSkill: e.target.value })}
         />
         <Button

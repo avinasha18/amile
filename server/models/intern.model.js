@@ -3,7 +3,8 @@ import mongoose from 'mongoose';
 
 const internshipSchema = new mongoose.Schema({
     role: { type: String, required: true },               
-    companyName: { type: String, required: true },        
+    companyName: { type: String, required: true },
+    companyId: { type: String, required: true},        
     stipend: { type: Number, required: false },           
     hours: { type: Number, required: true },              
     type: { type: String, required: true },              
@@ -30,7 +31,7 @@ const applicationSchema = new mongoose.Schema({
     appliedAt: { type: Date, default: Date.now },
   });
   
-  export const Application = mongoose.model('Application', applicationSchema);
+export const Application = mongoose.model('Application', applicationSchema);
   
 
 export const Internship = mongoose.model('Internship', internshipSchema);
@@ -62,3 +63,9 @@ export const updateInternship = async (id, data) => {
 export const deleteInternship = async (id) => {
     return await Internship.findByIdAndDelete(id);
 };
+
+
+export const getInternshipsByCompanyId = async (companyId) => {
+
+    return await Internship.find({companyId})
+}
