@@ -1,14 +1,3 @@
-import React, { useState, useEffect } from "react";
-import {
-  FaTachometerAlt,
-  FaUser,
-  FaClipboardList,
-  FaEnvelope,
-  FaSearch,
-  FaBrain,
-  FaBook,
-  FaCog,
-  FaRobot
 import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom"; // Import useLocation
 import { FaUser, FaClipboardList, FaEnvelope, FaSearch, FaBrain, FaBook, FaCog  , FaRobot
