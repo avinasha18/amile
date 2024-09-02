@@ -16,14 +16,28 @@ import { ResendVerification } from "./components/resendVerification";
 import { VerifyAccount } from "./components/verifyAccount";
 import ReportIncident from "./components/reportIncident";
 import MentorRouteManagement from "./mentor-components/MentorRouteManagement";
-import Compiler from './components/Compiler/components/Compiler';
 import { VerifyMentor } from './components/verifyAccount/verifyMentor';
+import socket from './hooks/socket';
 
 function App() {
   const islogin = useSelector((state) => state.auth.token);
   setAuthToken(islogin);
 
+  const { _id: userId } = useSelector((state) => state.auth.userData);
 
+
+  useEffect(() => {
+    if (userId && islogin) {
+      socket.on('connect', () => {
+        socket.emit('joinChat', { userId });
+        console.log(`Emitted joinChat for User ID: ${userId} on socket connect`);
+      });
+    }
+
+    return () => {
+      socket.off('connect'); 
+    };
+  }, [userId]);
 
   return (
     <ThemeProvider>

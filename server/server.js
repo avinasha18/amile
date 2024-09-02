@@ -1,4 +1,3 @@
-// server.js
 import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
@@ -19,20 +18,23 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173","http://localhost:5174"],
-    methods: ["GET", "POST"]
+    origin: ["http://localhost:5173", "http://localhost:5174"],
+    methods: ["GET", "POST"],
   }
 });
 
+
+
 app.use(cors({
   origin: ["http://localhost:5173", "http://localhost:5174"],
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"]
+  methods: ["GET", "POST","DELETE","PUT"],
+
 }));
+
+
+
 app.use(express.json());
 app.use(bodyParser.json());
-
-
 
 app.use("/", userRoutes);
 app.use("/", mentorRoutes);
@@ -43,25 +45,26 @@ app.use('/', applicationRoutes);
 app.use('/', dashboardRoutes);
 app.use('/', chatRoutes(io));
 
-io.on('connection', (socket) => {
-  console.log('A user connected:', socket.id);
+// io.on('connection', (socket) => {
+//   console.log('A user connected:', socket.id);
 
-  socket.on('joinRoom', (room) => {
-    socket.join(room);
-    console.log(`User joined room: ${room}`);
-  });
+//   socket.on('joinRoom', (room) => {
+//     socket.join(room);
+//     console.log(`User joined room: ${room}`);
+//   });
 
-  socket.on('sendMessage', ({ room, chat, message }) => {
-    io.to(room).emit('receiveMessage', { chat, message });
-  });
+//   socket.on('sendMessage', ({ room, chat, message }) => {
+//     io.to(room).emit('receiveMessage', { chat, message });
+//   });
 
-
-  socket.on('disconnect', () => {
-    console.log('User disconnected:', socket.id);
-  });
-});
-
-initializeSocket(server);
+//   socket.on('disconnect', () => {
+//     console.log('User disconnected:', socket.id);
+//   });
+// });
+const userSocketMap = {}
 connectToMongoDB();
+initializeSocket(io, userSocketMap);
+
+
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
