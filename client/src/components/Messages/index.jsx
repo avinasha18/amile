@@ -16,13 +16,11 @@ function Messages() {
   const userId = Cookies.get('userId');
 
   useEffect(() => {
-    // Function to fetch chats from the server
     const fetchChats = async () => {
       try {
         const response = await axios.get(`http://localhost:3000/${userType}/${userId}`);
         setChats(response.data);
 
-        // Update the active chat with the latest data
         if (activeChat) {
           const updatedActiveChat = response.data.find(chat => chat._id === activeChat._id);
           if (updatedActiveChat) {
@@ -34,17 +32,14 @@ function Messages() {
       }
     };
 
-    // Initial fetch to get chats
     fetchChats();
 
-    // Polling: Check for new messages every 1 second (1000 ms)
-    const pollingInterval = setInterval(fetchChats, 1000); // Adjust the interval as needed
+    const pollingInterval = setInterval(fetchChats, 1000); 
 
-    // Cleanup function to clear the interval on component unmount
     return () => {
       clearInterval(pollingInterval);
     };
-  }, [userId, userType, activeChat]); // Add activeChat to the dependency array
+  }, [userId, userType, activeChat]); 
 
   const sendMessage = (message) => {
     if (activeChat) {

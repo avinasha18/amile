@@ -96,8 +96,7 @@ export const getStudentApplicationsController = async (req, res) => {
 };
 
 export const getCompanyApplicantsController = async (req, res) => {
-  const { companyId } = req.params;
-
+  const { companyId } = req;
   try {
     const applications = await Application.find({
       $or: [
@@ -107,7 +106,7 @@ export const getCompanyApplicantsController = async (req, res) => {
     })
       .populate('studentId')
       .populate('internshipId');
-    res.status(200).json(applications);
+    res.json({success:true,data:applications});
   } catch (error) {
     res.status(500).send(`Error: ${error.message}`);
   }
