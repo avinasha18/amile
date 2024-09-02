@@ -18,6 +18,7 @@ import Dashboard from "../Dashboard";
 import CompanyChatStart from "../CompanyStartChart";
 import Compiler from "../Compiler/components/Compiler";
 import AIRecommendations from "../AI_Recommendations";
+import Chatbot from "../Chatbot";
 
 export const RouteManagement = ({ islogin }) => {
   const location = useLocation(window.location);
@@ -132,6 +133,14 @@ export const RouteManagement = ({ islogin }) => {
             element={
               <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
                 <Feedback />
+              </ProtectedRoute>
+            }
+          />
+           <Route
+            path="/chatbot"
+            element={
+              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+                <Chatbot />
               </ProtectedRoute>
             }
           />

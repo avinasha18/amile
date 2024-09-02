@@ -8,6 +8,7 @@ import {
   FaBrain,
   FaBook,
   FaCog,
+  FaRobot
 } from "react-icons/fa";
 import { AiOutlineRobot } from 'react-icons/ai';
 
@@ -132,6 +133,12 @@ const Sidebar = () => {
           />
         </SidebarSection>
         <SidebarSection title="Settings" isCollapsed={isCollapsed}>
+        <SidebarItem
+            icon={FaRobot}
+            label="Chat with Amile"
+            to="/chatbot"
+            isCollapsed={isCollapsed}
+          />
           <SidebarItem
             icon={FaCog}
             label="Settings"

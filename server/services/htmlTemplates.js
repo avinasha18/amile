@@ -112,7 +112,7 @@ CompanyResetPasswordLink: function (token) {
     </div>
   </div>`;
 },
-appliedInternship: function (ApplicantName='Hola', InternshipTitle, CompanyName) {
+appliedInternship: function (ApplicantName='Applicant', InternshipTitle, CompanyName) {
   return (
       `<div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
           <div style="background-color: #fff; padding: 20px; border-radius: 5px; max-width: 600px; margin: auto;">
