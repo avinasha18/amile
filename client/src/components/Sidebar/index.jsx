@@ -1,18 +1,9 @@
-import React, { useState } from "react";
-import {
-  FaTachometerAlt,
-  FaUser,
-  FaClipboardList,
-  FaEnvelope,
-  FaSearch,
-  FaBrain,
-  FaBook,
-  FaCog,
+import React, { useEffect } from "react";
+import { useLocation } from "react-router-dom"; // Import useLocation
+import { FaUser, FaClipboardList, FaEnvelope, FaSearch, FaBrain, FaBook, FaCog  , FaRobot
 } from "react-icons/fa";
 import { AiOutlineRobot } from 'react-icons/ai';
-
 import { SiCompilerexplorer } from "react-icons/si";
-
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { Link } from "react-router-dom";
@@ -22,17 +13,24 @@ import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar } from "../../services/redux/sideBarToggleSlice";
 import { IconButton } from "@mui/material";
 
-
 const Sidebar = () => {
   const { isDarkMode } = useTheme();
-  const isCollapsed =useSelector((state)=>state.sidebar.isSidebar);
-  const dispatch = useDispatch()
+  const isCollapsed = useSelector((state) => state.sidebar.isSidebar);
+  const dispatch = useDispatch();
+  const location = useLocation(); // Get the current location
 
   const switchSidebar = () => {
-
-    dispatch(toggleSidebar())
-    
+    dispatch(toggleSidebar());
   };
+
+  useEffect(() => {
+    if (location.pathname.startsWith("/course")) {
+      if (!isCollapsed) {
+        dispatch(toggleSidebar());
+      }
+    }
+  }, [location.pathname, isCollapsed, dispatch]);
+  
 
   return (
     <nav
@@ -44,19 +42,19 @@ const Sidebar = () => {
         isDarkMode ? "border-gray-700" : "border-gray-200"
       } transition-all duration-300`}
     >
-      <div className={isCollapsed?"p-2":"p-4"}>
-        <div className={`flex ${!isCollapsed? "justify-between":"justify-center"}`}>
-       {!isCollapsed&& <h1 className="font-bold"> User</h1>}
-       <button
-          onClick={switchSidebar}
-          className={`focus:outline-none mb-4 ${isDarkMode ? "text-gray-100" : "text-gray-800"}`}
-        >
-          <IconButton
-            style={{ color: isDarkMode ? "#fff" : "#000" }}
+      <div className={isCollapsed ? "p-2" : "p-4"}>
+        <div className={`flex ${!isCollapsed ? "justify-between" : "justify-center"}`}>
+          {!isCollapsed && <h1 className="font-bold">User</h1>}
+          <button
+            onClick={switchSidebar}
+            className={`focus:outline-none mb-4 ${
+              isDarkMode ? "text-gray-100" : "text-gray-800"
+            }`}
           >
-            {isCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-          </IconButton>
-        </button>
+            <IconButton style={{ color: isDarkMode ? "#fff" : "#000" }}>
+              {isCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            </IconButton>
+          </button>
         </div>
         <SidebarSection isCollapsed={isCollapsed}>
           <SidebarItem
@@ -81,9 +79,9 @@ const Sidebar = () => {
             isCollapsed={isCollapsed}
           />
         </SidebarSection>
-      
+
         <SidebarSection title="Internships" isCollapsed={isCollapsed}>
-        <SidebarItem
+          <SidebarItem
             icon={AiOutlineRobot}
             label="For you 🔥"
             isDarkMode={isDarkMode}
@@ -105,7 +103,7 @@ const Sidebar = () => {
             to="/government"
             isCollapsed={isCollapsed}
           />
-         
+
           <SidebarItem
             icon={FaBrain}
             label="AI Interviewer"
@@ -114,14 +112,13 @@ const Sidebar = () => {
             isCollapsed={isCollapsed}
             gradient
           />
-           <SidebarItem
+          <SidebarItem
             icon={SiCompilerexplorer}
             label="Code Playground"
             isDarkMode={isDarkMode}
             to="/compiler"
             isCollapsed={isCollapsed}
           />
-           
         </SidebarSection>
         <SidebarSection title="Courses" isCollapsed={isCollapsed}>
           <SidebarItem
@@ -132,6 +129,12 @@ const Sidebar = () => {
           />
         </SidebarSection>
         <SidebarSection title="Settings" isCollapsed={isCollapsed}>
+        <SidebarItem
+            icon={FaRobot}
+            label="Chat with Amile"
+            to="/chatbot"
+            isCollapsed={isCollapsed}
+          />
           <SidebarItem
             icon={FaCog}
             label="Settings"

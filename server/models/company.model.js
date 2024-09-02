@@ -20,8 +20,8 @@ const companySchema = new mongoose.Schema({
   branches: [
     {
       branchName: String,
-      location: String
-    }
+      location: String,
+    },
   ],
   companySize: { type: String, enum: ['1-10', '10-100', '100-500', '500-5000', 'above 5000'] },
   companyLogo: String,
@@ -43,7 +43,6 @@ const companySchema = new mongoose.Schema({
   resetPasswordExpires: { type: Date },
 });
 
-
 // Password hashing before saving
 companySchema.pre('save', async function (next) {
   const company = this;
@@ -57,8 +56,6 @@ companySchema.pre('save', async function (next) {
 companySchema.statics.findByName = function (name) {
   return this.find({ companyName: new RegExp(name, 'i') });
 };
-
-
 
 // Static method for login
 companySchema.statics.login = async function (email, password) {
@@ -79,6 +76,7 @@ companySchema.statics.signup = async function (data) {
   return company;
 };
 
-const Company = mongoose.model('Company', companySchema);
+// Check if the model already exists before compiling it
+const Company = mongoose.models.Company || mongoose.model('Company', companySchema);
 
 export default Company;

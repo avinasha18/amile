@@ -176,17 +176,17 @@ const MentorProfile = () => {
         background: isDarkMode ? "bg-black" : "bg-gray-100",
         text: isDarkMode ? "text-gray-300" : "text-gray-800",
         heading: isDarkMode ? "text-white" : "text-gray-900",
-        card: isDarkMode ? "bg-gray-900" : "bg-white",
-        cardBorder: isDarkMode ? "border-gray-800" : "border-gray-200",
+        card: isDarkMode ? "bg-slate-900" : "bg-white",
+        cardBorder: isDarkMode ? "border border-slate-500/30" : "",
         input: isDarkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800",
         button: isDarkMode
-            ? "bg-blue-600 hover:bg-blue-700"
-            : "bg-blue-500 hover:bg-blue-600",
-        tabActive: isDarkMode ? "bg-blue-600" : "bg-blue-500",
-        tabInactive: isDarkMode ? "bg-gray-800" : "bg-gray-200",
+            ? "bg-gray-800 text-gray-300 hover:bg-gray-700"
+            : "bg-gray-200 text-gray-700 hover:bg-gray-300",
+        tabActive: isDarkMode ? "bg-slate-900 border-b-0" : "bg-slate-800 bg-opacity-20",
         skillTag: isDarkMode
             ? "bg-gray-800 text-gray-300"
             : "bg-gray-200 text-gray-700",
+        tab: isDarkMode ? "bg-slate-900" : "bg-slate-200"
     };
 
     const updateUserInDatabase = async (updatedUser) => {
@@ -258,9 +258,9 @@ const MentorProfile = () => {
                                 user.workExperience.map((experience, index) => (
                                     <div
                                         key={index}
-                                        className="w-full p-6 my-5 rounded-lg backdrop-blur-lg bg-black bg-opacity-50 shadow-lg border-t border-slate-500/30"
+                                        className={`w-full p-6 my-5 ${themeStyles.card} ${themeStyles.text} rounded-lg backdrop-blur-lg bg-opacity-50 shadow-lg border-t border-slate-500/30`}
                                     >
-                                        <h2 className="text-xl font-bold text-white mb-2">
+                                        <h2 className="text-xl font-bold mb-2">
                                             {experience.position}
                                         </h2>
                                         <p className="text-xl tracking-wider text-slate-400 mb-1">
@@ -511,11 +511,11 @@ const MentorProfile = () => {
     };
 
     return (
-        <div className={`min-h-screen p-8 overflow-auto w-full bg-black`}>
+        <div className={`min-h-screen p-8 overflow-auto w-full bg-black ${themeStyles.background}`}>
             <div className="max-w-6xl mx-auto flex flex-col gap-1 mb-10">
                 <div className="flex flex-shrink-0 gap-10">
                     {/* Profile Section */}
-                    <div className="rounded-lg p-6 mb-8 w-3/4 backdrop-blur-lg bg-slate-800 bg-opacity-50 shadow-lg border border-slate-500/30">
+                    <div className={`rounded-lg p-6 mb-8 w-3/4 backdrop-blur-lg ${themeStyles.card} bg-opacity-50 shadow-lg border border-slate-500/30`}>
                         <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center">
                                 <img
@@ -532,7 +532,7 @@ const MentorProfile = () => {
                                             className="px-2 py-1 rounded mb-2 bg-slate-700 text-white mr-2"
                                         />
                                     ) : (
-                                        <h1 className="text-2xl font-bold">{user.name}</h1>
+                                        <h1 className={`text-2xl font-bold ${themeStyles.heading}`}>{user.name}</h1>
                                     )}
                                     {isEditing ? (
                                         <input
@@ -542,11 +542,11 @@ const MentorProfile = () => {
                                             className="px-2 py-1 rounded mb-2 bg-slate-700 text-white"
                                         />
                                     ) : (
-                                        <div className="flex flex-wrap gap-2 my-5">
+                                        <div className={`flex flex-wrap gap-2 my-5`}>
                                             {titles?.map((title, index) => (
                                                 <p
                                                     key={index}
-                                                    className={`text-white px-4 py-2 rounded-md bg-slate-900 border-2 border-gray-600`}
+                                                    className={`${themeStyles.skillTag} px-4 py-2 rounded-md`}
                                                 >
                                                     {title.trim()}
                                                 </p>
@@ -557,14 +557,14 @@ const MentorProfile = () => {
                             </div>
                             <button
                                 onClick={() => setIsEditing(!isEditing)}
-                                className="text-white px-4 py-2 rounded bg-slate-800"
+                                className={`px-4 py-2 rounded ${themeStyles.button}`}
                             >
                                 {isEditing ? "Save" : "Edit"}
                             </button>
                         </div>
                     </div>
                     {/* Social Media */}
-                    <div className="rounded-lg p-6 mb-8 w-1/4 backdrop-blur-lg bg-slate-800 bg-opacity-50 shadow-lg border border-slate-500/30">
+                    <div className={`rounded-lg p-6 mb-8 w-1/4 backdrop-blur-lg ${themeStyles.card} ${themeStyles.text} bg-opacity-50 shadow-lg border border-slate-500/30`}>
                         <p className="text-xl font-bold mb-4">Social Media</p>
                         <SocialMedia media="github" user={user}/>
                         <SocialMedia media="linkedin" user={user}/>
@@ -572,17 +572,14 @@ const MentorProfile = () => {
                 </div>
 
                 {/* Tabs Section */}
-                <div className="rounded-lg w-full mb-16">
+                <div className="rounded-lg w-full mb-16 ">
                     <div className="flex w-3/4">
                         <ul className="flex">
                             {tabs.map((tab, index) => (
                                 <li key={index}>
                                     <button
                                         onClick={() => setActiveTab(tab)}
-                                        className={`text-white px-10 py-2 rounded-t-md ${activeTab === tab
-                                            ? "bg-slate-900 border-b-0"
-                                            : "bg-slate-800 bg-opacity-20"
-                                            } border border-gray-600`}
+                                        className={`${themeStyles.text} px-10 py-2 rounded-t-md ${themeStyles.tab} ${activeTab === themeStyles.tabActive} border border-gray-600`}
                                     >
                                         {tab}
                                     </button>
@@ -590,13 +587,13 @@ const MentorProfile = () => {
                             ))}
                         </ul>
                     </div>
-                    <div className="backdrop-blur-lg bg-slate-800 bg-opacity-50 shadow-lg border border-slate-500/30 py-10">
+                    <div className={`backdrop-blur-lg ${themeStyles.card} ${themeStyles.text} bg-opacity-50 shadow-lg border border-slate-500/30 py-10`}>
                         {renderTabContent()}
                     </div>
                 </div>
 
                 {/* Skills Sections */}
-                <div className="rounded-lg p-6 mb-8 w-3/4 backdrop-blur-lg bg-slate-800 bg-opacity-50 shadow-lg border border-slate-500/30">
+                <div className={`rounded-lg p-6 mb-8 w-3/4 backdrop-blur-lg ${themeStyles.card} bg-opacity-50 shadow-lg ${themeStyles.cardBorder}`}>
                     <h3 className={`text-lg font-semibold ${themeStyles.heading} mb-2`}>
                         Skills
                     </h3>
@@ -645,7 +642,7 @@ const MentorProfile = () => {
                     )}
                     <button
                         onClick={handleSkillEdit}
-                        className={`${themeStyles.button} text-white px-4 py-2 rounded mt-2`}
+                        className={`${themeStyles.button} px-4 py-2 rounded mt-2`}
                     >
                         {isEditingSkills ? "Save" : "Edit"}
                     </button>

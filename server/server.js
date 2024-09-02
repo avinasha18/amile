@@ -13,6 +13,7 @@ import referalRoutes from "./routes/referalRoutes.js";
 import applicationRoutes from './routes/applicaionRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
 import initializeSocket from './sockets/index.js';
+import { VerifyMentorAccountwithToken } from './controllers/mentorController.js';
 
 const app = express();
 const server = http.createServer(app);

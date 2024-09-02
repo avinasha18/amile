@@ -1,160 +1,83 @@
-import React, { useState } from "react";
-import {
-  FaTachometerAlt,
-  FaUser,
-  FaClipboardList,
-  FaEnvelope,
-  FaSearch,
-  FaBrain,
-  FaBook,
-  FaCog,
-} from "react-icons/fa";
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import { Link } from "react-router-dom";
-import { GoVerified } from "react-icons/go";
-import { useTheme } from "../../context/ThemeContext";
-import { useDispatch, useSelector } from "react-redux";
-import { toggleSidebar } from "../../services/redux/sideBarToggleSlice";
-import { IconButton } from "@mui/material";
+import { MoreVertical, ChevronLast, ChevronFirst } from "lucide-react"
+import { useContext, createContext, useState } from "react"
+import { Link } from "react-router-dom"
+import { useTheme } from "../../context/ThemeContext"
 
+const SidebarContext = createContext()
 
-const MentorSidebar = () => {
-  const { isDarkMode } = useTheme();
-  const isCollapsed =useSelector((state)=>state.sidebar.isSidebar);
-  const dispatch = useDispatch()
-
-  const switchSidebar = () => {
-
-    dispatch(toggleSidebar())
-    
-  };
+export default function Sidebar({ children }) {
+  const { isDarkMode } = useTheme()
+  const [expanded, setExpanded] = useState(true)
 
   return (
-    <nav
-      className={`overflow-hidden ${
-        isDarkMode ? "bg-black text-gray-100" : "bg-white text-gray-800"
-      } ${
-        isCollapsed ? "w-20" : "w-64"
-      } flex-shrink-0 hidden md:block border-r ${
-        isDarkMode ? "border-gray-700" : "border-gray-200"
-      } transition-all duration-300`}
-    >
-      <div className={isCollapsed?"p-2":"p-4"}>
-        <div className={`flex ${!isCollapsed? "justify-between":"justify-center"}`}>
-       {!isCollapsed&& <h1 className="font-bold"> User</h1>}
-       <button
-          onClick={switchSidebar}
-          className={`focus:outline-none mb-4 ${isDarkMode ? "text-gray-100" : "text-gray-800"}`}
-        >
-          <IconButton
-            style={{ color: isDarkMode ? "#fff" : "#000" }}
+    <aside className="h-screen">
+      <nav className="h-full flex flex-col border-r shadow-sm">
+        <div className="p-4 pb-2 mb-5 text-center">
+          <Link to="/mentor">
+            <h1 className=" text-[30px] font-bold animate-gradient bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-500 bg-clip-text text-transparent">
+              {
+                expanded ? "Amile" : "A"
+              }
+            </h1>
+          </Link>
+          <button
+            onClick={() => setExpanded((curr) => !curr)}
+            className={`p-1.5 rounded-lg ${isDarkMode ? 'bg-gray-800 text-gray-300 hover:bg-gray-900' : 'bg-gray-50 text-gray-700 hover:bg-gray-100 '}  float-end `}
           >
-            {isCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-          </IconButton>
-        </button>
+            {expanded ? <ChevronFirst /> : <ChevronLast />}
+          </button>
         </div>
-        <SidebarSection isCollapsed={isCollapsed}>
-          <SidebarItem
-            icon={FaUser}
-            label="Profile"
-            isDarkMode={isDarkMode}
-            to="/mentor/profile"
-            isCollapsed={isCollapsed}
-          />
-          <SidebarItem
-            icon={FaClipboardList}
-            label="Applied"
-            isDarkMode={isDarkMode}
-            to="/applied"
-            isCollapsed={isCollapsed}
-          />
-        </SidebarSection>
-        <SidebarSection title="Internships" isCollapsed={isCollapsed}>
-          <SidebarItem
-            icon={FaBrain}
-            label="AI Interviewer"
-            isDarkMode={isDarkMode}
-            to="/aimock"
-            isCollapsed={isCollapsed}
-            gradient
-          />
-        </SidebarSection>
-        <SidebarSection title="Courses" isCollapsed={isCollapsed}>
-          <SidebarItem
-            icon={FaBook}
-            label="Courses"
-            to="/courses"
-            isCollapsed={isCollapsed}
-          />
-        </SidebarSection>
-        <SidebarSection title="Settings" isCollapsed={isCollapsed}>
-          <SidebarItem
-            icon={FaCog}
-            label="Settings"
-            to="/settings"
-            isCollapsed={isCollapsed}
-          />
-        </SidebarSection>
-      </div>
-    </nav>
-  );
-};
 
-const SidebarSection = ({ title, children, isCollapsed }) => (
-  <div className="mb-6">
-    {!isCollapsed && (
-      <h6 className="text-gray-250 text-sm font-semibold mb-2">{title}</h6>
-    )}
-    <ul>{children}</ul>
-  </div>
-);
+        <SidebarContext.Provider value={{ expanded }}>
+          <ul className="flex-1 px-3">{children}</ul>
+        </SidebarContext.Provider>
+      </nav>
+    </aside>
+  )
+}
 
-const SidebarItem = ({
-  icon: Icon,
-  label,
-  isDarkMode,
-  to,
-  isCollapsed,
-  gradient,
-}) => (
-  <li>
-    {to ? (
-      <Link
-        to={to}
-        className={`flex items-center py-2 px-4 gap-3 ${
-          isDarkMode
-            ? "hover:bg-[#fff] hover:text-[#121010]"
-            : "hover:bg-[#121010] hover:text-[#fff]"
-        } rounded transition-colors ${isCollapsed ? "justify-center" : ""}`}
+export function SidebarItem({ icon, text, active, alert, onClick }) {
+  const { expanded } = useContext(SidebarContext);
+
+  return (
+    <li
+      onClick={onClick}
+      className={`
+                relative flex items-center py-2 px-3 my-1
+                font-medium rounded-md cursor-pointer
+                transition-colors group
+                ${active
+          ? "bg-gradient-to-tr from-indigo-200 to-indigo-100 text-indigo-800"
+          : "hover:bg-indigo-50 text-gray-600"
+        }
+            `}
+      
+    >
+      {icon}
+      <span
+        className={`overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"
+          }`}
       >
-        <Icon className={`w-5 h-5`} />
-        {!isCollapsed && (
-          <span
-            className={`${
-              gradient
-                ? "font-bold animate-gradient bg-gradient-to-r from-yellow-500 via-pink-500 to-violet-500 bg-clip-text text-transparent"
-                : ""
+        {text}
+      </span>
+      {alert && (
+        <div
+          className={`absolute right-2 w-2 h-2 rounded bg-indigo-400 ${expanded ? "" : "top-2"
             }`}
-          >
-            {label}
-          </span>
-        )}
-      </Link>
-    ) : (
-      <a
-        href="#"
-        className={`flex items-center py-2 px-4 gap-3 ${
-          isDarkMode
-            ? "hover:bg-[#fff] hover:text-[#121010]"
-            : "hover:bg-[#121010] hover:text-[#fff]"
-        } rounded transition-colors ${isCollapsed ? "justify-center" : ""}`}
-      >
-        <Icon className={`w-5 h-5`} />
-        {!isCollapsed && <span className="text-gray-400 me-2">{label}</span>}
-      </a>
-    )}
-  </li>
-);
-
-export default MentorSidebar;
+        />
+      )}
+      {!expanded && (
+        <div
+          className={`
+                    absolute left-full rounded-md px-2 py-1 ml-6
+                    bg-indigo-100 text-indigo-800 text-sm
+                    invisible opacity-20 -translate-x-3 transition-all
+                    group-hover:visible group-hover:opacity-100 group-hover:translate-x-0
+                `}
+        >
+          {text}
+        </div>
+      )}
+    </li>
+  );
+}

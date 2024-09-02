@@ -77,9 +77,11 @@ const UserRegisterFlow = () => {
       // Password validation: 6-20 characters with at least one lowercase letter, one uppercase letter, one number, and one special character
       if (!password) {
         newErrors.password = "Password is required.";
-      } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,20}$/.test(password)) {
-        newErrors.password = "Password must be 6-20 characters long and include at least one lowercase letter, one uppercase letter, one number, and one special character.";
       }
+      //  else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,20}$/.test(password)) {
+      //   newErrors.password = "Password must be 6-20 characters long and include at least one lowercase letter, one uppercase letter, one number, and one special character.";
+      // }
+      
     }
   
     if (activeStep === 2 && !termsAccepted) {

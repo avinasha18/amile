@@ -1,14 +1,16 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken"
-
+import { AccountVerification ,VerifyUserAccountwithToken} from "./userController.js";
 import {
-   findUserByUsername, Mentor,
+    findUserByUsername, Mentor,
     addUserVerificationToken,
     findTokenByUsername,
     removeUserVerificationToken,
-    AccountVerification,
+    
 
 } from '../models/auth.model.js';
+import { findByToken , updateAccountStatus,removeUserVerificationTokenbyToken } from "../models/auth.model.js";
+import { generateUniqueToken } from "../services/uniqueTokenGeneration.js";
 import Company from '../models/company.model.js'
 import { HtmlTemplates } from "../services/htmlTemplates.js";
 import { sendEmail } from "../services/mailServices.js";
@@ -17,146 +19,193 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 export const updateUserMentor = async (userData) => {
     const {
-      username,
-      name,
-      qualifications,
-      workExperience,
-      certifications,
-      skills,
-      title,
+        username,
+        name,
+        qualifications,
+        workExperience,
+        certifications,
+        skills,
+        title,
     } = userData;
-  
+
     const updateData = {};
-  
+
     if (name) updateData.name = name;
     if (workExperience) updateData.workExperience = workExperience;
     if (qualifications) updateData.qualifications = qualifications;
     if (skills) updateData.skills = skills;
     if (title) updateData.title = title;
     if (certifications) updateData.certifications = certifications;
-  
+
     const updatedUser = await Mentor.findOneAndUpdate(
-      { username },
-      { $set: updateData },
-      { new: true, runValidators: true }
+        { username },
+        { $set: updateData },
+        { new: true, runValidators: true }
     );
-  
+
     return updatedUser;
-  }
-  export const createMentor = async (mentorData) => {
+}
+export const createMentor = async (mentorData) => {
     const {
-      email,
-      username,
-      password,
-      name,
-      qualifications,
-      certifications,
-      workExperience,
-      github,
-      linkedin,
-      portfolio,
+        email,
+        username,
+        password,
+        name,
+        qualifications,
+        certifications,
+        workExperience,
+        github,
+        linkedin,
+        portfolio,
     } = mentorData;
-  
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const newMentor = new Mentor({
-      email,
-      username,
-      name,
-      password: hashedPassword,
-      qualifications,
-      certifications,
-      workExperience,
-      github,
-      linkedin,
-      portfolio,
+        email,
+        username,
+        name,
+        password: hashedPassword,
+        qualifications,
+        certifications,
+        workExperience,
+        github,
+        linkedin,
+        portfolio,
     });
-  
+
     await newMentor.save();
-  };
-  
-  
-  
-  
-  
-export const registerMentor = async (req, res) => {
-    const { email, username, ...otherDetails } = req.body;
-    const { refrelid } = req.query;
-    try {
-        if (!email) {
-            return res.status(400).send('Email is required');
-        }
-
-        const existingMentor = await Mentor.findOne({ username });
-        if (existingMentor) {
-            return res.status(400).send('Mentor already exists');
-        }
-
-        // const verificationResult = await AccountVerification(username, email);
-        // if (verificationResult.status === "error") {
-        //     return res.json({
-        //         success: false,
-        //         message: "Verification email failed to send",
-        //     });
-        // }
-
-        // const referralResult = await handleReferral(refrelid, username);
-        // if (referralResult.status === "error") {
-        //     return res.json({ success: false, message: referralResult.message });
-        // }
-
-        await createMentor({ email, username, ...otherDetails });
-        res.status(200).send({ success: true, message: 'Mentor registered successfully' });
-    } catch (e) {
-        console.log(e);
-        res.status(500).send('Server error');
-    }
 };
 
+export const VerifyMentorAccountwithToken = async (req, res) => {
+    const { token } = req.query;
+    console.log('in mentor verificaion')
+    console.log(token)
+
+    try {
+      const user = await findByToken(token);
+  
+      if (user) {
+        const updateResult = await updateAccountStatus(user.username,'mentor');
+  
+        if (updateResult.success) {
+          await removeUserVerificationToken(user.username);
+  
+          return res.json({
+            success: true,
+            message: "Account verified successfully",
+          });
+        } else {
+          return res.json({ success: false, message: updateResult.message });
+        }
+      } else {
+        return res.json({ success: false, message: "Invalid or expired token" });
+      }
+    } catch (error) {
+      console.error("Error during account verification:", error);
+      return res.json({
+        success: false,
+        message: "An error occurred during account verification",
+      });
+    }
+  };
+
+
+export const registerMentor = async (req, res) => {
+    const { email, username, ...otherDetails } = req.body;
+  
+    try {
+      if (!email) {
+        return res.status(400).send('Email is required');
+      }
+  
+      const existingMentor = await Mentor.findOne({ username });
+      if (existingMentor) {
+        return res.status(400).send('Mentor already exists');
+      }
+  
+      // Create a token and send verification email for the mentor
+      const verificationResult = await AccountVerificationMentor(username,email);
+      if (verificationResult.status === "error") {
+        return res.json({
+          success: false,
+          message: "Verification email failed to send",
+        });
+      }
+
+  
+      await createMentor({ email, username, ...otherDetails });
+      res.status(200).send({ success: true, message: 'Mentor registered successfully' });
+    } catch (e) {
+      console.log(e);
+      res.status(500).send('Server error');
+    }
+  };
+  
 // Account verification same for both Student and Mentor
+export const AccountVerificationMentor = async (username, email) => {
+    try {
+      const token = generateUniqueToken();
+  
+      await addUserVerificationToken(username, token);
+  
+      const html = HtmlTemplates.AccountVerificationMentor(token);
+      const subject = "AMILE ACCOUNT VERIFICATION - Mentor";
+      const emailResult = await sendEmail(email, subject, html);
+  
+      if (emailResult === "Error sending email") {
+        return { status: "error", message: "Failed to send verification email" };
+      }
+  
+      return { status: "success", message: "Verification email sent" };
+    } catch (error) {
+      console.log(error);
+      return { status: "error", message: error.message };
+    }
+  };
+  
+export const resendVerification = async (req, res) => {
+    const { username } = req.body;
 
-// export const resendVerification = async (req, res) => {
-//     const { username } = req.body;
+    try {
+        const user = await findUserByUsername(username, Mentor);
 
-//     try {
-//         const user = await findUserByUsername(username, Mentor);
+        if (user && user?.status !== "active") {
+            const existingToken = await findTokenByUsername(username);
 
-//         if (user && user?.status !== "active") {
-//             const existingToken = await findTokenByUsername(username);
+            let token;
+            if (existingToken) {
+                token = existingToken;
+            } else {
+                token = generateUniqueToken();
+                await addUserVerificationToken(username, token);
+            }
 
-//             let token;
-//             if (existingToken) {
-//                 token = existingToken;
-//             } else {
-//                 token = generateUniqueToken();
-//                 await addUserVerificationToken(username, token);
-//             }
+            const html = HtmlTemplates.AccountVerification(token);
+            const subject = "AMILE ACCOUNT VERIFICATION";
+            const emailResult = await sendEmail(user.email, subject, html);
 
-//             const html = HtmlTemplates.AccountVerification(token);
-//             const subject = "AMILE ACCOUNT VERIFICATION";
-//             const emailResult = await sendEmail(user.email, subject, html);
+            if (emailResult === "Error sending email") {
+                return res.json({
+                    success: false,
+                    message: "Failed to send verification email",
+                });
+            }
 
-//             if (emailResult === "Error sending email") {
-//                 return res.json({
-//                     success: false,
-//                     message: "Failed to send verification email",
-//                 });
-//             }
-
-//             return res.json({ success: true, message: "Verification email sent" });
-//         } else {
-//             return res.json({
-//                 success: false,
-//                 message: "User not found or account is already active",
-//             });
-//         }
-//     } catch (error) {
-//         console.error("Error resending verification email:", error);
-//         return res.json({
-//             success: false,
-//             message: "An error occurred while resending the verification email",
-//         });
-//     }
-// };
+            return res.json({ success: true, message: "Verification email sent" });
+        } else {
+            return res.json({
+                success: false,
+                message: "User not found or account is already active",
+            });
+        }
+    } catch (error) {
+        console.error("Error resending verification email:", error);
+        return res.json({
+            success: false,
+            message: "An error occurred while resending the verification email",
+        });
+    }
+};
 
 // Verify user account token is also same 
 

@@ -47,6 +47,9 @@ export const Actions = {
     reportIncident: async (data) => {
         return await axios.post(`${api}/reportincident`, { ...data });
     },
+    fetchCourse: async (data) => {
+        return await axios.get(`${api}/course?courseid=${data.courseid}`);
+    }
 };
 
 export const getApplicationStatistics = async (userId) => {

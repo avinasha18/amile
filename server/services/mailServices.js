@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-export const sendEmail = async (to, subject, html = "") => {
+export const sendEmail = async (to, subject, html = "",userType) => {
   const transporter = nodemailer.createTransport({
     service: process.env.EMAIL_SERVICE_PROVIDER,
     auth: {
@@ -21,7 +21,7 @@ export const sendEmail = async (to, subject, html = "") => {
 
   try {
     const info = await transporter.sendMail(mailOptions);
-    console.log(info);
+    console.log(info.messageId);
     return info.response;
   } catch (error) {
     console.error("Error sending email:", error);

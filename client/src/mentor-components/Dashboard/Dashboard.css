@@ -1,0 +1,56 @@
+/* Dashboard.css */
+
+/* Animation for fading in */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+/* Black background for the dashboard */
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: black;
+    /* Black background */
+    color: white;
+    overflow: hidden;
+    animation: fadeIn 1.2s ease-in-out;
+    /* Fade-in effect */
+}
+
+/* Sidebar styles */
+.sidebar {
+    width: 240px;
+    background-color: black;
+    /* Black background */
+    color: white;
+    border-right: none;
+}
+
+/* Main content area */
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+    width: calc(100% - 240px);
+    /* Adjust width based on sidebar width */
+}
+
+/* Card hover effect */
+.card {
+    background: linear-gradient(to right, #43cea2, #185a9d);
+    /* Example gradient */
+    color: white;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    border-radius: 20px;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    /* Slide up effect */
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}

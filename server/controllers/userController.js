@@ -133,9 +133,9 @@ export const resendVerification = async (req, res) => {
     });
   }
 };
-
 export const VerifyUserAccountwithToken = async (req, res) => {
   const { token } = req.query;
+  console.log('in sstudent verificaion')
 
   try {
     const user = await findByToken(token);
