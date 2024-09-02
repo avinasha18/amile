@@ -137,6 +137,14 @@ export const RouteManagement = ({ islogin }) => {
               </ProtectedRoute>
             }
           />
+           <Route
+            path="/chatbot"
+            element={
+              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+                <Chatbot />
+              </ProtectedRoute>
+            }
+          />
                <Route
             path="/*"
             element={

@@ -1,6 +1,15 @@
-import React, { useEffect } from "react";
-import { useLocation } from "react-router-dom"; // Import useLocation
-import { FaUser, FaClipboardList, FaEnvelope, FaSearch, FaBrain, FaBook, FaCog } from "react-icons/fa";
+import React, { useState } from "react";
+import {
+  FaTachometerAlt,
+  FaUser,
+  FaClipboardList,
+  FaEnvelope,
+  FaSearch,
+  FaBrain,
+  FaBook,
+  FaCog,
+  FaRobot
+} from "react-icons/fa";
 import { AiOutlineRobot } from 'react-icons/ai';
 import { SiCompilerexplorer } from "react-icons/si";
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -128,6 +137,12 @@ const Sidebar = () => {
           />
         </SidebarSection>
         <SidebarSection title="Settings" isCollapsed={isCollapsed}>
+        <SidebarItem
+            icon={FaRobot}
+            label="Chat with Amile"
+            to="/chatbot"
+            isCollapsed={isCollapsed}
+          />
           <SidebarItem
             icon={FaCog}
             label="Settings"
