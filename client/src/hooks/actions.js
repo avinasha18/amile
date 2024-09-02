@@ -48,7 +48,7 @@ export const Actions = {
         return await axios.post(`${api}/reportincident`, { ...data });
     },
     fetchCourse: async (data) => {
-        return await axios.get(`${api}/course?courseid=${data.courseid}`);
+        return await axios.get(`${api}/courses`);
     }
 };
 

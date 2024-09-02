@@ -1,51 +1,47 @@
 import mongoose from "mongoose";
-import { stringify } from "uuid";
-
-const moduleSchema = new mongoose.Schema({
-    title: {
-        type: String,
-        required: true
-    },
-    duration: {
-        type: String,
-        required: true
-    },
-    details: {
-        type: String,
-        required: true
-    },
-    included: {
-        type: [String], 
-        required: true
-    }
-});
 
 const courseSchema = new mongoose.Schema({
-    title: {
+    courseName: {
         type: String,
+        required: true
+    },
+    teacher: {
+        type: String,
+        required: true
+    },
+    rating: {
+        type: Number,
+        required: true
+    },
+    participants: {
+        type: Number,
+        required: true
+    },
+    bestseller: {
+        type: Boolean,
         required: true
     },
     description: {
         type: String,
         required: true
     },
-    lastUpdated: {
-        type: String, 
+    relatedTopics: {
+        type: [String],
         required: true
     },
-    language: {
-        type: String,
+    durationHours: {
+        type: Number,
         required: true
     },
-    rating: {
-        type: String,
+    sections: {
+        type: Number,
         required: true
     },
-    students: {
-        type: String, 
+    lectures: {
+        type: Number,
         required: true
-    },
-    modules: [moduleSchema] });
+    }
+});
 
 export const Course = mongoose.model('Course', courseSchema);
 

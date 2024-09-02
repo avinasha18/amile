@@ -10,6 +10,7 @@ import userRoutes from "./routes/userRoutes.js";
 import mentorRoutes from "./routes/mentorRoutes.js";
 import companyRoutes from "./routes/companyRoutes.js";
 import internshipRoutes from "./routes/internshipRoutes.js";
+import courseRoutes from "./routes/courseRoutes.js"
 import referalRoutes from "./routes/referalRoutes.js";
 import applicationRoutes from './routes/applicaionRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
@@ -39,6 +40,7 @@ app.use("/", mentorRoutes);
 app.use("/companies", companyRoutes);
 app.use("/", internshipRoutes);
 app.use("/", referalRoutes);
+app.use("/", courseRoutes);
 app.use('/', applicationRoutes);
 app.use('/', dashboardRoutes);
 app.use('/', chatRoutes(io));

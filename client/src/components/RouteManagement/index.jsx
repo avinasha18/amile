@@ -20,6 +20,7 @@ import Compiler from "../Compiler/components/Compiler";
 import AIRecommendations from "../AI_Recommendations";
 import Courses from "../Courses";
 import Course from "../Courses/Course";
+import Chatbot from "../Chatbot";
 
 export const RouteManagement = ({ islogin }) => {
   const location = useLocation(window.location);

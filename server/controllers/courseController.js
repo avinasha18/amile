@@ -1,14 +1,10 @@
-import { Course } from "../models/courses.model";
+import { Course } from "../models/courses.model.js";
 
 export const getCourse = async (req, res) => {
-    const { courseid } = req.query;
 
     try {
-        if (!courseid) {
-            return res.status(400).send('Course ID is required');
-        }
 
-        const course = await Course.findOne({ courseid });
+        const course = await Course.find();
 
         if (!course) {
             return res.status(404).send('Course not found');
