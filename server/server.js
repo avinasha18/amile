@@ -46,22 +46,6 @@ app.use('/', applicationRoutes);
 app.use('/', dashboardRoutes);
 app.use('/', chatRoutes(io));
 
-// io.on('connection', (socket) => {
-//   console.log('A user connected:', socket.id);
-
-//   socket.on('joinRoom', (room) => {
-//     socket.join(room);
-//     console.log(`User joined room: ${room}`);
-//   });
-
-//   socket.on('sendMessage', ({ room, chat, message }) => {
-//     io.to(room).emit('receiveMessage', { chat, message });
-//   });
-
-//   socket.on('disconnect', () => {
-//     console.log('User disconnected:', socket.id);
-//   });
-// });
 const userSocketMap = {}
 connectToMongoDB();
 initializeSocket(io, userSocketMap);
