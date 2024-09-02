@@ -34,21 +34,26 @@ const initialState = {
 <script src="script.js"></script>
 
 </html>`,
-    css: `* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+    css: `  * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+         }
 
- body {
+         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f8f9fa;
             text-align: center;
         }
+         h1 {
+            color : white;
+         }
         .container {
             padding: 2rem;
+            background-color : orange;
+          height : 100vh;
         }
         .feature {
             background: #ffffff;
