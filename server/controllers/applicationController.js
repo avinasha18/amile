@@ -96,7 +96,7 @@ export const getStudentApplicationsController = async (req, res) => {
 };
 
 export const getCompanyApplicantsController = async (req, res) => {
-  const { companyId } = req.params;
+  const { companyId } = req;
 
   try {
     const applications = await Application.find({

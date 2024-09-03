@@ -51,14 +51,7 @@ export const RouteManagement = ({ islogin }) => {
               </ProtectedRoute>
             }
           />
-           <Route
-            path="/mentorchats"
-            element={
-              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
-                <MentorChats />
-              </ProtectedRoute>
-            }
-          />
+  
             <Route
             path="/"
             element={

@@ -24,22 +24,28 @@ const ProfilePage = () => {
     "POR",
   ];
 
-  useEffect(() => {
-    getUser();
-  }, []);
 
-  const getUser = async () => {
-    try {
-      const response = await Actions.fetchUser();
-console.log(response);
-      if (response.data.success) {
-        dispatch(setUserData(response.data.data));
-        setUser(response.data.data);
+
+
+  useEffect(() => {
+    const GetUser = async () => {
+      try {
+        const response = await Actions.fetchUser();
+        console.log(response);
+        if (response.data.success) {
+          dispatch(setUserData(response.data.data));
+          setUser(response.data.data);
+        }
+      } catch (e) {
+        console.log(e);
       }
-    } catch (e) {
-      console.log(e);
-    }
-  };
+    };
+
+    GetUser()
+  },[])
+
+
+
   const updateUser = async (data) => {
     try {
       const response = await Actions.UpdateStudent(data);
@@ -272,11 +278,10 @@ console.log(response);
                 <li key={index} className="flex items-center justify-center">
                   <button
                     onClick={() => setActiveTab(tab)}
-                    className={`px-4 py-2 rounded-full text-sm ${
-                      activeTab === tab
-                        ? themeStyles.tabActive
-                        : themeStyles.tabInactive
-                    } text-[15px] ${themeStyles.text}`}
+                    className={`px-4 py-2 rounded-full text-sm ${activeTab === tab
+                      ? themeStyles.tabActive
+                      : themeStyles.tabInactive
+                      } text-[15px] ${themeStyles.text}`}
                   >
                     {tab}
                   </button>
@@ -314,9 +319,8 @@ console.log(response);
               </>
             </div>
           </div>
-       
 
-          {/* Skills */}
+
           <div className="mb-6 ">
             <h3 className={`text-lg font-semibold ${themeStyles.heading} mb-2`}>
               Skills

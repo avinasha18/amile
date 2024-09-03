@@ -296,6 +296,7 @@ export const reportIncident = async (req, res) => {
 export const getUser = async (req, res) => {
   try {
     const { username } = req.body;
+ 
     if (!username) {
       return res.json({ success: false, message: "Username is required" });
     }

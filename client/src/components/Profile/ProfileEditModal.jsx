@@ -4,9 +4,10 @@ import { FaTimes, FaPlus, FaTrash } from 'react-icons/fa';
 import Fab from '@mui/material/Fab';
 
 const ProfileEditModal = ({ open, onClose, user, onSave }) => {
+  console.log(user)
   const [editableUser, setEditableUser] = useState({
     ...user,
-    skills: user.skills || [], // Initialize skills as an empty array if undefined
+    skills: user.skills || [], 
   });
   const [loading, setLoading] = useState(false);
 

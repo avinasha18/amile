@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useSelector } from "react-redux";
 import { Route, Routes } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
@@ -23,21 +23,20 @@ function App() {
   const islogin = useSelector((state) => state.auth.token);
   setAuthToken(islogin);
 
-  const { _id: userId } = useSelector((state) => state.auth.userData);
-
-
+  const userId = useSelector((state) => state.auth.userData?._id);
+  const memoizedUserId = useMemo(() => userId, [userId]);
   useEffect(() => {
-    if (userId && islogin) {
+    if (islogin) {
       socket.on('connect', () => {
-        socket.emit('joinChat', { userId });
-        console.log(`Emitted joinChat for User ID: ${userId} on socket connect`);
+        socket.emit('joinChat', { userId: memoizedUserId });
+        console.log(`Emitted joinChat for User ID: ${memoizedUserId} on socket connect`);
       });
     }
-
+  
     return () => {
-      socket.off('connect'); 
+      socket.off('connect');
     };
-  }, [userId]);
+  }, [islogin, memoizedUserId]);
 
   return (
     <ThemeProvider>
