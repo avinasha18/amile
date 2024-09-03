@@ -12,6 +12,7 @@ import { useTheme } from "../../context/ThemeContext";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar } from "../../services/redux/sideBarToggleSlice";
 import { IconButton } from "@mui/material";
+import { TbFileCv } from "react-icons/tb";
 
 const Sidebar = () => {
   const { isDarkMode } = useTheme();
@@ -34,7 +35,7 @@ const Sidebar = () => {
 
   return (
     <nav
-      className={`overflow-hidden ${
+      className={`overflow-y-scroll no-scrollbar ${
         isDarkMode ? "bg-black text-gray-100" : "bg-white text-gray-800"
       } ${
         isCollapsed ? "w-20" : "w-64"
@@ -43,11 +44,11 @@ const Sidebar = () => {
       } transition-all duration-300`}
     >
       <div className={isCollapsed ? "p-2" : "p-4"}>
-        <div className={`flex ${!isCollapsed ? "justify-between" : "justify-center"}`}>
-          {!isCollapsed && <h1 className="font-bold">User</h1>}
+        <div className={`flex align-middle ${!isCollapsed ? "justify-between" : "justify-center"}`}>
+          {!isCollapsed && <h1 className="font-bold align-middle">User</h1>}
           <button
             onClick={switchSidebar}
-            className={`focus:outline-none mb-4 ${
+            className={`focus:outline-none ${
               isDarkMode ? "text-gray-100" : "text-gray-800"
             }`}
           >
@@ -76,6 +77,13 @@ const Sidebar = () => {
             label="Applied"
             isDarkMode={isDarkMode}
             to="/applied"
+            isCollapsed={isCollapsed}
+          />
+           <SidebarItem
+            icon={TbFileCv}
+            label="Resume Builder"
+            isDarkMode={isDarkMode}
+            to="/resumebuilder"
             isCollapsed={isCollapsed}
           />
         </SidebarSection>
@@ -148,9 +156,9 @@ const Sidebar = () => {
 };
 
 const SidebarSection = ({ title, children, isCollapsed }) => (
-  <div className="mb-6">
+  <div className="mb-5">
     {!isCollapsed && (
-      <h6 className="text-gray-250 text-sm font-semibold mb-2">{title}</h6>
+      <h6 className="text-gray-250 text-sm font-semibold mb-0">{title}</h6>
     )}
     <ul>{children}</ul>
   </div>

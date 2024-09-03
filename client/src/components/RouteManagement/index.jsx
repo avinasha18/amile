@@ -21,6 +21,7 @@ import AIRecommendations from "../AI_Recommendations";
 import Courses from "../Courses";
 import Course from "../Courses/Course";
 import Chatbot from "../Chatbot";
+import ResumeBuilder from "../ResumeBuilder";
 
 export const RouteManagement = ({ islogin }) => {
   const location = useLocation(window.location);
@@ -153,6 +154,7 @@ export const RouteManagement = ({ islogin }) => {
             }
           />
           <Route path="/companyChat" element={< CompanyChatStart />} />
+          <Route path="/resumebuilder" element={<ResumeBuilder />} />
           <Route path="/compiler" element={< Compiler />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/course/:id" element={<Course />} />
