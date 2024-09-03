@@ -5,12 +5,9 @@ const connectToMongoDB = async () => {
         await mongoose.connect('mongodb+srv://vignaramtejtelagarapu:vzNsqoKpAzHRdN9B@amile.auexv.mongodb.net/?retryWrites=true&w=majority&appName=Amile', {
         });
         console.log('Connected to MongoDB');
-        
-
     } catch (err) {
         console.error('Failed to connect to MongoDB', err);
-        process.exit(1);
     }
 };
 
-export {connectToMongoDB}
+export { connectToMongoDB };
