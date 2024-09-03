@@ -62,3 +62,26 @@ export const checkEnrollment = async (req, res) => {
         res.status(500).send('Server error');
     }
 };
+
+// Fetch enrolled courses
+export const fetchEnrolled = async (req, res) => {
+    try {
+        const { studentId } = req.query;  // Use req.query for GET requests
+        console.log(studentId);
+        const student = await Student.findById(studentId);
+        if (!student) {
+            return res.status(404).send('Student not found');
+        }
+        const enrolledCourses = await Course.find({
+            _id: {
+                $in: student.enrolledCourses
+            }
+        });
+        res.status(200).send({ enrolledCourses });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('Server error');
+    }
+}
+
+

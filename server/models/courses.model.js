@@ -1,5 +1,20 @@
 import mongoose from "mongoose";
 
+const moduleSchema = new mongoose.Schema({
+    step: {
+        type: String,
+        required: true
+    },
+    title: {
+        type: String,
+        required: true
+    },
+    topics: {
+        type: [String],
+        required: true
+    }
+});
+
 const courseSchema = new mongoose.Schema({
     courseName: {
         type: String,
@@ -40,8 +55,10 @@ const courseSchema = new mongoose.Schema({
     lectures: {
         type: Number,
         required: true
-    }
+    },
+    modules: [moduleSchema]
 });
+
 
 export const Course = mongoose.model('Course', courseSchema);
 
