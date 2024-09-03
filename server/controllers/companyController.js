@@ -16,6 +16,7 @@ const createToken = (company) => {
 // Signup a new company
 export const signupCompany = async (req, res) => {
   try {
+    console.log('in sign up company')
     const verificationToken = generateUniqueToken();
     const companyData = {
       ...req.body,
@@ -23,11 +24,15 @@ export const signupCompany = async (req, res) => {
     };
 
     const subject = "AMILE ACCOUNT SIGNUP";
-
-    const company = await Company.signup(companyData);
+  
+    
+    // Create the company with all fields included
+    const company = await Company.create(companyData);
+    ; // This should now work
     await sendEmail(company.email, subject, HtmlTemplates.CompanyAccountVerification(verificationToken));
     res.status(201).json({ success: true, message: 'Company registered. Please check your email to verify your account.' });
   } catch (error) {
+    console.log(error.message)
     res.status(400).json({ success: false, message: error.message });
   }
 };
@@ -158,7 +163,7 @@ export const updateCompanyDetails = async (req, res) => {
 
 // Get the authenticated company details
 export const getCompanyDetails = async (req, res) => {
-   const { companyId} = req;
+  const { companyId } = req.body;
   try {
     const company = await Company.findById(companyId);
     if (!company) {

@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import { FaUser, FaClipboardList, FaEnvelope, FaSearch, FaBrain, FaBook, FaCog  , FaRobot
+import { useLocation } from "react-router-dom"; // Import useLocation
+import { FaUser, FaClipboardList, FaEnvelope, FaSearch, FaBrain, FaBook, FaCog  , FaRobot , FaUserFriends
 } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 
@@ -77,6 +78,13 @@ const Sidebar = () => {
             label="Applied"
             isDarkMode={isDarkMode}
             to="/applied"
+            isCollapsed={isCollapsed}
+          />
+           <SidebarItem
+            icon={FaUserFriends}
+            label="Mentor Chat"
+            isDarkMode={isDarkMode}
+            to="/mentorchats"
             isCollapsed={isCollapsed}
           />
         </SidebarSection>

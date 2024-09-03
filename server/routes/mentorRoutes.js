@@ -18,9 +18,13 @@ router.post('/resetpassword', resetPassword);
 
 router.post('/forgotpassword', forgotPassword);
 router.get('/mentordata', CheckAuthorization,getUser);
+router.post('/mentordata',getUser)
+
 router.post('/connectplugin',CheckAuthorization,connectPlugin);
 router.post('/updatementor',CheckAuthorization,updateMentor);
 router.post('/disconnectplugin', disconnectPlugin);
+
+
 
 
 export default router;

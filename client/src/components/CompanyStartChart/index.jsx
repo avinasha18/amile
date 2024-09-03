@@ -2,7 +2,14 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import io from 'socket.io-client';
 
-const socket = io('http://localhost:3000'); // Replace with your server URL
+const socket = io('http://localhost:3000', {
+  transports: ['websocket'],
+  cors: {
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+  }
+});
 
 function StartChat() {
   const [studentId, setStudentId] = useState('');
@@ -25,10 +32,10 @@ function StartChat() {
 
   const handleStartChat = async () => {
     try {
-      console.log('in handle')
+      console.log('in handle');
       const response = await axios.get(`http://localhost:3000/company/${companyId}/student/${studentId}`);
       setChat(response.data);
-      console.log(response,'res')
+      console.log(response, 'res');
       setMessages(response.data.messages);
 
       // Join the room for real-time updates
