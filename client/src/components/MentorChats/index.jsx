@@ -1,26 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import ChatList from '../ChatList';
-import ChatWindow from '../ChatList/companyChatwindow';
+import ChatList from './MentorChatList';
+import ChatWindow from '../ChatWindow';
 import { useTheme } from '../../context/ThemeContext';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Cookies from 'js-cookie';
 
-function Messages() {
+function MentorChats() {
   const [chats, setChats] = useState([]);
   const [activeChat, setActiveChat] = useState(null);
   const { isDarkMode } = useTheme();
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const userType = 'student';
   const userId = Cookies.get('userId');
-  const [companyDetails,setCompanyDetails] = useState([])
+  const [mentorData, setMentorData] = useState(null);
+
   useEffect(() => {
     const fetchChats = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/${userType}/${userId}`);
+        const response = await axios.get(`http://localhost:3000/mentor/${userType}/${userId}`);
         setChats(response.data);
-        setCompanyDetails(response.data[0].companyDetails)
+
         if (activeChat) {
           const updatedActiveChat = response.data.find(chat => chat._id === activeChat._id);
           if (updatedActiveChat) {
@@ -34,12 +35,28 @@ function Messages() {
 
     fetchChats();
 
-    const pollingInterval = setInterval(fetchChats, 7000);
+    const pollingInterval = setInterval(fetchChats, 1000);
 
     return () => {
       clearInterval(pollingInterval);
     };
   }, [userId, userType]);
+
+
+  useEffect(() => {
+    const fetchMentorData = async () => {
+      try {
+        const response = await axios.post('http://localhost:3000/mentordata', {
+          username: 'avinasha'
+        });
+        setMentorData(response.data.data);
+      } catch (error) {
+        console.error('Error fetching mentor data:', error);
+      }
+    };
+
+    fetchMentorData();
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -56,8 +73,8 @@ function Messages() {
   const sendMessage = (message) => {
     if (activeChat) {
       axios
-        .post('http://localhost:3000/send', {
-          companyId: activeChat.companyId,
+        .post('http://localhost:3000/mentor/send', {
+          mentorId: activeChat.mentorId,
           studentId: activeChat.studentId,
           text: message,
           sender: userType,
@@ -78,17 +95,17 @@ function Messages() {
     <div className={`flex h-screen w-screen ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'}`}>
       {!activeChat || !isMobile ? (
         <div className={`flex-none h-full ${isMobile ? 'w-full' : 'w-2/6'} border-r`}>
-          <ChatList chats={chats} setActiveChat={setActiveChat} activeChat={activeChat} companyDetails={companyDetails} />
-        </div>
+          <ChatList chats={chats} setActiveChat={setActiveChat} activeChat={activeChat} mentorData={mentorData} />
+          </div>
       ) : null}
       {(activeChat || !isMobile) && (
         <div className={`flex-grow h-full ${isMobile ? 'w-full' : 'w-4/6'}`}>
-          <ChatWindow activeChat={activeChat} sendMessage={sendMessage} onBack={() => setActiveChat(null)} companyData={companyDetails} />
-        </div>
+          <ChatWindow activeChat={activeChat} sendMessage={sendMessage} onBack={() => setActiveChat(null)} mentorData={mentorData} />
+          </div>
       )}
       <ToastContainer />
     </div>
   );
 }
 
-export default Messages;
+export default MentorChats;

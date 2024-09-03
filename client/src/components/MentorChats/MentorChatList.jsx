@@ -24,11 +24,11 @@ function ChatList({ chats, setActiveChat, activeChat,companyDetails, mentorData 
             <div className="flex justify-between items-center">
               <div className="flex items-center">
                 {mentorData && mentorData.profilePic ? (
-                  <img src={ companyDetails.companyLogo} alt={companyDetails.companyName} className="w-8 h-8 rounded-full mr-2" />
+                  <img src={ mentorData.profilepicUrl} alt={mentorData.name} className="w-8 h-8 rounded-full mr-2" />
                 ) : (
                   <Avatar className="mr-2">{mentorData ? mentorData.name.charAt(0).toUpperCase() : ''}</Avatar>
                 )}
-                <h3 className="font-semibold">{companyDetails ? companyDetails.companyName : 'Unknown Mentor'}</h3>
+                <h3 className="font-semibold">{mentorData ? mentorData.name : 'Unknown Mentor'}</h3>
               </div>
               <span className="text-sm">{new Date(chat.messages[chat.messages.length - 1]?.timestamp).toLocaleString()}</span>
             </div>

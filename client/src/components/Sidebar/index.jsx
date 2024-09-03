@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom"; // Import useLocation
-import { FaUser, FaClipboardList, FaEnvelope, FaSearch, FaBrain, FaBook, FaCog  , FaRobot
+import { FaUser, FaClipboardList, FaEnvelope, FaSearch, FaBrain, FaBook, FaCog  , FaRobot , FaUserFriends
 } from "react-icons/fa";
 import { AiOutlineRobot } from 'react-icons/ai';
 import { SiCompilerexplorer } from "react-icons/si";
@@ -76,6 +76,13 @@ const Sidebar = () => {
             label="Applied"
             isDarkMode={isDarkMode}
             to="/applied"
+            isCollapsed={isCollapsed}
+          />
+           <SidebarItem
+            icon={FaUserFriends}
+            label="Mentor Chat"
+            isDarkMode={isDarkMode}
+            to="/mentorchats"
             isCollapsed={isCollapsed}
           />
         </SidebarSection>

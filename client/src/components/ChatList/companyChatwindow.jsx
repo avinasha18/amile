@@ -4,7 +4,7 @@ import { useTheme } from '../../context/ThemeContext';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Avatar, IconButton } from '@mui/material';
 
-function ChatWindow({ activeChat, sendMessage, onBack, mentorData }) {
+function ChatWindow({ activeChat, sendMessage, onBack, companyData }) {
   const { isDarkMode } = useTheme();
   const [messages, setMessages] = useState([]);
 
@@ -25,12 +25,12 @@ function ChatWindow({ activeChat, sendMessage, onBack, mentorData }) {
           <ArrowBackIcon style={{ color: isDarkMode ? '#fff' : '#000' }} />
         </IconButton>
         <div className="flex items-center">
-          {mentorData && mentorData.profilePic ? (
-            <img src={mentorData.profilePic} alt={mentorData.name} className="w-8 h-8 rounded-full mr-2" />
+          {companyData && companyData.companyLogo ? (
+            <img src={companyData.companyLogo} alt={companyData.companyName} className="w-8 h-8 rounded-full mr-2" />
           ) : (
-            <Avatar className="mr-2">{mentorData ? mentorData.name.charAt(0).toUpperCase() : ''}</Avatar>
+            <Avatar className="mr-2">{companyData ? companyData.companyName?.charAt(0).toUpperCase() : ''}</Avatar>
           )}
-          <h2 className="text-xl font-semibold">{mentorData ? mentorData.name : 'Unknown Mentor'}</h2>
+          <h2 className="text-xl font-semibold">{companyData ? companyData.companyName : 'Unknown Mentor'}</h2>
         </div>
       </div>
       {/* Scrollable area for messages */}

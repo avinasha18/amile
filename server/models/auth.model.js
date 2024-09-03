@@ -4,6 +4,7 @@ import { stringify } from "uuid";
 // Define the schema for a student
 const studentSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
+  profilePictureUrl : {type : String ,  default : '/assets/nologo.jpg'},
   password: { type: String, required: true },
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
@@ -24,6 +25,7 @@ const studentSchema = new mongoose.Schema({
 const mentorSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  profilePictureUrl : {type : String , default : '/assets/nologo.jpg'},
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   status: { type: String, required: true, default: "inactive" },
@@ -64,6 +66,7 @@ const mentorSchema = new mongoose.Schema({
 // Define the schema for a company
 const companySchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
+  logoUrl : {type : String, default : '/assets/nologo.jpg'},
   password: { type: String, required: true },
   companyName: { type: String, required: true },
   crn: { type: String, required: true },

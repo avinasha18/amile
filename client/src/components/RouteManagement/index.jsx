@@ -21,6 +21,7 @@ import AIRecommendations from "../AI_Recommendations";
 import Courses from "../Courses";
 import Course from "../Courses/Course";
 import Chatbot from "../Chatbot";
+import MentorChats from "../MentorChats";
 
 export const RouteManagement = ({ islogin }) => {
   const location = useLocation(window.location);
@@ -46,6 +47,14 @@ export const RouteManagement = ({ islogin }) => {
             element={
               <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
                 <Messages />
+              </ProtectedRoute>
+            }
+          />
+           <Route
+            path="/mentorchats"
+            element={
+              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+                <MentorChats />
               </ProtectedRoute>
             }
           />
