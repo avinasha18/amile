@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom"; // Import useLocation
 import { FaUser, FaClipboardList, FaEnvelope, FaSearch, FaBrain, FaBook, FaCog  , FaRobot , FaUserFriends
 } from "react-icons/fa";
-import { useLocation } from "react-router-dom";
 
 import { AiOutlineRobot } from 'react-icons/ai';
 import { SiCompilerexplorer } from "react-icons/si";
