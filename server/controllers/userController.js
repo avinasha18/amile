@@ -323,7 +323,8 @@ export const getUser = async (req, res) => {
 
 export const updateStudent = async (req, res) => {
   const { username, ...otherDetails } = req.body;
- 
+  console.log('in upate user')
+  console.log(username,otherDetails)
   try {
     const existingUser = await findUserByUsername(username, Student);
     if (!existingUser) {
@@ -338,7 +339,7 @@ export const updateStudent = async (req, res) => {
       updatedUser,
     });
   } catch (e) {
-    console.log(e);
+    console.log(e.message);
     res.status(500).send("Server error");
   }
 };
