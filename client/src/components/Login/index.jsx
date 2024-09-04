@@ -126,8 +126,7 @@ const Login = () => {
         if (userType === "mentor") {
           window.location.href = "http://localhost:5174/mentor/";
         } else {
-          const isnext = params.get("nextpath");
-          nav(isnext || "/", { replace: true });
+          nav("/mentormatching", { replace: true });
         }
 
         toast.success("Login successful");

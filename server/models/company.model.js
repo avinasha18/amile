@@ -69,6 +69,7 @@ companySchema.statics.login = async function (email, password) {
   return company;
 };
 
+
 // Static method to sign up
 companySchema.statics.signup = async function (data) {
   const company = new this(data);

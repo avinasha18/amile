@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import Company from "../models/company.model.js";
 import { generateUniqueToken } from '../services/uniqueTokenGeneration.js';
 import { sendEmail } from '../services/mailServices.js';
 import { HtmlTemplates } from '../services/htmlTemplates.js';
+import Company from '../models/company.model.js';
 
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
@@ -56,11 +56,14 @@ export const verifyEmail = async (req, res) => {
 // Login an existing company
 export const loginCompany = async (req, res) => {
   const { email, password } = req.body;
+
+
   try {
     const company = await Company.login(email, password);
     const token = createToken(company);
     res.status(200).json({ success: true, token, company });
   } catch (error) {
+    console.log(error)
     res.status(400).json({ success: false, message: error.message });
   }
 };

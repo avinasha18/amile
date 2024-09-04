@@ -9,8 +9,8 @@ const studentSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   status: { type: String, required: true, default: "inactive" },
-  education: [String],
-  workExperience: [String],
+  education: [{ degree: { type: String }, year: { type: String }, school: { type: String } }],
+  workExperience: [{ position: { type: String }, company: { type: String }, duration: { type: String } }],
   projects: [{ title: { type: String }, description: { type: String }, link: { type: String } }],
   skills: [String],
   achievements: [String],
@@ -19,8 +19,9 @@ const studentSchema = new mongoose.Schema({
   linkedin: String,
   portfolio: String,
   myPortfolioPlugin: { type: String },
-  enrolledCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }], // Storing references to Course documents
+  enrolledCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }]  ,
   mentor: { type: mongoose.Schema.Types.ObjectId, ref: "Mentor" }, // Reference to Mentor
+  neededMentor: { type: Boolean, default: true }
 });
 
 // Define the schema for a mentor
@@ -59,23 +60,12 @@ const mentorSchema = new mongoose.Schema({
   github: String,
   linkedin: String,
   portfolio: String,
-  myPortfolioPlugin: { type: String },
   students: [{ type: mongoose.Schema.Types.ObjectId, ref: "Student" }], // Array of Students
+
 });
 
 
-// Define the schema for a company
-const companySchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
-  logoUrl : {type : String, default : '/assets/nologo.jpg'},
-  password: { type: String, required: true },
-  companyName: { type: String, required: true },
-  crn: { type: String, required: true },
-  linkedin: String,
-  website: String,
-  address: String,
-  contactNumber: String,
-});
+
 
 // Define the schema for a Account Verifying
 
@@ -89,7 +79,6 @@ const accountSchema = new mongoose.Schema({
 // Create models for each schema
 export const Student = mongoose.model("Student", studentSchema);
 export const Mentor = mongoose.model("Mentor", mentorSchema);
-export const Company = mongoose.model("Company", companySchema);
 
 export const AccountVerification = mongoose.model(
   "AccountVerification",

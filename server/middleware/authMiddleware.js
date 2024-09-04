@@ -1,3 +1,4 @@
+import { console } from 'inspector';
 import jwt from 'jsonwebtoken'; 
 import { promisify } from 'util'; 
 
@@ -7,6 +8,7 @@ export const CheckAuthorization = async (req, res, next) => {
     try {
       const authHeader = req.headers.authorization;
       // console.log(authHeader,'auth header')
+      // console.log(authHeader)
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
         console.log("unauthorized")
         return res.json({ success: false, message: 'Unauthorized: No token provided' });

@@ -6,6 +6,9 @@ import {
     addUserVerificationToken,
     findTokenByUsername,
     removeUserVerificationToken,
+    Student,
+    
+
 } from '../models/auth.model.js';
 import { findByToken, updateAccountStatus, removeUserVerificationTokenbyToken } from "../models/auth.model.js";
 import { generateUniqueToken } from "../services/uniqueTokenGeneration.js";
@@ -207,11 +210,10 @@ export const resendVerification = async (req, res) => {
 // Verify user account token is also same 
 
 export const forgotPassword = async (req, res) => {
-    const { username, accountType } = req.body;
+    const { username } = req.body;
 
     try {
-        const Schema = accountType === "Mentor" ? Mentor : Mentor;
-        const user = await findUserByUsername(username, Schema);
+        const user = await findUserByUsername(username, Mentor);
         if (!user) {
             return res.json({ success: false, message: "User not found" });
         }
@@ -434,13 +436,17 @@ export const assignStudents = async (req, res) => {
 }
 
 export const getStudents = async (req, res) => {
+    
     try {
-        const { username } = req.query;
+        const { username } = req.body;
+   
 
         const mentor = await Mentor.findOne({ username: username });
         if (!mentor) {
             return res.status(404).json({ success: false, message: "Mentor not found" });
         }
+
+        console.log(mentor.students)
 
         if (mentor.students && mentor.students.length > 0) {
             const students = await Student.find({ _id: { $in: mentor.students } }, 'username');

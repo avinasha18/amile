@@ -39,8 +39,6 @@ router.post('/applications/:applicationId',authenticateToken, updateApplicationS
 
 
 router.post('/getcompanydata',getCompanyDetails)
-
-
 // Protected routes
 router.get('/search', authenticateToken, findCompaniesByName);
 router.put('/update', authenticateToken, updateCompanyDetails);

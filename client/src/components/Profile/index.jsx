@@ -24,25 +24,31 @@ const ProfilePage = () => {
     "POR",
   ];
 
-  useEffect(() => {
-    getUser();
-  }, []);
 
-  const getUser = async () => {
-    try {
-      const response = await Actions.fetchUser();
-      if (response.data.success) {
-        dispatch(setUserData(response.data.data));
-        setUser(response.data.data);
+
+
+  useEffect(() => {
+    const GetUser = async () => {
+      try {
+        const response = await Actions.fetchUser();
+        console.log(response);
+        if (response.data.success) {
+          dispatch(setUserData(response.data.data));
+          setUser(response.data.data);
+        }
+      } catch (e) {
+        console.log(e);
       }
-    } catch (e) {
-      console.log(e);
-    }
-  };
+    };
+
+    GetUser()
+  },[])
+
+
+
   const updateUser = async (data) => {
     try {
       const response = await Actions.UpdateStudent(data);
-
       if (response.data.success) {
         dispatch(setUserData(response.data.updatedUser));
         setUser(response.data.updatedUser);
@@ -71,7 +77,6 @@ const ProfilePage = () => {
 
   const handlePluginConnect = async (pluginName, PluginData) => {
     const response = await Actions.ConnectPlugin({ pluginName, PluginData });
-
     if (response.data.success) {
       console.log(response.data);
     } else {
@@ -271,11 +276,10 @@ const ProfilePage = () => {
                 <li key={index} className="flex items-center justify-center">
                   <button
                     onClick={() => setActiveTab(tab)}
-                    className={`px-4 py-2 rounded-full text-sm ${
-                      activeTab === tab
-                        ? themeStyles.tabActive
-                        : themeStyles.tabInactive
-                    } text-[15px] ${themeStyles.text}`}
+                    className={`px-4 py-2 rounded-full text-sm ${activeTab === tab
+                      ? themeStyles.tabActive
+                      : themeStyles.tabInactive
+                      } text-[15px] ${themeStyles.text}`}
                   >
                     {tab}
                   </button>
@@ -313,9 +317,8 @@ const ProfilePage = () => {
               </>
             </div>
           </div>
-       
 
-          {/* Skills */}
+
           <div className="mb-6 ">
             <h3 className={`text-lg font-semibold ${themeStyles.heading} mb-2`}>
               Skills
@@ -333,9 +336,6 @@ const ProfilePage = () => {
             </div>
           </div>
         </div>
-
-
-
       </div>
       <ProfileEditModal
         open={isEditing}

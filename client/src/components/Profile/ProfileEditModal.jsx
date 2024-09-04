@@ -4,9 +4,10 @@ import { FaTimes, FaPlus, FaTrash } from 'react-icons/fa';
 import Fab from '@mui/material/Fab';
 
 const ProfileEditModal = ({ open, onClose, user, onSave }) => {
+  console.log(user)
   const [editableUser, setEditableUser] = useState({
     ...user,
-    skills: user.skills || [], // Initialize skills as an empty array if undefined
+    skills: user.skills || [], 
   });
   const [loading, setLoading] = useState(false);
 
@@ -89,8 +90,7 @@ const ProfileEditModal = ({ open, onClose, user, onSave }) => {
 
   return (
     <Modal open={open} onClose={onClose} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-      <Box sx={{ width: '100%', maxWidth: 1000, height: '80%', overflowY: 'scroll', bgcolor: 'background.paper', p: 4, borderRadius: 2, position: 'relative' }}
-      className="no-scrollbar">
+      <Box sx={{ width: '100%', maxWidth: 1000, height: '80%', overflowY: 'scroll', bgcolor: 'background.paper', p: 4, borderRadius: 2, position: 'relative' }}>
         <Typography variant="h6" sx={{ mb: 2 }}>Edit Profile</Typography>
         <IconButton onClick={onClose} sx={{ position: 'absolute', top: 10, right: 10 }}>
           <FaTimes />
@@ -332,7 +332,7 @@ const ProfileEditModal = ({ open, onClose, user, onSave }) => {
           label="Add Skill"
           fullWidth
           margin="normal"
-          value={editableUser?.newSkill || ''}
+          value={editableUser.newSkill || ''}
           onChange={(e) => setEditableUser({ ...editableUser, newSkill: e.target.value })}
         />
         <Button
@@ -351,12 +351,13 @@ const ProfileEditModal = ({ open, onClose, user, onSave }) => {
           Add Skill
         </Button>
 
+        <Divider sx={{ my: 2 }} />
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1, position:"sticky", bottom:0 }} >
       
-          <Fab variant="extended" color="primary" onClick={handleSave} disabled={loading}>
-          {loading ? <CircularProgress size={24} /> : 'Save Changes'}
-          </Fab>
-        </Box>
+      <Fab variant="extended" color="primary" onClick={handleSave} disabled={loading}>
+      {loading ? <CircularProgress size={24} /> : 'Save Changes'}
+      </Fab>
+    </Box>
       </Box>
     </Modal>
   );

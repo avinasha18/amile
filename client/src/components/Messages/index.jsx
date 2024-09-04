@@ -85,6 +85,7 @@ function StartChat() {
       (response) => {
         if (response.success) {
           setChats(response.chats);
+          console.log(response.chats)
         } else {
           toast.error("Error fetching chats.");
         }
@@ -98,7 +99,12 @@ function StartChat() {
     socket.emit(
       "getChats",
       {
-        message: { companyId, studentId: activeChat.studentId },
+        message: {
+          studentId: activeChat.studentId,
+          ...(activeChat.companyId
+            ? { companyId: activeChat.companyId?._id }
+            : { mentorId: activeChat.mentorId?._id }),
+        },
         page: newPage,
         limit,
       },
@@ -119,11 +125,14 @@ function StartChat() {
 
     if (activeChat && message.trim()) {
       const newMessage = {
-        companyId: activeChat.companyId._id,
         studentId: activeChat.studentId._id,
         text: message,
         sender: activeChat.studentId._id,
+        ...(activeChat.companyId
+          ? { companyId: activeChat.companyId._id }
+          : { mentorId: activeChat.mentorId._id }),
       };
+      
 
 
       socket.emit("sendMessage", { message: newMessage }, (response) => {
