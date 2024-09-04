@@ -6,27 +6,23 @@ const chatHandlers = (io, socket, userSocketMap) => {
   // Join the chat and store the mapping
   socket.on("joinChat", ({ userId }) => {
     userSocketMap[userId] = socket.id;
-    console.log(userSocketMap);
     console.log(`User with ID ${userId} joined with Socket ID: ${socket.id}`);
   });
 
   socket.on(
     "startChat",
     async ({ companyId, mentorId, studentId }, callback) => {
-      console.log({companyId, mentorId, studentId})
       try {
         let chat;
 
         // Check if the chat is with a mentor or a company
         if (mentorId) {
-          console.log(Chat)
           chat = await Chat.findOne({ mentorId, studentId });
 
           if (!chat) {
             chat = new Chat({ mentorId, studentId, messages: [] });
             await chat.save();
           }
-          console.log(chat);
         } else if (companyId) {
           chat = await Chat.findOne({ companyId, studentId });
 
@@ -35,7 +31,6 @@ const chatHandlers = (io, socket, userSocketMap) => {
             await chat.save();
           }
         }
-        console.log(chat);
 
         if (chat) {
           callback({ success: true, chat });
@@ -76,7 +71,6 @@ const chatHandlers = (io, socket, userSocketMap) => {
         } else {
           recipientId = message.studentId;
         }
- console.log(recipientId,message.sender, message)
         const recipientSocketId = userSocketMap[recipientId];
         if (recipientSocketId) {
           io.to(recipientSocketId).emit("receiveMessage", { chat, message });
