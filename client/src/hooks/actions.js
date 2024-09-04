@@ -72,7 +72,7 @@ export const Actions = {
     },
     assignMentor: async (data) => {
         return await axios.post(`${api}/assign`, data);
-    }
+    },
 };
 export const getApplicationStatistics = async (userId) => {
     try {

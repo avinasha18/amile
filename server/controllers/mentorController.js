@@ -452,11 +452,9 @@ export const assignStudents = async (req, res) => {
 }
 
 export const getStudents = async (req, res) => {
-
     try {
         const { username } = req.body;
-
-
+        console.log(username)
         const mentor = await Mentor.findOne({ username: username });
         if (!mentor) {
             return res.status(404).json({ success: false, message: "Mentor not found" });
@@ -491,3 +489,4 @@ export const getMentorData = async (req, res) => {
         return res.status(500).json({ success: false, message: e.message });
     }
 };
+

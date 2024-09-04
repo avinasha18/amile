@@ -1,4 +1,5 @@
 import { CourseProgress } from "../models/track.model.js";
+import { Student } from "../models/auth.model.js";
 
 export const trackProgress = async (req, res) => {
     const { studentId, courseId, totalProgress, completionStatus } = req.body;
@@ -49,3 +50,32 @@ export const getProgress = async (req, res) => {
         res.status(500).send('Server error');
     }
 };
+
+const calculateAverageProgress = (courses) => {
+    if (!courses || courses.length === 0) return 0;
+    const totalProgress = courses.reduce((acc, course) => acc + course.totalProgress, 0);
+    return totalProgress / courses.length;
+};
+
+export const getAvgProgress = async (req,res) => {
+    try {
+        const students = await Student.find();
+        const courseProgresses = await CourseProgress.find();
+
+        const studentData = students.map((student) => {
+            const progressData = courseProgresses.find(
+                (progress) => progress.studentId.toString() === student._id.toString()
+            );
+            const avgProgress = progressData ? calculateAverageProgress(progressData.courses) : 0;
+            return {
+                username: student.username,
+                avgProgress,
+            };
+        });
+
+        res.json({ success: true, studentData });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+}

@@ -130,7 +130,7 @@ const MentorMatching = () => {
 
       if (mentorUsername) {
         const mentorResponse = await axios.get(
-          `http://localhost:3000/mentordata/${mentorUsername}`
+          `http://localhost:3000/mentor/mentordata/${mentorUsername}`
         );
         console.log(mentorResponse.data.data);
         console.log(mentorResponse.data.data, count, "->count");
@@ -276,7 +276,7 @@ const MentorMatching = () => {
   };
 
   return (
-    <div className="flex-grow bg-gradient-to-br from-blue-100 to-purple-100 min-h-screen">
+    <div className="flex-grow bg-gradient-to-br from-blue-100 to-purple-100 min-h-screen overflow-y-auto">
       <StyledModal
         open={openModal}
         onClose={() => setOpenModal(false)}
