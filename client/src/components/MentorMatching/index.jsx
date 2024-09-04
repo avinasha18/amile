@@ -30,6 +30,7 @@ import animationData1 from "./animation.json";
 import animationData2 from "./animation2.json";
 import animationData3 from "./animation3.json";
 import { useTheme } from "../../context/ThemeContext";
+import { Actions } from "../../hooks/actions";
 // Styled components
 const StyledModal = styled(Modal)({
   display: "flex",
@@ -84,22 +85,27 @@ const MentorMatching = () => {
   const [animationIndex, setAnimationIndex] = useState(0);
   const [mentorMatched, setMentorMatched] = useState(false);
   const [mentorUserName, setMentorName] = useState(null);
-  const [count,setCount] = useState(0)
+  const [count, setCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [skillsRequired,setskillsRequired] = useState(false)
   const navigate = useNavigate();
   const theme = useMuiTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const studentId = Cookies.get("userId");
   const { isDarkMode } = useTheme();
-  const [isLoading,setIsLoading] = useState(true)
+  const [skills,setSkills] = useState([])
   useEffect(() => {
     const checkMentorNeeded = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:3000/student-mentor/${studentId}`
-        );
+        const response = await axios.get(`http://localhost:3000/student-mentor/${studentId}`);
         const data = response.data;
+        if(data.skills.length === 0){
+          setskillsRequired(true)
+        }
+        console.log(data)
+        setIsLoading(false);
+
         if (!data.neededMentor) {
-          setIsLoading(false)
           navigate("/dashboard", { replace: true });
         }
       } catch (error) {
@@ -110,32 +116,16 @@ const MentorMatching = () => {
     checkMentorNeeded();
   }, [studentId, navigate]);
 
-  if(isLoading){
-    return(
-      <>
-      <div className="flex flex-row justify-center items-center w-full">
-        <CircularProgress/>
-      </div>
-      </>
-    )
-  }
   const fetchMentor = useCallback(async () => {
     setLoading(true);
     try {
-      // First API call to get the mentor's username
       const username = Cookies.get("user");
-
-      const response = await axios.get(`http://127.0.0.1:5000/match-students?username=${username}&index=${count}`,);
-
+      const response = await axios.get(`http://127.0.0.1:5000/match-students?username=${username}&index=${count}`);
       const mentorUsername = response.data.mentor;
-      console.log(response.data.mentor,'respone')
       setMentorName(mentorUsername);
 
       if (mentorUsername) {
-        // Second API call to get the mentor's detailed data
-        const mentorResponse = await axios.get(
-          `http://localhost:3000/mentordata/${mentorUsername}`
-        );
+        const mentorResponse = await axios.get(`http://localhost:3000/mentordata/${mentorUsername}`);
         console.log(mentorResponse.data.data)
         setMentor(mentorResponse.data.data);
       } else {
@@ -147,7 +137,18 @@ const MentorMatching = () => {
       setLoading(false);
       setStage("showMentor");
     }
-  }, []);
+  }, [count]);
+
+  const handleAddSkills = async () => {
+    try {
+      const response = await Actions.UpdateStudent({skills})
+      if(response.data.success){
+        setskillsRequired(false)
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const handleStartMatching = () => {
     setOpenModal(false);
@@ -165,11 +166,50 @@ const MentorMatching = () => {
     }, 3000);
   };
 
+  const handleDontWant = () => {
+    navigate("/", { replace: true });
+  };
+  const handleInputChange = (e) => {
+    // Split the input value by spaces or commas into an array
+    const inputSkills = e.target.value.split(/[ ,]+/).filter(skill => skill.trim() !== '');
+    setSkills(inputSkills);
+  };
+
+
+  if(skillsRequired){
+    return (
+      <>
+         <StyledModal open={skillsRequired} onClose={() => setskillsRequired(false)}>
+    <Fade in={skillsRequired}>
+      <ModalContent>
+        <Typography variant="h5" gutterBottom>Add Your Skills</Typography>
+        <Typography variant="body1" paragraph>You need to add skills to continue.</Typography>
+        {/* Replace the following input with a skill input component */}
+        <input
+        className="text-black p-4 m-2"
+        type="text"
+        onChange={handleInputChange}
+        placeholder="Enter skills separated by space or comma"
+      />        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleAddSkills} // Example skill list
+          fullWidth
+        >
+          Save Skills
+        </Button>
+      </ModalContent>
+    </Fade>
+  </StyledModal>
+      </>
+    )
+  }
+
   const handleChooseMentor = async () => {
     try {
-      await axios.post('http://localhost:3000/assign-mentor', {
+      await axios.post("http://localhost:3000/assign-mentor", {
         studentId,
-        mentorId: mentor._id
+        mentorId: mentor._id,
       });
       setMentorMatched(true);
     } catch (error) {
@@ -180,7 +220,7 @@ const MentorMatching = () => {
   const handleTryAnother = () => {
     setStage("matching");
     setAnimationIndex(0);
-    setCount(count=> count +1);
+    setCount((prevCount) => prevCount + 1);
     handleStartMatching();
   };
 
@@ -221,11 +261,7 @@ const MentorMatching = () => {
 
   return (
     <div className="flex-grow bg-gradient-to-br from-blue-100 to-purple-100 min-h-screen">
-      <StyledModal
-        open={openModal}
-        onClose={() => setOpenModal(false)}
-        closeAfterTransition
-      >
+      <StyledModal open={openModal} onClose={() => setOpenModal(false)} closeAfterTransition>
         <Fade in={openModal}>
           <ModalContent>
             <IconButton
@@ -244,8 +280,7 @@ const MentorMatching = () => {
               Ready to find your perfect mentor?
             </Typography>
             <Typography variant="body1" paragraph>
-              Our AI-powered system will match you with a mentor who can guide
-              you on your learning journey.
+              Our AI-powered system will match you with a mentor who can guide you on your learning journey.
             </Typography>
             <Button
               variant="contained"
@@ -257,6 +292,17 @@ const MentorMatching = () => {
               sx={{ mt: 2 }}
             >
               Start Matching
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleDontWant}
+              startIcon={<PersonSearchIcon />}
+              fullWidth
+              size="large"
+              sx={{ mt: 2 }}
+            >
+              Not now
             </Button>
           </ModalContent>
         </Fade>
@@ -272,15 +318,8 @@ const MentorMatching = () => {
             className="h-screen flex items-center justify-center"
           >
             <AnimationContainer>
-              <Lottie
-                options={animationOptions(animations[animationIndex])}
-                height={300}
-                width={300}
-              />
-              <Typography
-                variant="h5"
-                className="mt-8 text-gray-800 font-semibold text-center"
-              >
+              <Lottie options={animationOptions(animations[animationIndex])} height={300} width={300} />
+              <Typography variant="h5" className="mt-8 text-gray-800 font-semibold text-center">
                 {animationTexts[animationIndex]}
               </Typography>
             </AnimationContainer>
@@ -296,12 +335,7 @@ const MentorMatching = () => {
             className="p-4 md:p-8"
           >
             <MentorCard elevation={3}>
-              <Box
-                display="flex"
-                flexDirection={isMobile ? "column" : "row"}
-                alignItems="center"
-                mb={4}
-              >
+              <Box display="flex" flexDirection={isMobile ? "column" : "row"} alignItems="center" mb={4}>
                 <Avatar
                   src={mentor.profilePictureUrl || "noavatar.png"}
                   alt={mentor.name}
@@ -331,7 +365,7 @@ const MentorMatching = () => {
                 </IconWrapper>
                 <div>
                   <Typography variant="body1">
-                    <strong>Qualifications:</strong> {mentor.qualifications}
+                    <strong>Qualifications:</strong><ul> {mentor.qualifications?.map(each=>( <li key={each}>{each}</li>))} </ul>
                   </Typography>
                 </div>
               </InfoItem>
@@ -342,7 +376,7 @@ const MentorMatching = () => {
                 </IconWrapper>
                 <div>
                   <Typography variant="body1">
-                    <strong>Work Experience:</strong> {mentor.workExperience}
+                    <strong>Work Experience:</strong> <ul>{mentor.workExperience?.map(each=>(<li key={each}>{each}</li>))}</ul>
                   </Typography>
                 </div>
               </InfoItem>
@@ -353,7 +387,7 @@ const MentorMatching = () => {
                 </IconWrapper>
                 <div>
                   <Typography variant="body1">
-                    <strong>Skills:</strong> {mentor?.skills?.join(", ")}
+                    <strong>Skills:</strong> <ul> {mentor?.skills?.map(each=>(<li key={each}>{each}</li>))}</ul>
                   </Typography>
                 </div>
               </InfoItem>
@@ -364,45 +398,25 @@ const MentorMatching = () => {
                 </IconWrapper>
                 <div>
                   <Typography variant="body1">
-                    <strong>Certifications:</strong> {mentor.certifications?.join(", ")}
+                    <strong>Certifications:</strong> <ul> {mentor.certifications?.map(each=>(<li key={each}>{each}</li>))}</ul>
                   </Typography>
                 </div>
               </InfoItem>
 
               <Box display="flex" justifyContent="center" mt={4}>
-                <IconButton
-                  href={mentor.socialLinks?.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="LinkedIn"
-                >
+                <IconButton href={mentor.socialLinks?.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
                   <LinkedInIcon />
                 </IconButton>
-                <IconButton
-                  href={mentor.socialLinks?.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="GitHub"
-                >
+                <IconButton href={mentor.socialLinks?.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub">
                   <GitHubIcon />
                 </IconButton>
-                <IconButton
-                  href={mentor.socialLinks?.portfolio}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Portfolio"
-                >
+                <IconButton href={mentor.socialLinks?.portfolio} target="_blank" rel="noopener noreferrer" aria-label="Portfolio">
                   <LanguageIcon />
                 </IconButton>
               </Box>
 
               <Box display="flex" justifyContent="center" mt={4}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleChooseMentor}
-                  sx={{ marginRight: 2 }}
-                >
+                <Button variant="contained" color="primary" onClick={handleChooseMentor} sx={{ marginRight: 2 }}>
                   Choose Mentor
                 </Button>
                 <Button variant="outlined" color="secondary" onClick={handleTryAnother}>
@@ -425,8 +439,7 @@ const MentorMatching = () => {
               Mentor Matched Successfully!
             </Typography>
             <Typography variant="body1" align="center">
-              You have successfully matched with {mentor.name}. You can now contact
-              your mentor for guidance and support.
+              You have successfully matched with {mentor.name}. You can now contact your mentor for guidance and support.
             </Typography>
             <Button
               variant="contained"
@@ -440,12 +453,7 @@ const MentorMatching = () => {
         )}
 
         {loading && (
-          <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            height="100vh"
-          >
+          <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
             <CircularProgress />
           </Box>
         )}
