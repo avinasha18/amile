@@ -8,6 +8,7 @@ import { useTheme } from '../../context/ThemeContext'; // Import the useTheme ho
 import { getApplicationStatistics } from '../../hooks/actions';
 import Cookies from 'js-cookie'
 import { CircularProgress } from '@mui/material';
+import DashboardSkeleton from './Dashboardskeleton';
 ChartJS.register(CategoryScale, LinearScale, ArcElement, BarElement, Title, Tooltip, Legend);
 
 const Dashboard = () => {
@@ -30,7 +31,8 @@ const Dashboard = () => {
   }, []);
 
   if (!statistics) {
-    return <div className='flex flex-row justify-center items-center w-full'><CircularProgress/></div>;
+    return <DashboardSkeleton isDarkMode={isDarkMode}/>
+
   }
 
   const data = {
@@ -140,7 +142,7 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-      <h2 className='text-black text-2xl m-5'>Trending on Amile 🔥</h2>
+      <h2 className=' text-2xl m-5'>Trending on Amile 🔥</h2>
       <Carousel className="mt-6" />
     </div>
   );
