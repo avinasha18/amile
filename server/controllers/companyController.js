@@ -166,9 +166,12 @@ export const updateCompanyDetails = async (req, res) => {
 
 // Get the authenticated company details
 export const getCompanyDetails = async (req, res) => {
-  const { companyId } = req.body;
+  const  companyId  = req.companyId;
+
+  console.log(req.companyId,'body')
   try {
     const company = await Company.findById(companyId);
+    console.log(company)
     if (!company) {
       return res.status(404).json({ success: false, message: 'Company not found' });
     }

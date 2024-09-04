@@ -7,6 +7,7 @@ import { Chart as ChartJS, CategoryScale, ArcElement, LinearScale, BarElement, T
 import { useTheme } from '../../context/ThemeContext'; // Import the useTheme hook
 import { getApplicationStatistics } from '../../hooks/actions';
 import Cookies from 'js-cookie'
+import { CircularProgress } from '@mui/material';
 ChartJS.register(CategoryScale, LinearScale, ArcElement, BarElement, Title, Tooltip, Legend);
 
 const Dashboard = () => {
@@ -29,7 +30,7 @@ const Dashboard = () => {
   }, []);
 
   if (!statistics) {
-    return <div>Loading...</div>;
+    return <div className='flex flex-row justify-center items-center w-full'><CircularProgress/></div>;
   }
 
   const data = {
