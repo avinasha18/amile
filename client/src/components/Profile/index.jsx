@@ -49,7 +49,6 @@ const ProfilePage = () => {
   const updateUser = async (data) => {
     try {
       const response = await Actions.UpdateStudent(data);
-
       if (response.data.success) {
         dispatch(setUserData(response.data.updatedUser));
         setUser(response.data.updatedUser);
@@ -78,7 +77,6 @@ const ProfilePage = () => {
 
   const handlePluginConnect = async (pluginName, PluginData) => {
     const response = await Actions.ConnectPlugin({ pluginName, PluginData });
-
     if (response.data.success) {
       console.log(response.data);
     } else {
@@ -338,9 +336,6 @@ const ProfilePage = () => {
             </div>
           </div>
         </div>
-
-
-
       </div>
       <ProfileEditModal
         open={isEditing}

@@ -85,6 +85,7 @@ function StartChat() {
       (response) => {
         if (response.success) {
           setChats(response.chats);
+          console.log(response.chats)
         } else {
           toast.error("Error fetching chats.");
         }

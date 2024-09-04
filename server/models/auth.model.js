@@ -5,6 +5,7 @@ import { stringify } from "uuid";
 const studentSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   profilePictureUrl : {type : String ,  default : '/assets/nologo.jpg'},
+  profilePictureUrl : {type : String ,  default : '/assets/nologo.jpg'},
   password: { type: String, required: true },
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
@@ -19,6 +20,9 @@ const studentSchema = new mongoose.Schema({
   linkedin: String,
   portfolio: String,
   myPortfolioPlugin: { type: String },
+  enrolledCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }]  ,
+  mentor: { type: mongoose.Schema.Types.ObjectId, ref: "Mentor" }, // Reference to Mentor
+  neededMentor: { type: Boolean, default: true }
   enrolledCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }]  
 });
 
