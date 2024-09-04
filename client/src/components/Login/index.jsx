@@ -4,7 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { FaUser, FaEye, FaEyeSlash } from "react-icons/fa"; // Importing React Icons
+import { FaUser, FaEye, FaEyeSlash } from "react-icons/fa";
 import { styled, ThemeProvider, createTheme } from "@mui/material/styles";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -71,7 +71,7 @@ const Login = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [userType, setUserType] = useState("student"); // Initial value set to "student"
+  const [userType, setUserType] = useState("student");
   const [rememberMe, setRememberMe] = useState(false);
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
@@ -110,8 +110,9 @@ const Login = () => {
       const response = await Actions.Login({
         username: email.trim(),
         password,
-        userType, // Include the selected userType in the request
+        userType,
       });
+
       if (response.data.success) {
         const cookieExpires = rememberMe ? 10 : 1;
         dispatch(
@@ -122,12 +123,11 @@ const Login = () => {
           })
         );
 
-        const isnext = params.get("nextpath");
-
         if (userType === "mentor") {
-          nav("/mentor/", { replace: true });
+          window.location.href = "http://localhost:5174/mentor/";
         } else {
-          nav("/", { replace: true });
+          const isnext = params.get("nextpath");
+          nav(isnext || "/", { replace: true });
         }
 
         toast.success("Login successful");
@@ -155,17 +155,17 @@ const Login = () => {
                   aria-labelledby="demo-row-radio-buttons-group-label"
                   name="row-radio-buttons-group"
                   className="mb-3"
-                  value={userType} // Bind to userType state
-                  onChange={(e) => setUserType(e.target.value)} // Update userType state on change
+                  value={userType}
+                  onChange={(e) => setUserType(e.target.value)}
                 >
                   <FormControlLabel
                     value="student"
                     control={
                       <Radio
                         sx={{
-                          color: 'black', // Unchecked color
+                          color: 'black',
                           '&.Mui-checked': {
-                            color: '#1976d2', // Checked color (blue)
+                            color: '#1976d2',
                           },
                         }}
                       />
@@ -177,9 +177,9 @@ const Login = () => {
                     control={
                       <Radio
                         sx={{
-                          color: 'black', // Unchecked color
+                          color: 'black',
                           '&.Mui-checked': {
-                            color: '#1976d2', // Checked color (blue)
+                            color: '#1976d2',
                           },
                         }}
                       />

@@ -1,30 +1,55 @@
-import express from 'express';
-import { registerMentor, loginUser, resetPassword, forgotPassword, getUser, updateMentor, VerifyMentorAccountwithToken } from '../controllers/mentorController.js';
-import { VerifyUserAccountwithToken, resendVerification } from '../controllers/userController.js';
-import {CheckAuthorization} from "../middleware/authMiddleware.js"
-import { connectPlugin, disconnectPlugin } from '../controllers/pluginController.js';
+import express from "express";
+import {
+    registerMentor,
+    loginUser,
+    resetPassword,
+    forgotPassword,
+    getUser,
+    updateMentor,
+    VerifyMentorAccountwithToken,
+    getStudentData,
+    assignStudents,
+    getStudents,
+} from "../controllers/mentorController.js";
+import {
+    VerifyUserAccountwithToken,
+    resendVerification,
+} from "../controllers/userController.js";
+import { CheckAuthorization } from "../middleware/authMiddleware.js";
+import {
+    connectPlugin,
+    disconnectPlugin,
+} from "../controllers/pluginController.js";
 
 const router = express.Router();
 
-router.post('/register/mentor', registerMentor);
-router.post('/verifyaccount', VerifyUserAccountwithToken);
-router.post('/mentor/verifyaccount', VerifyMentorAccountwithToken);
-  
-router.post('/login', loginUser);
-router.post('/resendverification', resendVerification)
+// Mentor registration and verification routes
+router.post("/register/mentor", registerMentor);
+router.post("/mentor/verifyaccount", VerifyMentorAccountwithToken);
 
-router.post('/resetpassword', resetPassword);
+// User verification and login routes
+router.post("/verifyaccount", VerifyUserAccountwithToken);
+router.post("/login", loginUser);
+router.post("/resendverification", resendVerification);
 
+// Password management routes
+router.post("/resetpassword", resetPassword);
+router.post("/forgotpassword", forgotPassword);
 
-router.post('/forgotpassword', forgotPassword);
-router.get('/mentordata', CheckAuthorization,getUser);
-router.post('/mentordata',getUser)
+// Mentor and student data routes
+router.get("/mentordata", CheckAuthorization, getUser);
+router.post("/mentordata", getUser);
+router.post("/studentdata", getStudentData);
 
-router.post('/connectplugin',CheckAuthorization,connectPlugin);
-router.post('/updatementor',CheckAuthorization,updateMentor);
-router.post('/disconnectplugin', disconnectPlugin);
+// Mentor assignment and update routes
+router.post("/assign", assignStudents);
+router.post("/updatementor", CheckAuthorization, updateMentor);
 
+// Plugin management routes
+router.post("/connectplugin", CheckAuthorization, connectPlugin);
+router.post("/disconnectplugin", disconnectPlugin);
 
-
+// Fetch students route
+router.get("/getStudents", getStudents);
 
 export default router;

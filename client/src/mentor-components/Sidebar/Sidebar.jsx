@@ -13,7 +13,7 @@ export default function Sidebar({ children }) {
     <aside className="h-screen">
       <nav className="h-full flex flex-col border-r shadow-sm">
         <div className="p-4 pb-2 mb-5 text-center">
-          <Link to="/mentor">
+          <Link to="/mentor/">
             <h1 className=" text-[30px] font-bold animate-gradient bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-500 bg-clip-text text-transparent">
               {
                 expanded ? "Amile" : "A"

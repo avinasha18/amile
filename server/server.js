@@ -39,7 +39,7 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 app.use("/", userRoutes);
-app.use("/", mentorRoutes);
+app.use("/mentor", mentorRoutes);
 app.use("/companies", companyRoutes);
 app.use("/", internshipRoutes);
 app.use("/", referalRoutes);

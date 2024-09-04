@@ -4,7 +4,7 @@ import { stringify } from "uuid";
 // Define the schema for a student
 const studentSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
-  profilePictureUrl : {type : String ,  default : '/assets/nologo.jpg'},
+  profilePictureUrl: { type: String, default: "/assets/nologo.jpg" },
   password: { type: String, required: true },
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
@@ -19,14 +19,14 @@ const studentSchema = new mongoose.Schema({
   linkedin: String,
   portfolio: String,
   myPortfolioPlugin: { type: String },
-  enrolledCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }]  // Storing references to Course documents
+  enrolledCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }], // Storing references to Course documents
+  mentor: { type: mongoose.Schema.Types.ObjectId, ref: "Mentor" }, // Reference to Mentor
 });
 
 // Define the schema for a mentor
 const mentorSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  profilePictureUrl : {type : String , default : '/assets/nologo.jpg'},
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   status: { type: String, required: true, default: "inactive" },
@@ -49,7 +49,6 @@ const mentorSchema = new mongoose.Schema({
       organizationLogo: { type: String, required: true }
     }
   ],
-  
   workExperience: [
     {
       position: { type: String, required: true },
@@ -61,6 +60,7 @@ const mentorSchema = new mongoose.Schema({
   linkedin: String,
   portfolio: String,
   myPortfolioPlugin: { type: String },
+  students: [{ type: mongoose.Schema.Types.ObjectId, ref: "Student" }], // Array of Students
 });
 
 

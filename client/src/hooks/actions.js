@@ -27,13 +27,13 @@ export const Actions = {
         return await axios.get(`${api}/userdata`);
     },
     fetchMentor: async () => {
-        return await axios.get(`${api}/mentordata`);
+        return await axios.get(`${api}/mentor/mentordata`);
     },
     UpdateStudent: async (data) => {
         return await axios.post(`${api}/updateuser`, { ...data });
     },
     updateMentor: async (data) => {
-        return await axios.post(`${api}/updatementor`, { ...data });
+        return await axios.post(`${api}/mentor/updatementor`, { ...data });
     },
     resetPassword: async (data) => {
         return await axios.post(`${api}/resetpassword`, { ...data });
