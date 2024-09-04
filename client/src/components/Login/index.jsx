@@ -127,7 +127,7 @@ const Login = () => {
         if (userType === "mentor") {
           nav("/mentor/", { replace: true });
         } else {
-          nav("/", { replace: true });
+          nav("/mentormatching", { replace: true });
         }
 
         toast.success("Login successful");

@@ -82,7 +82,8 @@ const AIRecommendations = ({ filters, searchQuery }) => {
 
   return (
     <div className={`bg-${isDarkMode ? 'black' : 'gray-100'} p-6 overflow-y-auto w-full`}>
-      <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6`}>
+          <h1 className="text-3xl font-bold mb-6 text-[#979696]">AI Recommendations </h1>
+          <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6`}>
         {jobs.map(job => (
           <AIJobCard key={job._id} job={job} onApply={handleApply} />
         ))}

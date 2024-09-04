@@ -162,7 +162,7 @@ const Chatbot = () => {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && sendMessage(input)}
               placeholder="Enter a prompt here"
-              className="p-3 w-full bg-gray-100 dark:bg-gray-700 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300"
+              className="p-3 w-full bg-gray-100 dark:bg-gray-700 dark:text-white rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300"
             />
             <button
               onClick={() => sendMessage(input)}

@@ -296,6 +296,7 @@ export const reportIncident = async (req, res) => {
 export const getUser = async (req, res) => {
   try {
     const { username } = req.body;
+ 
     if (!username) {
       return res.json({ success: false, message: "Username is required" });
     }
@@ -332,5 +333,39 @@ export const updateStudent = async (req, res) => {
   } catch (e) {
     console.log(e);
     res.status(500).send("Server error");
+  }
+};
+
+export const AssignMentor= async (req, res) => {
+  const { studentId, mentorId } = req.body;
+  
+  try {
+    const student = await Student.findByIdAndUpdate(studentId, {
+      mentor: mentorId,
+      neededMentor: false
+    }, { new: true });
+
+    if (!student) {
+      return res.status(404).send('Student not found');
+    }
+
+    res.status(200).json({ message: 'Mentor assigned successfully', student });
+  } catch (error) {
+    res.status(500).send('Server error');
+  }
+};
+
+// Fetch student by ID
+export const checkStudentMentorStatus = async (req, res) => {
+  try {
+    const student = await Student.findById(req.params.id).populate('mentor');
+    if (!student) {
+      return res.status(404).send('Student not found');
+    }
+
+    res.status(200).json(student);
+  } catch (error) {
+    console.log(error.message)
+    res.status(500).send('Server error');
   }
 };

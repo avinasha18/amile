@@ -4,26 +4,31 @@ import { stringify } from "uuid";
 // Define the schema for a student
 const studentSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
+  profilePictureUrl : {type : String ,  default : '/assets/nologo.jpg'},
   password: { type: String, required: true },
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   status: { type: String, required: true, default: "inactive" },
-  education: [String],
-  workExperience: [String],
-  projects: [{ title:{type:String},description:{type:String},link:{type:String}}],
+  education: [{ degree: { type: String }, year: { type: String }, school: { type: String } }],
+  workExperience: [{ position: { type: String }, company: { type: String }, duration: { type: String } }],
+  projects: [{ title: { type: String }, description: { type: String }, link: { type: String } }],
   skills: [String],
   achievements: [String],
-  certifications:  [{ title:{type:String},description:{type:String},link:{type:String}}],
+  certifications: [{ title: { type: String }, description: { type: String }, link: { type: String } }],
   github: String,
   linkedin: String,
   portfolio: String,
   myPortfolioPlugin: { type: String },
+  enrolledCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }]  ,
+  mentor: { type: mongoose.Schema.Types.ObjectId, ref: "Mentor" }, // Reference to Mentor
+  neededMentor: { type: Boolean, default: true }
 });
 
 // Define the schema for a mentor
 const mentorSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  profilePictureUrl : {type : String , default : '/assets/nologo.jpg'},
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   status: { type: String, required: true, default: "inactive" },
@@ -61,17 +66,7 @@ const mentorSchema = new mongoose.Schema({
 });
 
 
-// Define the schema for a company
-const companySchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  companyName: { type: String, required: true },
-  crn: { type: String, required: true },
-  linkedin: String,
-  website: String,
-  address: String,
-  contactNumber: String,
-});
+
 
 // Define the schema for a Account Verifying
 
@@ -85,7 +80,6 @@ const accountSchema = new mongoose.Schema({
 // Create models for each schema
 export const Student = mongoose.model("Student", studentSchema);
 export const Mentor = mongoose.model("Mentor", mentorSchema);
-export const Company = mongoose.model("Company", companySchema);
 
 export const AccountVerification = mongoose.model(
   "AccountVerification",

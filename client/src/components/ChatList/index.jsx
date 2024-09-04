@@ -18,7 +18,6 @@ function formatTimestamp(timestamp) {
 
 function ChatList({ chats, setActiveChat, activeChat }) {
   const isDarkMode = useSelector((state) => state.theme.isDarkMode);
-  const nav =useNavigate()
   const sortedChats = [...chats].sort((a, b) => {
     const lastMessageA = a.messages[a.messages.length - 1];
     const lastMessageB = b.messages[b.messages.length - 1];
@@ -46,7 +45,7 @@ function ChatList({ chats, setActiveChat, activeChat }) {
             onClick={() => setActiveChat(chat)}
           >
             <div className="flex justify-between items-center">
-              <h3 className="font-semibold">{chat.studentId?.username}</h3>
+              <h3 className="font-semibold">{chat.mentorId?.username|| chat.companyId?.companyName}</h3>
               <span className="text-sm">
                 {chat.messages.length > 0 ? formatTimestamp(chat.messages[chat.messages.length - 1]?.timestamp) : "start"}
               </span>

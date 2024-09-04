@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import Company from "../models/company.model.js";
 import { generateUniqueToken } from '../services/uniqueTokenGeneration.js';
 import { sendEmail } from '../services/mailServices.js';
 import { HtmlTemplates } from '../services/htmlTemplates.js';
+import Company from '../models/company.model.js';
 
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
@@ -16,6 +16,7 @@ const createToken = (company) => {
 // Signup a new company
 export const signupCompany = async (req, res) => {
   try {
+    console.log('in sign up company')
     const verificationToken = generateUniqueToken();
     const companyData = {
       ...req.body,
@@ -23,11 +24,15 @@ export const signupCompany = async (req, res) => {
     };
 
     const subject = "AMILE ACCOUNT SIGNUP";
-
-    const company = await Company.signup(companyData);
+  
+    
+    // Create the company with all fields included
+    const company = await Company.create(companyData);
+    ; // This should now work
     await sendEmail(company.email, subject, HtmlTemplates.CompanyAccountVerification(verificationToken));
     res.status(201).json({ success: true, message: 'Company registered. Please check your email to verify your account.' });
   } catch (error) {
+    console.log(error.message)
     res.status(400).json({ success: false, message: error.message });
   }
 };
@@ -51,11 +56,14 @@ export const verifyEmail = async (req, res) => {
 // Login an existing company
 export const loginCompany = async (req, res) => {
   const { email, password } = req.body;
+
+
   try {
     const company = await Company.login(email, password);
     const token = createToken(company);
     res.status(200).json({ success: true, token, company });
   } catch (error) {
+    console.log(error)
     res.status(400).json({ success: false, message: error.message });
   }
 };
@@ -158,7 +166,7 @@ export const updateCompanyDetails = async (req, res) => {
 
 // Get the authenticated company details
 export const getCompanyDetails = async (req, res) => {
-   const { companyId} = req;
+  const { companyId } = req.body;
   try {
     const company = await Company.findById(companyId);
     if (!company) {

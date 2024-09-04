@@ -48,10 +48,29 @@ export const Actions = {
         return await axios.post(`${api}/reportincident`, { ...data });
     },
     fetchCourse: async (data) => {
-        return await axios.get(`${api}/course?courseid=${data.courseid}`);
+        return await axios.get(`${api}/courses`);
+    },
+    enrollCourse: async (data) => {
+        return await axios.post(`${api}/enrollcourse`, { ...data });
+    },
+    checkEnrollment: async (data) => {
+        return await axios.post(`${api}/checkenrollment`, data);
+    },
+    fetchEnrolledCourses: async (studentId) => {
+        return await axios.get(`${api}/enrolledcourses`, {
+            params: { studentId }
+        });
+    },
+    updateProgress: async (data) => {
+        return await axios.put(`${api}/trackprogress`, { ...data });
+    },
+    getProgress: async (data) => {
+        const { studentId, courseId } = data;
+        return await axios.get(`${api}/getprogress`, {
+            params: { studentId, courseId } // Use params to pass data in GET request
+        });
     }
 };
-
 export const getApplicationStatistics = async (userId) => {
     try {
         const response = await axios.get(`${api}/statistics/${userId}`);

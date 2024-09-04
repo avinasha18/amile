@@ -4,7 +4,11 @@ import { FaTimes, FaPlus, FaTrash } from 'react-icons/fa';
 import Fab from '@mui/material/Fab';
 
 const ProfileEditModal = ({ open, onClose, user, onSave }) => {
-  const [editableUser, setEditableUser] = useState(user);
+  console.log(user)
+  const [editableUser, setEditableUser] = useState({
+    ...user,
+    skills: user.skills || [], 
+  });
   const [loading, setLoading] = useState(false);
 
   const handleChange = (field) => (event) => {
@@ -348,12 +352,12 @@ const ProfileEditModal = ({ open, onClose, user, onSave }) => {
         </Button>
 
         <Divider sx={{ my: 2 }} />
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 4, position:"fixed" }} >
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1, position:"sticky", bottom:0 }} >
       
-          <Fab variant="extended" color="primary" onClick={handleSave} disabled={loading}>
-          {loading ? <CircularProgress size={24} /> : 'Save Changes'}
-          </Fab>
-        </Box>
+      <Fab variant="extended" color="primary" onClick={handleSave} disabled={loading}>
+      {loading ? <CircularProgress size={24} /> : 'Save Changes'}
+      </Fab>
+    </Box>
       </Box>
     </Modal>
   );

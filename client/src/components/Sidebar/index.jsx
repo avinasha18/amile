@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom"; // Import useLocation
-import { FaUser, FaClipboardList, FaEnvelope, FaSearch, FaBrain, FaBook, FaCog  , FaRobot
+import { FaUser, FaClipboardList, FaEnvelope, FaSearch, FaBrain, FaBook, FaCog  , FaRobot , FaUserFriends
 } from "react-icons/fa";
+
 import { AiOutlineRobot } from 'react-icons/ai';
 import { SiCompilerexplorer } from "react-icons/si";
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -131,8 +132,8 @@ const Sidebar = () => {
         <SidebarSection title="Courses" isCollapsed={isCollapsed}>
           <SidebarItem
             icon={FaBook}
-            label="Courses"
-            to="/courses"
+            label="Your Courses"
+            to="/my-courses"
             isCollapsed={isCollapsed}
           />
         </SidebarSection>

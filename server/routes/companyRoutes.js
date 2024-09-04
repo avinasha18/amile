@@ -8,7 +8,7 @@ import {
   verifyEmail,
   forgotPassword,
   resetPassword,
-  resendVerification,
+  resendVerification
 } from '../controllers/companyController.js';
 import { authenticateToken } from '../middleware/companyAuthMiddleware.js';
 import { createInternshipController, getAllInternshipsByCompany } from '../controllers/internshipController.js';
@@ -38,9 +38,7 @@ router.get('/applications',authenticateToken, getCompanyApplicantsController);
 router.post('/applications/:applicationId',authenticateToken, updateApplicationStatusController);
 
 
-
-
-
+router.post('/getcompanydata',getCompanyDetails)
 // Protected routes
 router.get('/search', authenticateToken, findCompaniesByName);
 router.put('/update', authenticateToken, updateCompanyDetails);

@@ -24,10 +24,14 @@ const ProfilePage = () => {
     "POR",
   ];
 
+
+
+
   useEffect(() => {
-    const fetchUserData = async () => {
+    const GetUser = async () => {
       try {
         const response = await Actions.fetchUser();
+        console.log(response);
         if (response.data.success) {
           dispatch(setUserData(response.data.data));
           setUser(response.data.data);
@@ -36,10 +40,11 @@ const ProfilePage = () => {
         console.log(e);
       }
     };
-  
-    fetchUserData();
-    console.log('in')
-  }, []);
+
+    GetUser()
+  },[])
+
+
 
   const updateUser = async (data) => {
     try {
@@ -271,11 +276,10 @@ const ProfilePage = () => {
                 <li key={index} className="flex items-center justify-center">
                   <button
                     onClick={() => setActiveTab(tab)}
-                    className={`px-4 py-2 rounded-full text-sm ${
-                      activeTab === tab
-                        ? themeStyles.tabActive
-                        : themeStyles.tabInactive
-                    } text-[15px] ${themeStyles.text}`}
+                    className={`px-4 py-2 rounded-full text-sm ${activeTab === tab
+                      ? themeStyles.tabActive
+                      : themeStyles.tabInactive
+                      } text-[15px] ${themeStyles.text}`}
                   >
                     {tab}
                   </button>
@@ -314,7 +318,7 @@ const ProfilePage = () => {
             </div>
           </div>
 
-          {/* Skills */}
+
           <div className="mb-6 ">
             <h3 className={`text-lg font-semibold ${themeStyles.heading} mb-2`}>
               Skills

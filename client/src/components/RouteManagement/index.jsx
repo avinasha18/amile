@@ -1,6 +1,7 @@
 import { Route, Routes, Navigate, useLocation } from "react-router-dom";
 
-
+import MyCourses from "../Courses/MyCourses";
+import EnrolledCourses from "../Courses/EnrolledCourses";
 import Navbar from "../Navbar";
 import Sidebar from "../Sidebar";
 import JobsPage from "../Jobs";
@@ -51,6 +52,7 @@ export const RouteManagement = ({ islogin }) => {
               </ProtectedRoute>
             }
           />
+  
             <Route
             path="/"
             element={
@@ -59,7 +61,7 @@ export const RouteManagement = ({ islogin }) => {
               </ProtectedRoute>
             }
           />
-            <Route
+          <Route
             path="/dashboard"
             element={
               <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
@@ -101,7 +103,7 @@ export const RouteManagement = ({ islogin }) => {
             }
           />
 
-           <Route
+          <Route
             path="/applied"
             element={
               <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
@@ -109,7 +111,7 @@ export const RouteManagement = ({ islogin }) => {
               </ProtectedRoute>
             }
           />
-             <Route
+          <Route
             path="/government"
             element={
               <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
@@ -117,7 +119,7 @@ export const RouteManagement = ({ islogin }) => {
               </ProtectedRoute>
             }
           />
-              <Route
+          <Route
             path="/governmentDetailed/:id"
             element={
               <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
@@ -125,7 +127,7 @@ export const RouteManagement = ({ islogin }) => {
               </ProtectedRoute>
             }
           />
-           <Route
+          <Route
             path="/aimock"
             element={
               <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
@@ -133,7 +135,7 @@ export const RouteManagement = ({ islogin }) => {
               </ProtectedRoute>
             }
           />
-           <Route
+          <Route
             path="/airecommendations"
             element={
               <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
@@ -141,7 +143,7 @@ export const RouteManagement = ({ islogin }) => {
               </ProtectedRoute>
             }
           />
-               <Route
+          <Route
             path="/feedback"
             element={
               <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
@@ -149,7 +151,7 @@ export const RouteManagement = ({ islogin }) => {
               </ProtectedRoute>
             }
           />
-           <Route
+          <Route
             path="/chatbot"
             element={
               <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
@@ -157,10 +159,10 @@ export const RouteManagement = ({ islogin }) => {
               </ProtectedRoute>
             }
           />
-               <Route
+          <Route
             path="/*"
             element={
-              <PageNotFound/>
+              <PageNotFound />
             }
           />
           <Route path="/companyChat" element={< CompanyChatStart />} />
@@ -168,7 +170,15 @@ export const RouteManagement = ({ islogin }) => {
           <Route path="/compiler" element={< Compiler />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/course/:id" element={<Course />} />
-
+          <Route path="/my-courses" element={<MyCourses />} />
+          <Route
+            path="/course/:id/learn"
+            element={
+              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+                <EnrolledCourses /> {/* or the component you want to render for this route */}
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </div>
     </div>
