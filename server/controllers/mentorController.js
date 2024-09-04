@@ -6,6 +6,7 @@ import {
     addUserVerificationToken,
     findTokenByUsername,
     removeUserVerificationToken,
+    Student,
     
 
 } from '../models/auth.model.js';
@@ -210,11 +211,10 @@ export const resendVerification = async (req, res) => {
 // Verify user account token is also same 
 
 export const forgotPassword = async (req, res) => {
-    const { username, accountType } = req.body;
+    const { username } = req.body;
 
     try {
-        const Schema = accountType === "Mentor" ? Mentor : Mentor;
-        const user = await findUserByUsername(username, Schema);
+        const user = await findUserByUsername(username, Mentor);
         if (!user) {
             return res.json({ success: false, message: "User not found" });
         }
@@ -375,3 +375,72 @@ export const updateMentor = async (req, res) => {
         res.status(500).send("Server error");
     }
 };
+
+export const assignStudents = async (req, res) => {
+    const { mentorUsername, studentUsernames } = req.body;
+    console.log(req.body)
+
+    try {
+        // Find the mentor by username
+        const mentor = await Mentor.findOne({ username: mentorUsername });
+
+        if (!mentor) {
+            return res.status(404).json({ success: false, message: "Mentor not found" });
+        }
+
+        // Find all students by their usernames
+        const students = await Student.find({ username: { $in: studentUsernames } });
+
+        if (students.length !== studentUsernames.length) {
+            return res.status(404).json({ success: false, message: "One or more students not found" });
+        }
+
+        // Filter out students already assigned to this mentor
+        const newStudents = students.filter(student => !mentor.students.includes(student._id));
+
+        if (newStudents.length === 0) {
+            return res.status(200).json({ success: false, message: "All students are already assigned to this mentor" });
+        }
+
+        // Assign mentor to each new student and update the mentor's students array
+        await Promise.all(newStudents.map(async (student) => {
+            student.mentor = mentor._id;
+            await student.save();
+        }));
+
+        mentor.students = [...mentor.students, ...newStudents.map(student => student._id)];
+        await mentor.save();
+
+        return res.status(200).json({ success: true, message: "Students successfully assigned to mentor" });
+    } catch(err) {
+        console.log(err);
+        return res.status(500).send("Server error");
+    }
+}
+
+export const getStudents = async (req, res) => {
+    
+    try {
+        const { username } = req.body;
+   
+
+        const mentor = await Mentor.findOne({ username: username });
+        if (!mentor) {
+            return res.status(404).json({ success: false, message: "Mentor not found" });
+        }
+
+        console.log(mentor.students)
+
+        if (mentor.students && mentor.students.length > 0) {
+            const students = await Student.find({ _id: { $in: mentor.students } }, 'username');
+
+            const studentUsernames = students.map(student => student.username);
+            return res.status(200).json({ success: true, studentUsernames });
+        } else {
+            return res.status(200).json({ success: false, message: "No students assigned to this mentor" });
+        }
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send("Server error");
+    }
+}
