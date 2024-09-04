@@ -25,25 +25,25 @@ const ProfilePage = () => {
   ];
 
   useEffect(() => {
-    getUser();
+    const fetchUserData = async () => {
+      try {
+        const response = await Actions.fetchUser();
+        if (response.data.success) {
+          dispatch(setUserData(response.data.data));
+          setUser(response.data.data);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    };
+  
+    fetchUserData();
+    console.log('in')
   }, []);
 
-  const getUser = async () => {
-    try {
-      const response = await Actions.fetchUser();
-console.log(response);
-      if (response.data.success) {
-        dispatch(setUserData(response.data.data));
-        setUser(response.data.data);
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
   const updateUser = async (data) => {
     try {
       const response = await Actions.UpdateStudent(data);
-
       if (response.data.success) {
         dispatch(setUserData(response.data.updatedUser));
         setUser(response.data.updatedUser);
@@ -72,7 +72,6 @@ console.log(response);
 
   const handlePluginConnect = async (pluginName, PluginData) => {
     const response = await Actions.ConnectPlugin({ pluginName, PluginData });
-
     if (response.data.success) {
       console.log(response.data);
     } else {
@@ -314,7 +313,6 @@ console.log(response);
               </>
             </div>
           </div>
-       
 
           {/* Skills */}
           <div className="mb-6 ">
@@ -334,9 +332,6 @@ console.log(response);
             </div>
           </div>
         </div>
-
-
-
       </div>
       <ProfileEditModal
         open={isEditing}

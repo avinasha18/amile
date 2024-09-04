@@ -28,16 +28,19 @@ function App() {
 
   useEffect(() => {
     if (userId && islogin) {
+      // Establish the socket connection and join the chat room
       socket.on('connect', () => {
         socket.emit('joinChat', { userId });
         console.log(`Emitted joinChat for User ID: ${userId} on socket connect`);
       });
+  
+      // Cleanup the socket connection when the component unmounts
+      return () => {
+        socket.off('connect');
+      };
     }
-
-    return () => {
-      socket.off('connect'); 
-    };
-  }, [userId]);
+  }, [userId, islogin]); // Add userId and islogin to the dependency array
+  
 
   return (
     <ThemeProvider>

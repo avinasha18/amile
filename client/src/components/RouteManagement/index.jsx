@@ -22,6 +22,7 @@ import Courses from "../Courses";
 import Course from "../Courses/Course";
 import Chatbot from "../Chatbot";
 import ResumeBuilder from "../ResumeBuilder";
+import MentorMatching from "../MentorMatching";
 
 export const RouteManagement = ({ islogin }) => {
   const location = useLocation(window.location);
@@ -35,7 +36,7 @@ export const RouteManagement = ({ islogin }) => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-900 text-gray-100">
+    <div className="flex flex-col h-screen bg-gray-900 text-gray-100 w-full">
       <Navbar isLogin={islogin} />
       <div className={`h-screen flex flex-1 overflow-hidden no-scrollbar`}>
         <Sidebar isLogin={islogin} />
@@ -74,11 +75,20 @@ export const RouteManagement = ({ islogin }) => {
               </ProtectedRoute>
             }
           />
+          
           <Route
             path="/profile"
             element={
               <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
                 <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+            <Route
+            path="/mentormatching"
+            element={
+              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+                <MentorMatching />
               </ProtectedRoute>
             }
           />
