@@ -69,6 +69,9 @@ export const Actions = {
         return await axios.get(`${api}/getprogress`, {
             params: { studentId, courseId } // Use params to pass data in GET request
         });
+    },
+    assignMentor: async (data) => {
+        return await axios.post(`${api}/assign`, data);
     }
 };
 export const getApplicationStatistics = async (userId) => {

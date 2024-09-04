@@ -28,7 +28,6 @@ const studentSchema = new mongoose.Schema({
 const mentorSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  profilePictureUrl : {type : String , default : '/assets/nologo.jpg'},
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   status: { type: String, required: true, default: "inactive" },
@@ -51,7 +50,6 @@ const mentorSchema = new mongoose.Schema({
       organizationLogo: { type: String, required: true }
     }
   ],
-  
   workExperience: [
     {
       position: { type: String, required: true },

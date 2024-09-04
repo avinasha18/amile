@@ -13,6 +13,9 @@ router.post('/resendverification', resendVerification)
 router.post('/resetpassword', resetPassword);
 router.post('/forgotpassword', forgotPassword);
 router.get('/mentordata', CheckAuthorization,getUser);
+router.post('/mentordata',getUser)
+router.get('/mentordata/:id',getMentorData)
+router.post('/connectplugin',CheckAuthorization,connectPlugin);
 router.post('/updatementor',CheckAuthorization,updateMentor);
 router.get("/getStudents", CheckAuthorization,getStudents);
 

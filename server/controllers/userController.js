@@ -19,6 +19,7 @@ import { HtmlTemplates } from "../services/htmlTemplates.js";
 import { sendEmail } from "../services/mailServices.js";
 const JWT_SECRET = process.env.JWT_SECRET;
 
+
 export const registerStudent = async (req, res) => {
   const { username, password, email, ...otherDetails } = req.body;
   const { refrelid } = req.query;
@@ -322,7 +323,8 @@ export const getUser = async (req, res) => {
 
 export const updateStudent = async (req, res) => {
   const { username, ...otherDetails } = req.body;
- 
+  console.log('in upate user')
+  console.log(username,otherDetails)
   try {
     const existingUser = await findUserByUsername(username, Student);
     if (!existingUser) {
@@ -337,15 +339,16 @@ export const updateStudent = async (req, res) => {
       updatedUser,
     });
   } catch (e) {
-    console.log(e);
+    console.log(e.message);
     res.status(500).send("Server error");
   }
 };
 
-export const AssignMentor= async (req, res) => {
+export const AssignMentor = async (req, res) => {
   const { studentId, mentorId } = req.body;
-  
+
   try {
+    // Update the student with the assigned mentor
     const student = await Student.findByIdAndUpdate(studentId, {
       mentor: mentorId,
       neededMentor: false
@@ -355,11 +358,21 @@ export const AssignMentor= async (req, res) => {
       return res.status(404).send('Student not found');
     }
 
-    res.status(200).json({ message: 'Mentor assigned successfully', student });
+    const mentor = await Mentor.findByIdAndUpdate(mentorId, {
+      $addToSet: { students: studentId } // Use $addToSet to avoid duplicate student IDs
+    }, { new: true });
+
+    if (!mentor) {
+      return res.status(404).send('Mentor not found');
+    }
+
+    res.status(200).json({ message: 'Mentor assigned successfully', student, mentor });
   } catch (error) {
+    console.log(error.message)
     res.status(500).send('Server error');
   }
 };
+
 
 // Fetch student by ID
 export const checkStudentMentorStatus = async (req, res) => {

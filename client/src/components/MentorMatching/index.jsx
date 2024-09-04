@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Button,
   Avatar,
@@ -10,65 +10,65 @@ import {
   IconButton,
   Fade,
   useTheme as useMuiTheme,
-  useMediaQuery
-} from '@mui/material';
-import { styled } from '@mui/system';
-import { motion, AnimatePresence } from 'framer-motion';
-import Lottie from 'react-lottie';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import Cookies from 'js-cookie';
-import CloseIcon from '@mui/icons-material/Close';
-import PersonSearchIcon from '@mui/icons-material/PersonSearch';
-import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
-import SchoolIcon from '@mui/icons-material/School';
-import WorkIcon from '@mui/icons-material/Work';
-import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import GitHubIcon from '@mui/icons-material/GitHub';
-import LanguageIcon from '@mui/icons-material/Language';
-import { AiOutlineCheckCircle } from 'react-icons/ai';
-import animationData1 from './animation.json';
-import animationData2 from './animation2.json';
-import animationData3 from './animation3.json';
-import { useTheme } from '../../context/ThemeContext';
-
-const StyledModal = styled(Modal)(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
+  useMediaQuery,
+} from "@mui/material";
+import { styled } from "@mui/system";
+import { motion, AnimatePresence } from "framer-motion";
+import Lottie from "react-lottie";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import Cookies from "js-cookie";
+import CloseIcon from "@mui/icons-material/Close";
+import PersonSearchIcon from "@mui/icons-material/PersonSearch";
+import EmojiPeopleIcon from "@mui/icons-material/EmojiPeople";
+import SchoolIcon from "@mui/icons-material/School";
+import WorkIcon from "@mui/icons-material/Work";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import GitHubIcon from "@mui/icons-material/GitHub";
+import LanguageIcon from "@mui/icons-material/Language";
+import animationData1 from "./animation.json";
+import animationData2 from "./animation2.json";
+import animationData3 from "./animation3.json";
+import { useTheme } from "../../context/ThemeContext";
+import { Actions } from "../../hooks/actions";
+// Styled components
+const StyledModal = styled(Modal)({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+});
 
 const ModalContent = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   boxShadow: theme.shadows[5],
   padding: theme.spacing(4),
-  outline: 'none',
+  outline: "none",
   borderRadius: 15,
   maxWidth: 400,
-  textAlign: 'center',
+  textAlign: "center",
 }));
 
 const AnimationContainer = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  height: '100%',
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
+  height: "100%",
   padding: theme.spacing(4),
 }));
 
 const MentorCard = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(4),
   maxWidth: 600,
-  margin: '0 auto',
+  margin: "0 auto",
   backgroundColor: theme.palette.background.paper,
   borderRadius: 15,
-  boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
+  boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)",
 }));
 
 const InfoItem = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
+  display: "flex",
+  alignItems: "center",
   marginBottom: theme.spacing(2),
 }));
 
@@ -79,78 +79,87 @@ const IconWrapper = styled(Box)(({ theme }) => ({
 
 const MentorMatching = () => {
   const [openModal, setOpenModal] = useState(true);
-  const [stage, setStage] = useState('initial');
+  const [stage, setStage] = useState("initial");
   const [mentor, setMentor] = useState(null);
   const [loading, setLoading] = useState(false);
   const [animationIndex, setAnimationIndex] = useState(0);
   const [mentorMatched, setMentorMatched] = useState(false);
-
+  const [mentorUserName, setMentorName] = useState(null);
+  const [count, setCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [skillsRequired, setskillsRequired] = useState(false);
   const navigate = useNavigate();
   const theme = useMuiTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const studentId = Cookies.get('userId');
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const studentId = Cookies.get("userId");
   const { isDarkMode } = useTheme();
-
-  const dummyMentors = [
-    {
-      id: 1,
-      name: "John Doe",
-      profilePictureUrl: "https://randomuser.me/api/portraits/men/1.jpg",
-      title: "Senior Software Engineer",
-      email: "john.doe@example.com",
-      qualifications: "BSc Computer Science, University of Tech (2015)",
-      skills: ["JavaScript", "React", "Node.js", "Python", "Docker"],
-      certifications: "Certified React Developer, React Academy",
-      workExperience: "Software Engineer at Tech Company (3 years), Lead Developer at StartUp Inc. (2 years)",
-      github: "https://github.com/johndoe",
-      linkedin: "https://linkedin.com/in/johndoe",
-      portfolio: "https://johndoe.dev"
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      profilePictureUrl: "https://randomuser.me/api/portraits/women/1.jpg",
-      title: "Full Stack Developer",
-      email: "jane.smith@example.com",
-      qualifications: "MSc Software Engineering, Tech University (2018)",
-      skills: ["Python", "Django", "React", "PostgreSQL", "AWS"],
-      certifications: "AWS Certified Developer, Amazon Web Services",
-      workExperience: "Full Stack Developer at Web Solutions Inc. (4 years), Software Architect at InnovateTech (2 years)",
-      github: "https://github.com/janesmith",
-      linkedin: "https://linkedin.com/in/janesmith",
-      portfolio: "https://janesmith.dev"
-    }
-  ];
-
+  const [skills, setSkills] = useState([]);
   useEffect(() => {
     const checkMentorNeeded = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/student-mentor/${studentId}`);
+        const response = await axios.get(
+          `http://localhost:3000/student-mentor/${studentId}`
+        );
         const data = response.data;
+        if (data.skills.length === 0) {
+          setskillsRequired(true);
+        }
+        console.log(data);
+        setIsLoading(false);
+
         if (!data.neededMentor) {
-          navigate('/dashboard', { replace: true });
+          navigate("/dashboard", { replace: true });
         }
       } catch (error) {
-        console.error('Error checking mentor needed:', error);
+        console.error("Error checking mentor needed:", error);
       }
     };
 
     checkMentorNeeded();
   }, [studentId, navigate]);
 
-  const fetchMentor = useCallback(() => {
+  const fetchMentor = useCallback(async () => {
     setLoading(true);
-    setTimeout(() => {
-      const randomMentor = dummyMentors[Math.floor(Math.random() * dummyMentors.length)];
-      setMentor(randomMentor);
+    try {
+      const username = Cookies.get("user");
+      const response = await axios.get(
+        `http://127.0.0.1:5000/match-students?username=${username}&index=${count}`
+      );
+      const mentorUsername = response.data.mentor;
+      setMentorName(mentorUsername);
+
+      if (mentorUsername) {
+        const mentorResponse = await axios.get(
+          `http://localhost:3000/mentordata/${mentorUsername}`
+        );
+        console.log(mentorResponse.data.data);
+        console.log(mentorResponse.data.data, count, "->count");
+        setMentor(mentorResponse.data.data);
+      } else {
+        console.error("No mentor found in the response.");
+      }
+    } catch (error) {
+      console.error("Error fetching mentor data:", error);
+    } finally {
       setLoading(false);
-      setStage('showMentor');
-    }, 2000);
-  }, []);
+      setStage("showMentor");
+    }
+  }, [count]);
+
+  const handleAddSkills = async () => {
+    try {
+      const response = await Actions.UpdateStudent({ skills });
+      if (response.data.success) {
+        setskillsRequired(false);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const handleStartMatching = () => {
     setOpenModal(false);
-    setStage('matching');
+    setStage("matching");
     setAnimationIndex(0);
     const interval = setInterval(() => {
       setAnimationIndex((prev) => {
@@ -164,22 +173,70 @@ const MentorMatching = () => {
     }, 3000);
   };
 
+  const handleDontWant = () => {
+    navigate("/", { replace: true });
+  };
+  const handleInputChange = (e) => {
+    // Split the input value by spaces or commas into an array
+    const inputSkills = e.target.value
+      .split(/[ ,]+/)
+      .filter((skill) => skill.trim() !== "");
+    setSkills(inputSkills);
+  };
+
+  if (skillsRequired) {
+    return (
+      <>
+        <StyledModal
+          open={skillsRequired}
+          onClose={() => setskillsRequired(false)}
+        >
+          <Fade in={skillsRequired}>
+            <ModalContent>
+              <Typography variant="h5" gutterBottom>
+                Add Your Skills
+              </Typography>
+              <Typography variant="body1" paragraph>
+                You need to add skills to continue.
+              </Typography>
+              {/* Replace the following input with a skill input component */}
+              <input
+                className="text-black p-4 m-2"
+                type="text"
+                onChange={handleInputChange}
+                placeholder="Enter skills separated by space or comma"
+              />{" "}
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleAddSkills} // Example skill list
+                fullWidth
+              >
+                Save Skills
+              </Button>
+            </ModalContent>
+          </Fade>
+        </StyledModal>
+      </>
+    );
+  }
+
   const handleChooseMentor = async () => {
     try {
-      // In a real application, you would make an API call here
-      // await axios.post('http://localhost:3000/assign-mentor', {
-      //   studentId,
-      //   mentorId: mentor.id
-      // });
+      await axios.post("http://localhost:3000/assign-mentor", {
+        studentId,
+        mentorId: mentor._id,
+      });
       setMentorMatched(true);
     } catch (error) {
-      console.error('Error assigning mentor:', error);
+      console.error("Error assigning mentor:", error);
     }
   };
 
   const handleTryAnother = () => {
-    setStage('matching');
+    setStage("matching");
     setAnimationIndex(0);
+    setCount((prevCount) => prevCount + 1);
     handleStartMatching();
   };
 
@@ -188,24 +245,24 @@ const MentorMatching = () => {
     autoplay: true,
     animationData: data,
     rendererSettings: {
-      preserveAspectRatio: 'xMidYMid slice'
-    }
+      preserveAspectRatio: "xMidYMid slice",
+    },
   });
 
   const animations = [animationData1, animationData2, animationData3];
   const animationTexts = [
     "Searching for your perfect mentor...",
     "Analyzing your profile and preferences...",
-    "Match found! Preparing to introduce you..."
+    "Match found! Preparing to introduce you...",
   ];
 
   const TypedText = ({ text }) => {
-    const [displayText, setDisplayText] = useState('');
+    const [displayText, setDisplayText] = useState("");
 
     useEffect(() => {
       let i = 0;
       const timer = setInterval(() => {
-        if (i < text.length) {
+        if (i < text?.length) {
           setDisplayText((prev) => prev + text.charAt(i));
           i++;
         } else {
@@ -231,7 +288,7 @@ const MentorMatching = () => {
               aria-label="close"
               onClick={() => setOpenModal(false)}
               sx={{
-                position: 'absolute',
+                position: "absolute",
                 right: 8,
                 top: 8,
                 color: (theme) => theme.palette.grey[500],
@@ -243,7 +300,8 @@ const MentorMatching = () => {
               Ready to find your perfect mentor?
             </Typography>
             <Typography variant="body1" paragraph>
-              Our AI-powered system will match you with a mentor who can guide you on your learning journey.
+              Our AI-powered system will match you with a mentor who can guide
+              you on your learning journey.
             </Typography>
             <Button
               variant="contained"
@@ -256,12 +314,23 @@ const MentorMatching = () => {
             >
               Start Matching
             </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleDontWant}
+              startIcon={<PersonSearchIcon />}
+              fullWidth
+              size="large"
+              sx={{ mt: 2 }}
+            >
+              Not now
+            </Button>
           </ModalContent>
         </Fade>
       </StyledModal>
 
       <AnimatePresence mode="wait">
-        {stage === 'matching' && (
+        {stage === "matching" && (
           <motion.div
             key="matching"
             initial={{ opacity: 0 }}
@@ -275,14 +344,17 @@ const MentorMatching = () => {
                 height={300}
                 width={300}
               />
-              <Typography variant="h5" className="mt-8 text-gray-800 font-semibold text-center">
+              <Typography
+                variant="h5"
+                className="mt-8 text-gray-800 font-semibold text-center"
+              >
                 {animationTexts[animationIndex]}
               </Typography>
             </AnimationContainer>
           </motion.div>
         )}
 
-        {stage === 'showMentor' && mentor && !mentorMatched && (
+        {stage === "showMentor" && mentor && !mentorMatched && (
           <motion.div
             key="showMentor"
             initial={{ opacity: 0, y: 50 }}
@@ -291,98 +363,148 @@ const MentorMatching = () => {
             className="p-4 md:p-8"
           >
             <MentorCard elevation={3}>
-              <Box display="flex" flexDirection={isMobile ? 'column' : 'row'} alignItems="center" mb={4}>
+              <Box
+                display="flex"
+                flexDirection={isMobile ? "column" : "row"}
+                alignItems="center"
+                mb={4}
+              >
                 <Avatar
-                  src={mentor.profilePictureUrl}
+                  src={mentor.profilePictureUrl || "noavatar.png"}
                   alt={mentor.name}
-                  sx={{ width: 120, height: 120, mb: isMobile ? 2 : 0, mr: isMobile ? 0 : 4 }}
+                  sx={{
+                    width: isMobile ? 80 : 120,
+                    height: isMobile ? 80 : 120,
+                    marginBottom: isMobile ? 2 : 0,
+                    marginRight: isMobile ? 0 : 2,
+                  }}
                 />
-                <Box>
-                  <Typography variant="h4" component="h2" gutterBottom>
-                    <TypedText text={mentor.name} />
+                <div>
+                  <Typography variant="h4" component="h2">
+                    {mentor.name}
                   </Typography>
-                  <Typography variant="h6" color="textSecondary">
-                    <TypedText text={mentor.title} />
+                  <Typography variant="body1" color="textSecondary">
+                    {mentor.title}
                   </Typography>
-                </Box>
+                  <Typography variant="body1" color="textSecondary">
+                    {mentor.email}
+                  </Typography>
+                </div>
               </Box>
-
-              <InfoItem>
-                <IconWrapper>
-                  <EmojiPeopleIcon />
-                </IconWrapper>
-                <Typography variant="body1">
-                  <TypedText text={mentor.email} />
-                </Typography>
-              </InfoItem>
 
               <InfoItem>
                 <IconWrapper>
                   <SchoolIcon />
                 </IconWrapper>
-                <Typography variant="body1">
-                  <TypedText text={mentor.qualifications} />
-                </Typography>
+                <div>
+                  <Typography variant="body1">
+                    <strong>Qualifications:</strong>
+                    <ul>
+                      {mentor.qualifications?.map((each, index) => (
+                        <li key={index}>
+                          {each.name}, {each.institution} ({each.year})
+                        </li>
+                      ))}
+                    </ul>
+                  </Typography>
+                </div>
               </InfoItem>
 
               <InfoItem>
                 <IconWrapper>
                   <WorkIcon />
                 </IconWrapper>
-                <Typography variant="body1">
-                  <TypedText text={mentor.workExperience} />
-                </Typography>
+                <div>
+                  <Typography variant="body1">
+                    <strong>Work Experience:</strong>
+                    <ul>
+                      {mentor.workExperience?.map((each, index) => (
+                        <li key={index}>
+                          {each.position} at {each.company} ({each.duration})
+                        </li>
+                      ))}
+                    </ul>
+                  </Typography>
+                </div>
+              </InfoItem>
+
+              <InfoItem>
+                <IconWrapper>
+                  <EmojiPeopleIcon />
+                </IconWrapper>
+                <div>
+                  <Typography variant="body1">
+                    <strong>Skills:</strong>
+                    <ul className="flex flex-row gap-1">
+                      {mentor.skills?.map((each, index) => (
+                        <li key={index}>{each}</li>
+                      ))}
+                    </ul>
+                  </Typography>
+                </div>
               </InfoItem>
 
               <InfoItem>
                 <IconWrapper>
                   <SchoolIcon />
                 </IconWrapper>
-                <Typography variant="body1">
-                  <TypedText text={`Skills: ${mentor.skills.join(', ')}`} />
-                </Typography>
+                <div>
+                  <Typography variant="body1">
+                    <strong>Certifications:</strong>
+                    <ul>
+                      {mentor.certifications?.map((each, index) => (
+                        <li key={index}>
+                          {each.name} issued by {each.issuedBy}:{" "}
+                          {each.description}
+                        </li>
+                      ))}
+                    </ul>
+                  </Typography>
+                </div>
               </InfoItem>
 
-              <InfoItem>
-                <IconWrapper>
-                  <SchoolIcon />
-                </IconWrapper>
-                <Typography variant="body1">
-                  <TypedText text={`Certifications: ${mentor.certifications}`} />
-                </Typography>
-              </InfoItem>
-
-              <Box mt={4}>
-                <Typography variant="h6" gutterBottom>Social Links</Typography>
-                <Box display="flex" justifyContent="center" gap={2}>
-                  <IconButton color="primary" aria-label="github" component="a" href={mentor.github} target="_blank">
-                    <GitHubIcon />
-                  </IconButton>
-                  <IconButton color="primary" aria-label="linkedin" component="a" href={mentor.linkedin} target="_blank">
-                    <LinkedInIcon />
-                  </IconButton>
-                  <IconButton color="primary" aria-label="portfolio" component="a" href={mentor.portfolio} target="_blank">
-                    <LanguageIcon />
-                  </IconButton>
-                </Box>
+              <Box display="flex" justifyContent="center" mt={4}>
+                <IconButton
+                  href={mentor.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="LinkedIn"
+                >
+                  <LinkedInIcon />
+                </IconButton>
+                <IconButton
+                  href={mentor.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="GitHub"
+                >
+                  <GitHubIcon />
+                </IconButton>
+                <IconButton
+                  href={mentor.portfolio}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Portfolio"
+                >
+                  <LanguageIcon />
+                </IconButton>
               </Box>
 
-              <Box display="flex" justifyContent="center" mt={4} gap={2}>
+              <Box display="flex" justifyContent="center" mt={4}>
                 <Button
                   variant="contained"
                   color="primary"
                   onClick={handleChooseMentor}
-                  startIcon={<EmojiPeopleIcon />}
+                  sx={{ marginRight: 2 }}
                 >
-                  Choose This Mentor
+                  Choose Mentor
                 </Button>
                 <Button
                   variant="outlined"
                   color="secondary"
                   onClick={handleTryAnother}
-                  startIcon={<PersonSearchIcon />}
                 >
-                  See Another Mentor
+                  Try Another
                 </Button>
               </Box>
             </MentorCard>
@@ -391,36 +513,41 @@ const MentorMatching = () => {
 
         {mentorMatched && (
           <motion.div
-            className="flex flex-col items-center justify-center h-screen"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            key="mentorMatched"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            className="h-screen flex flex-col items-center justify-center p-4 md:p-8"
           >
-            <AiOutlineCheckCircle size={100} color={isDarkMode ? 'white' : 'green'} />
-            <Typography
-              variant="h6"
-              className="mt-4 text-center text-xl font-semibold"
-              style={{ color: isDarkMode ? 'white' : 'black' }}
-            >
-              Mentorship successfully assigned!
+            <Typography variant="h4" component="h2" align="center" gutterBottom>
+              Mentor Matched Successfully!
+            </Typography>
+            <Typography variant="body1" align="center">
+              You have successfully matched with {mentor.name}. You can now
+              contact your mentor for guidance and support.
             </Typography>
             <Button
               variant="contained"
               color="primary"
-              onClick={() => navigate('/dashboard')}
-              className="bg-blue-600 hover:bg-blue-800 text-white px-6 py-2 mt-4 rounded-lg shadow-md"
+              onClick={() => navigate("/dashboard")}
+              sx={{ mt: 4 }}
             >
               Go to Dashboard
             </Button>
           </motion.div>
         )}
-      </AnimatePresence>
 
-      {loading && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <CircularProgress size={60} thickness={4} />
-        </div>
-      )}
+        {loading && (
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="100vh"
+          >
+            <CircularProgress />
+          </Box>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
