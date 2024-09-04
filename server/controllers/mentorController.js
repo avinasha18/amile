@@ -6,9 +6,6 @@ import {
     addUserVerificationToken,
     findTokenByUsername,
     removeUserVerificationToken,
-    Student,
-    
-
 } from '../models/auth.model.js';
 import { findByToken, updateAccountStatus, removeUserVerificationTokenbyToken } from "../models/auth.model.js";
 import { generateUniqueToken } from "../services/uniqueTokenGeneration.js";
