@@ -429,13 +429,11 @@ export const getStudents = async (req, res) => {
             return res.status(404).json({ success: false, message: "Mentor not found" });
         }
 
-        console.log(mentor.students)
 
         if (mentor.students && mentor.students.length > 0) {
             const students = await Student.find({ _id: { $in: mentor.students } }, 'username');
 
-            const studentUsernames = students.map(student => student.username);
-            return res.status(200).json({ success: true, studentUsernames });
+            return res.status(200).json({ success: true, studentUsernames:students });
         } else {
             return res.status(200).json({ success: false, message: "No students assigned to this mentor" });
         }

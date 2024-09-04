@@ -13,17 +13,20 @@ const chatHandlers = (io, socket, userSocketMap) => {
   socket.on(
     "startChat",
     async ({ companyId, mentorId, studentId }, callback) => {
+      console.log({companyId, mentorId, studentId})
       try {
         let chat;
 
         // Check if the chat is with a mentor or a company
         if (mentorId) {
+          console.log(Chat)
           chat = await Chat.findOne({ mentorId, studentId });
 
           if (!chat) {
             chat = new Chat({ mentorId, studentId, messages: [] });
             await chat.save();
           }
+          console.log(chat);
         } else if (companyId) {
           chat = await Chat.findOne({ companyId, studentId });
 
@@ -32,6 +35,7 @@ const chatHandlers = (io, socket, userSocketMap) => {
             await chat.save();
           }
         }
+        console.log(chat);
 
         if (chat) {
           callback({ success: true, chat });
