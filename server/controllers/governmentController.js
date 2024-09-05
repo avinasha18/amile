@@ -62,14 +62,9 @@ export const createJobPosting = async (req, res) => {
 
 export const getAllJobPostings = async (req, res) => {
   const userId = req.query.userId;
-
   try {
-    // Find all jobs the current user has applied for
     const appliedJobIds = await GovernmentApplication.find({ studentId: userId }).distinct('internshipId');
-
-    // Fetch jobs that are not applied by the current user
     const jobs = await Government.find({ _id: { $nin: appliedJobIds } });
-
     res.status(200).json(jobs);
   } catch (error) {
     res.status(500).json({

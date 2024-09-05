@@ -76,7 +76,7 @@ const Dashboard = () => {
 
   const Cdata = {
     datasets: [{
-      data: [statistics.acceptedApplications, statistics.rejectedApplications],
+      data: [statistics.pendingApplications, statistics.app],
       backgroundColor: [
         'rgb(65, 105, 225)',  // Royal Blue
         'rgb(230, 230, 250)', // Lavender
@@ -127,7 +127,7 @@ const Dashboard = () => {
           <div className="relative h-64">
             <Doughnut data={Cdata} options={Coptions} />
             <div className="absolute inset-0 flex items-center justify-center text-2xl font-bold">
-              {Math.round((statistics.acceptedApplications / statistics.totalApplications) * 100)}%
+              {Math.round((statistics.pendingApplications / statistics.totalApplications) * 100)}%
             </div>
           </div>
           <div className="flex justify-center mt-4">
