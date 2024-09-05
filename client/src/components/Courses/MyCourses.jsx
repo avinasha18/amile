@@ -48,7 +48,7 @@ const MyCourses = () => {
             </div>
             <div className='grid grid-cols-4 gap-4 px-40 py-8'>
                 {courses.map((course) => (
-                    <div key={course.id} className=" h-[300px] border-gray-200 border rounded-xl cursor-pointer" onClick={() => handleCourseClick(course)}>
+                    <div key={course.id} className=" h-[300px] cursor-pointer" onClick={() => handleCourseClick(course)}>
                         <div className='flex justify-center items-center rounded-t-xl'>
                             <img src={course.img} alt="" className="h-32 w-full" />
                         </div>

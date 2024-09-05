@@ -1,21 +1,21 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken"
 import {
-  AccountVerification,
-  VerifyUserAccountwithToken,
+    AccountVerification,
+    VerifyUserAccountwithToken,
 } from "./userController.js";
 import {
-  findUserByUsername,
-  Mentor,
-  addUserVerificationToken,
-  findTokenByUsername,
-  removeUserVerificationToken,
+    findUserByUsername,
+    Mentor,
+    addUserVerificationToken,
+    findTokenByUsername,
+    removeUserVerificationToken,
     Student,
 } from "../models/auth.model.js";
 import {
-  findByToken,
-  updateAccountStatus,
-  removeUserVerificationTokenbyToken,
+    findByToken,
+    updateAccountStatus,
+    removeUserVerificationTokenbyToken,
 } from "../models/auth.model.js";
 import { generateUniqueToken } from "../services/uniqueTokenGeneration.js";
 import Company from "../models/company.model.js";
@@ -215,7 +215,7 @@ export const resendVerification = async (req, res) => {
 // Verify user account token is also same
 
 export const forgotPassword = async (req, res) => {
-  const { username } = req.body;
+    const { username } = req.body;
 
     try {
         const user = await findUserByUsername(username, Mentor);
@@ -397,25 +397,25 @@ export const getStudentData = async (req, res) => {
 }
 
 export const updateMentor = async (req, res) => {
-  const { username, ...otherDetails } = req.body;
-  // console.log({ ...otherDetails });
-  try {
-    const existingUser = await findUserByUsername(username, Mentor);
-    if (!existingUser) {
-      return res.send({ success: false, message: "User not found" });
+    const { username, ...otherDetails } = req.body;
+    // console.log({ ...otherDetails });
+    try {
+        const existingUser = await findUserByUsername(username, Mentor);
+        if (!existingUser) {
+            return res.send({ success: false, message: "User not found" });
+        }
+
+        const updatedUser = await updateUserMentor({ username, ...otherDetails });
+
+        res.json({
+            success: true,
+            message: "Mentor updated successfully",
+            updatedUser,
+        });
+    } catch (e) {
+        console.log(e);
+        res.status(500).send("Server error");
     }
-
-    const updatedUser = await updateUserMentor({ username, ...otherDetails });
-
-    res.json({
-      success: true,
-      message: "Mentor updated successfully",
-      updatedUser,
-    });
-  } catch (e) {
-    console.log(e);
-    res.status(500).send("Server error");
-  }
 };
 
 export const assignStudents = async (req, res) => {
@@ -473,7 +473,7 @@ export const getStudents = async (req, res) => {
         if (mentor.students && mentor.students.length > 0) {
             const students = await Student.find({ _id: { $in: mentor.students } }, 'username');
 
-            return res.status(200).json({ success: true, studentUsernames:students });
+            return res.status(200).json({ success: true, studentUsernames: students });
         } else {
             return res.status(200).json({ success: false, message: "No students assigned to this mentor" });
         }
