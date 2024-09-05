@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import Cookies from "js-cookie"
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Lottie from 'react-lottie';
@@ -23,6 +24,7 @@ function InterviewApp() {
   const [isTyping, setIsTyping] = useState(false);
   const [isvideo, setIsVideo] = useState(false);
   const videoRef = useRef(null);
+  const username = Cookies.get('user')
   const navigate = useNavigate();
   
 
@@ -97,7 +99,7 @@ function InterviewApp() {
 
   const fetchFirstQuestion = async () => {
     try {
-      const res = await axios.get(`${flask_domain}/ask-question`);
+      const res = await axios.get(`${flask_domain}/ask-question?username=${username}`);
       setQuestion(res.data.question);
       setGotQuestion(true);
     } catch (err) {
@@ -113,6 +115,7 @@ function InterviewApp() {
         sample_rate: 16000,
         question: question,
         conversationHistory: conversationHistory,
+        username: username
       });
 
       if (res.data.response) {
