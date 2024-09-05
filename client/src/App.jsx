@@ -18,6 +18,7 @@ import ReportIncident from "./components/reportIncident";
 import MentorRouteManagement from "./mentor-components/MentorRouteManagement";
 import { VerifyMentor } from './components/verifyAccount/verifyMentor';
 import socket from './hooks/socket';
+import LandingPage from './components/LandingPage';
 
 function App() {
   const islogin = useSelector((state) => state.auth.token);
@@ -43,7 +44,7 @@ function App() {
       <Routes>
         <Route path="/verifyaccount" element={<VerifyAccount />} />
         <Route path="/mentor/verifyaccount" element={<VerifyMentor />} />
-
+        <Route  path='/land' element={< LandingPage/>} />
         <Route path="/forgotpassword" element={<ForgotPassword />} />
         <Route path="/resetpassword" element={<ResetPassword />} />
         <Route path="/resendverify" element={<ResendVerification />} />
