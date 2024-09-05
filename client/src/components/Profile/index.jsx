@@ -31,7 +31,6 @@ const ProfilePage = () => {
     const GetUser = async () => {
       try {
         const response = await Actions.fetchUser();
-        console.log(response);
         if (response.data.success) {
           dispatch(setUserData(response.data.data));
           setUser(response.data.data);

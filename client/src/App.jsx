@@ -32,11 +32,11 @@ function App() {
         console.log(`Emitted joinChat for User ID: ${memoizedUserId} on socket connect`);
       });
     }
-
+  
     return () => {
-      socket.off('connect'); 
+      socket.off('connect');
     };
-  }, [userId]);
+  }, [islogin, memoizedUserId]);
 
   return (
     <ThemeProvider>

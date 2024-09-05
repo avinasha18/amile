@@ -5,10 +5,13 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { useTheme } from '../../context/ThemeContext'; // Adjust the import path as needed
+import socket from '../../hooks/socket';
+import { useSelector } from 'react-redux';
 
 const AppliedInternships = () => {
   const [appliedInternships, setAppliedInternships] = useState([]);
   const [govtAppliedInternships, setGovtAppliedInternships] = useState([]);
+  const studentId = useSelector((state)=>state.auth.userData?._id)
 
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState(null);
@@ -38,6 +41,31 @@ const AppliedInternships = () => {
         });
     }
   }, [currentUser, navigate]);
+
+
+
+
+
+  const startChat = (companyId) => {
+    socket.emit('startChat', { companyId, studentId}, (response) => {
+        console.log(response);
+      if (response.success) {
+        navigate("/messages")
+      } else {
+        toast.error('Error starting chat. Please try again.');
+      }
+    });
+  };
+
+
+
+
+
+
+
+
+
+
 
   return (
     <div className={`p-6 h-full w-full overflow-y-auto ${isDarkMode ? 'bg-black text-white' : 'bg-gray-100 text-gray-900'}`}>
@@ -73,6 +101,10 @@ const AppliedInternships = () => {
                     >
                       {internship.applicationStatus}
                     </button>
+                  { internship.companyId && <button onClick={()=>startChat(internship.companyId)} className='px-4 py-2 text-sm font-semibold rounded bg-white text-black m-1 border border-gray'>
+                 
+                      Contact company
+                    </button>}
                     <p className="text-sm text-gray-600 mt-2">Applied on: {new Date(internship.appliedAt).toLocaleDateString()}</p>
                   </motion.div>
                 ))}

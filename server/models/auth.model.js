@@ -60,8 +60,8 @@ const mentorSchema = new mongoose.Schema({
   github: String,
   linkedin: String,
   portfolio: String,
-  myPortfolioPlugin: { type: String },
   students: [{ type: mongoose.Schema.Types.ObjectId, ref: "Student" }], // Array of Students
+
 });
 
 

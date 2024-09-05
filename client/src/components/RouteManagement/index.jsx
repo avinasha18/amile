@@ -94,7 +94,7 @@ export const RouteManagement = ({ islogin }) => {
               </ProtectedRoute>
             }
           />
-              <Route
+          <Route
             path="/myreferals"
             element={
               <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>

@@ -135,14 +135,20 @@ export const resendVerification = async (req, res) => {
   }
 };
 export const VerifyUserAccountwithToken = async (req, res) => {
-  const { token } = req.query;
-  console.log('in sstudent verificaion')
+  const { token , ismentor } = req.query;
 
   try {
     const user = await findByToken(token);
 
     if (user) {
-      const updateResult = await updateAccountStatus(user.username);
+      var updateResult ;
+      if(ismentor){
+        updateResult = await updateAccountStatus(user.username, "mentor");
+
+      }else{
+        updateResult = await updateAccountStatus(user.username);
+
+      }
 
       if (updateResult.success) {
         await removeUserVerificationToken(user.username);
