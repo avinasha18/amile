@@ -6,7 +6,7 @@ import "slick-carousel/slick/slick-theme.css";
 import { useTheme } from '../../context/ThemeContext';
 import { useNavigate } from 'react-router-dom';
 import { Actions } from '../../hooks/actions';
-
+import CoursesSkeleton from "./courcesSkeleton"
 const Courses = () => {
     const settings = {
         infinite: false,
@@ -17,9 +17,11 @@ const Courses = () => {
     const [courses, setCourses] = useState([])
     const { isDarkMode } = useTheme();
     const nav = useNavigate();
+    const [loading,setLoading] = useState(false)
 
     useEffect(() => {
         const fetchCourses = async () => {
+            setLoading(true);
             try {
                 const response = await Actions.fetchCourse();
                 
@@ -32,9 +34,14 @@ const Courses = () => {
             catch(error) {
                 console.error(error)
             }
+            setLoading(false)
         }
         fetchCourses()
     }, [])
+
+    if(loading){
+        return <CoursesSkeleton/>
+    }
 
     const sections = [1,2]
 

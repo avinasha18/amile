@@ -6,7 +6,6 @@ const chatHandlers = (io, socket, userSocketMap) => {
   // Join the chat and store the mapping
   socket.on("joinChat", ({ userId }) => {
     userSocketMap[userId] = socket.id;
-    console.log(userSocketMap);
     console.log(`User with ID ${userId} joined with Socket ID: ${socket.id}`);
   });
 
@@ -72,7 +71,6 @@ const chatHandlers = (io, socket, userSocketMap) => {
         } else {
           recipientId = message.studentId;
         }
- console.log(recipientId,message.sender, message)
         const recipientSocketId = userSocketMap[recipientId];
         if (recipientSocketId) {
           io.to(recipientSocketId).emit("receiveMessage", { chat, message });

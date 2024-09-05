@@ -42,13 +42,13 @@ const MyCourses = () => {
     }
 
     return (
-        <div className='w-full overflow-y-auto bg-white'>
-            <div className='bg-black p-20 px-32 pb-10 h-1/3'>
+        <div className={`w-full overflow-y-auto ${isDarkMode?"text-white bg-black":"bg-white text-black"}`}>
+            <div className={`p-20 px-32 pb-10 h-1/3  ${isDarkMode?"text-black bg-white":"bg-black text-white"}`}>
                 <h1 className='text-4xl font-bold font-serif'>My Courses</h1>
             </div>
             <div className='grid grid-cols-4 gap-4 px-40 py-8'>
                 {courses.map((course) => (
-                    <div key={course.id} className="bg-white h-[300px] text-black rounded-xl cursor-pointer" onClick={() => handleCourseClick(course)}>
+                    <div key={course.id} className=" h-[300px] border-gray-200 border rounded-xl cursor-pointer" onClick={() => handleCourseClick(course)}>
                         <div className='flex justify-center items-center rounded-t-xl'>
                             <img src={course.img} alt="" className="h-32 w-full" />
                         </div>
