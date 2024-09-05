@@ -471,7 +471,7 @@ export const getStudents = async (req, res) => {
 
 
         if (mentor.students && mentor.students.length > 0) {
-            const students = await Student.find({ _id: { $in: mentor.students } }, 'username');
+            const students = await Student.find({ _id: { $in: mentor.students } });
 
             return res.status(200).json({ success: true, studentUsernames: students });
         } else {
