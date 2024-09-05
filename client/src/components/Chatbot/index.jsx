@@ -14,7 +14,7 @@ const Chatbot = () => {
   const suggestedPrompts = [
     "who developed amile ?",
     "How does AMILE personalize the interview experience?",
-    "Can users track their progress on AMILE?",
+    "how can i apply for jobs?",
     "Does AMILE support text, voice, and video interactions?",
   ];
 
