@@ -12,10 +12,10 @@ const Chatbot = () => {
   const { isDarkMode } = useTheme();
   const userName = Cookies.get('user')
   const suggestedPrompts = [
-    "Suggest beautiful places to see on an upcoming road trip",
-    "What are tips to improve public speaking skills?",
-    "Help me write an out-of-office email",
-    "Teach me the concept of game theory in simple terms",
+    "who developed amile ?",
+    "How does AMILE personalize the interview experience?",
+    "Can users track their progress on AMILE?",
+    "Does AMILE support text, voice, and video interactions?",
   ];
 
   const sendMessage = async (text) => {

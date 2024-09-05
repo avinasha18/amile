@@ -29,7 +29,9 @@ const GovernmentJobsPage = () => {
 
       try {
         const response = await axios.get(`http://localhost:3000/government?userId=${userId}`);
+
         setJobs(response.data);
+        console.log(response.data)
         setFilteredJobs(response.data);
         setLoading(false);
       } catch (error) {
