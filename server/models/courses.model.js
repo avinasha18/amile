@@ -45,7 +45,9 @@ const courseSchema = new mongoose.Schema({
         type: String, 
         required: true
     },
-    modules: [moduleSchema] });
+    modules: [moduleSchema],
+    courseThumbnail: { type: String, required: true } 
+});
 
 export const Course = mongoose.model('Course', courseSchema);
 

@@ -62,7 +62,7 @@ const Courses = () => {
                             {courses.map((course) => (
                                 <div key={course.id} className="bg-white h-[350px] text-black rounded-xl cursor-pointer" onClick={()=>handleCourseClick(course)}>
                                     <div className='flex justify-center items-center rounded-t-xl'>
-                                        <img src={course.img} alt="" className="h-44 w-full" />
+                                        <img src={course.courseThumbnail} alt="" className="h-44 w-full" />
                                     </div>
 
                                     <div className="flex flex-col p-4">
