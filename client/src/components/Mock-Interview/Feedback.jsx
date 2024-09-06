@@ -3,41 +3,31 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Typography, Container, Grow, Button } from '@mui/material';
 import { keyframes } from '@emotion/react';
 
-// Define keyframes for animations
+// Define the keyframes for the score animation
 const scoreAnimation = keyframes`
   0% { transform: scale(0.8); opacity: 0; }
-  50% { transform: scale(1.2); opacity: 0.5; }
+  50% { transform: scale(1.1); opacity: 0.5; }
   100% { transform: scale(1); opacity: 1; }
 `;
 
+// Define the keyframes for performance animation
 const performanceAnimation = keyframes`
-  0% { opacity: 0; transform: translateY(20px); }
-  50% { opacity: 0.7; transform: translateY(-10px); }
+  0% { opacity: 0; transform: translateY(10px); }
+  50% { opacity: 0.5; transform: translateY(-5px); }
   100% { opacity: 1; transform: translateY(0); }
 `;
 
-const buttonHoverAnimation = keyframes`
-  0% { transform: scale(1); }
-  100% { transform: scale(1.05); }
-`;
-
-const gradientAnimation = keyframes`
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-`;
-
 function Feedback() {
-    const [performanceColor, setPerformanceColor] = useState('#003262'); // Default color
+    const [performanceColor, setPerformanceColor] = useState('#003262'); // Default color for label
     const location = useLocation();
     const { score } = location.state || { score: 'No score available' };
 
-    const navigate = useNavigate();
+    const navigate = useNavigate()
 
-    // Function to predict performance based on score
+    // Function to predict performance based on the score
     const predictPerformance = (score) => {
         if (score === 'No score available') {
-            return "";
+            return ""
         }
         if (score >= 8) {
             return 'Excellent';
@@ -52,7 +42,7 @@ function Feedback() {
 
     const performance = predictPerformance(score);
 
-    // Set performance color based on the result
+    // Set the performanceColor based on the performance value when the component mounts
     useEffect(() => {
         switch (performance) {
             case 'Excellent':
@@ -71,93 +61,84 @@ function Feedback() {
                 setPerformanceColor('#003262'); // Default color
                 break;
         }
-    }, [performance]);
+    }, [performance]); // Depend on performance value
 
     return (
-        <Box className={'bg-black w-full'}
+        <Box
             sx={{
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: '100vh',
                 padding: '20px',
-                // background: 'linear-gradient(-10deg, #000, #af4261, #42a5f5, #66bb6a)',
-                background: '#42a5f5',
-
-                backgroundSize: '400% 400%',
-                animation: `${gradientAnimation} 15s ease infinite`,
+                animation: 'backgroundShift 8s ease-in-out infinite alternate',
+                height: "100%"
             }}
+            className="interview-container"
         >
-            <Container maxWidth="md">
+            <Container maxWidth="xl">
                 <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-                    <Typography
-                        variant="h2"
-                        component="h1"
-                        fontWeight="bold"
-                        className="animate-gradient bg-gradient-to-r from-slate-200 via-yellow-500 to-white bg-clip-text text-transparent"
-                        sx={{
-                            textAlign: 'center',
-                            fontFamily: "'Pacifico', cursive",
-                            animation: `${scoreAnimation} 2s ease-out`,
-                        }}
-                    >
-                        Amile Interview Score
-                    </Typography>
+                <h1 className=" text-[50px] font-bold animate-gradient bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-500 bg-clip-text text-transparent">
+                    Amile Interview Score
+                </h1>
+
                 </Box>
 
                 <Typography
-                    variant="h5"
-                    component="h2"
+                    variant="h4"
+                    component="h1"
                     fontWeight="bold"
                     gutterBottom
                     sx={{
                         fontFamily: "'Pacifico', sans-serif",
                         textAlign: 'center',
                         fontStyle: 'italic',
-                        color: '#fff',
-                        mb: 4,
                     }}
                 >
                     Glad that you have attended the interview
                 </Typography>
 
-                <Grow in timeout={1200}>
+                <Grow in timeout={1000}>
                     <Box
                         sx={{
                             textAlign: 'center',
-                            background: 'rgba(255, 255, 255, 0.2)',
-                            boxShadow: '0px 8px 20px rgba(0, 0, 0, 0.15)',
-                            borderRadius: 4,
-                            p: 4,
-                            backdropFilter: 'blur(10px)',
-                            animation: `${scoreAnimation} 3s ease`,
+                            p: 2,
+                            boxShadow: 8,
+                            borderRadius: 2,
+                            mt: 3,
+                            opacity: 0.9,
+                            maxWidth: 'xs',
+                            minHeight: '200px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center',
                         }}
+
+                        className="backdrop-blur-md"
                     >
                         <Typography
                             variant="h5"
                             component="p"
                             fontWeight="bold"
                             sx={{
+                                mt: 2,
                                 fontFamily: "'Roboto', sans-serif",
                                 fontStyle: 'italic',
-                                textAlign: 'center',
-                                color: '#fff',
+                                textAlign: 'center'
                             }}
                         >
-                            Your Interview Score out of 10:
+                            Your Interview Score
                         </Typography>
 
                         <Typography
-                            variant="h3"
+                            variant="h5"
                             component="p"
                             fontWeight="bold"
                             sx={{
                                 mt: 2,
-                                animation: `${scoreAnimation} 2s ease`,
+                                animation: `${scoreAnimation} 3s ease-in-out`,
                                 fontFamily: "'Pacifico', sans-serif",
                                 fontStyle: 'italic',
-                                color: '#fff',
-                                textShadow: '2px 2px 4px rgba(0,0,0,0.4)',
+                                textAlign: 'center'
                             }}
                         >
                             {score}
@@ -166,10 +147,9 @@ function Feedback() {
                         <Box
                             sx={{
                                 display: 'flex',
+                                flexDirection: 'row',
                                 justifyContent: 'center',
                                 alignItems: 'center',
-                                mt: 3,
-                                animation: `${performanceAnimation} 2s ease`,
                             }}
                         >
                             <Typography
@@ -177,25 +157,29 @@ function Feedback() {
                                 component="p"
                                 fontWeight="bold"
                                 sx={{
+                                    mt: 2,
                                     fontFamily: "'Roboto', sans-serif",
                                     fontStyle: 'italic',
-                                    color: '#fff',
+                                    textAlign: 'center',
+                                    animation: `${performanceAnimation} 2s ease-in-out`,
                                 }}
                             >
                                 Performance:
                             </Typography>
+
                             <Typography
                                 variant="h5"
                                 component="p"
                                 fontWeight="bold"
                                 sx={{
+                                    mt: 2,
                                     ml: 1,
                                     fontFamily: "'Roboto', sans-serif",
-                                    fontStyle: 'semi-bold',
-                                    color: performanceColor,
-                                    textShadow: '2px 2px 6px rgba(0,0,0,0.5)',
+                                    fontStyle: 'italic',
+                                    textAlign: 'center',
+                                    animation: `${performanceAnimation} 2s ease-in-out`,
                                 }}
-                                className="bg-gradient-to-r from-purple-400 via-pink-400 to-yellow-400 text-transparent bg-clip-text"
+                                className="bg-gradient-to-r text-transparent bg-clip-text from-purple-500 via-pink-500 to-yellow-500"
                             >
                                 {performance}
                             </Typography>
@@ -203,41 +187,39 @@ function Feedback() {
                     </Box>
                 </Grow>
 
-                <Box sx={{ textAlign: 'center', mt: 5 }}>
+                <Box sx={{ textAlign: 'center', mt: 4 }}>
                     <Button
-                        onClick={() => navigate('/')}
+                        onClick={()=>navigate('/')}
                         variant="contained"
                         sx={{
-                            color: '#fff',
-                            padding: '12px 30px',
-                            borderRadius: '30px',
+                            color: 'white',
+                            padding: '10px 20px',
+                            borderRadius: '50px',
                             textTransform: 'none',
                             fontWeight: 'bold',
                             fontFamily: "'Roboto', sans-serif",
-                            backgroundColor: '#ff6f61',
-                            transition: 'transform 0.2s',
                             '&:hover': {
-                                backgroundColor: '#ff4081',
-                                animation: `${buttonHoverAnimation} 0.3s ease-in-out forwards`,
+                                backgroundColor: '#ec407a',
                             },
                         }}
+                        className='bg-yellow-500'
                     >
-                        Back to Home
+                        Back Home
                     </Button>
                 </Box>
 
                 <Typography
                     component="p"
+                    color="#98817B"
                     sx={{
-                        mt: 4,
-                        color: '#f3ec78',
+                        mt: 2,
                         fontFamily: "'Roboto', sans-serif",
-                        textAlign: 'center',
                         fontStyle: 'italic',
-                        fontSize: '14px',
+                        textAlign: 'center',
+                        fontSize: '15px'
                     }}
                 >
-                    If you have any issues, feel free to reach out to our support team.
+                    If you have any issues, contact us.
                 </Typography>
             </Container>
         </Box>
