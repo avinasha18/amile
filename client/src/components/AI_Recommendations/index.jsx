@@ -50,7 +50,7 @@ const AIRecommendations = ({ filters, searchQuery }) => {
           console.log(skills)
       
         const response = await axios.post(
-            `http://127.0.0.1:5000/recommend`,
+            `http://127.0.0.1:5050/recommend`,
             { skills : 'html css' }, // Replace this with your actual data structure
             { headers: { 'Content-Type': 'application/json' } }
           );      

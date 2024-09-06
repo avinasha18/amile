@@ -30,7 +30,7 @@ export const RouteManagement = ({ islogin }) => {
 
   const ProtectedRoute = ({ isLogin, children, nextPath }) => {
     if (!isLogin) {
-      return <Navigate to={`/land?nextpath=${nextPath}`} replace />;
+      return <Navigate to={`/login?nextpath=${nextPath}`} replace />;
     }
 
     return children;
