@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useTheme } from '../../context/ThemeContext';
-import { Oval } from 'react-loader-spinner';
 import { motion } from 'framer-motion';
 import GovtJobCard from '../GovernmentJobCard';
 import Cookies from 'js-cookie'; // Import Cookies for managing user data
