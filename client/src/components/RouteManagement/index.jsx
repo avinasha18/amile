@@ -26,6 +26,7 @@ import ResumeBuilder from "../ResumeBuilder";
 import MentorMatching from "../MentorMatching";
 import ScrappedJobs  from "../OtherJobs/ScrappedJobs";
 import ScrappedDetailedPage from "../OtherJobs/DetailedCard";
+import GovtScrappedJobs from "../GovtScrapped";
 export const RouteManagement = ({ islogin }) => {
   const location = useLocation(window.location);
 
@@ -67,6 +68,14 @@ export const RouteManagement = ({ islogin }) => {
           element={
               <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
                 <ScrappedDetailedPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+          path="/govt"
+          element={
+              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+                <GovtScrappedJobs />
               </ProtectedRoute>
             }
           />
