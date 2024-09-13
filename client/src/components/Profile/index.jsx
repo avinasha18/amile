@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { FaLinkedin, FaGithub, FaGlobe } from "react-icons/fa";
 import { useTheme } from "../../context/ThemeContext";
 import { PluginConnectButton } from "../PluginButton";
@@ -41,7 +42,7 @@ const ProfilePage = () => {
     };
 
     GetUser()
-  },[])
+  }, [])
 
 
 
@@ -221,13 +222,23 @@ const ProfilePage = () => {
                     }}
                   />
 
-                  <div>
+                  <div className="flex flex-col justify-center mt-2">
                     <h1 className={`text-2xl font-bold ${themeStyles.heading}`}>
                       {user.name}
                     </h1>
-
-                    <p>{user.title}</p>
-                    <p>{user.college}</p>
+                    <div className="flex flex-row gap-3 items-center">
+                      <p className="text-lg font-medium">You're interested in</p>
+                      {user.selectedInterests.map((interest, index) => {
+                        return (
+                          <Link
+                            key={index}
+                            className={`text-lg font-medium bg-slate-700 p-1 px-4 rounded-2xl ${themeStyles.badge}`}
+                          >
+                            {interest}
+                          </Link>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
                 <button

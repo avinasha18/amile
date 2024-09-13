@@ -29,6 +29,8 @@ import ScrappedDetailedPage from "../OtherJobs/DetailedCard";
 import GovtScrappedJobs from "../GovtScrapped";
 import SkillAssessment from "../Feedback";
 import AiBot from "../AIBot";
+import Roadmap from "../Roadmap";
+import RoadmapPage from "../Roadmap/RoadmapPage";
 export const RouteManagement = ({ islogin }) => {
   const location = useLocation(window.location);
 
@@ -90,7 +92,7 @@ export const RouteManagement = ({ islogin }) => {
               </ProtectedRoute>
             }
           />
-           <Route
+          <Route
             path="/feedback"
             element={
               <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
@@ -216,6 +218,8 @@ export const RouteManagement = ({ islogin }) => {
               </ProtectedRoute>
             }
           />
+          <Route path="/roadmap" element={<Roadmap />} />
+          <Route path="/roadmap/:id" element={<RoadmapPage />} />
         </Routes>
       </div>
       <AiBot/>

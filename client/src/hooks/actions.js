@@ -73,6 +73,12 @@ export const Actions = {
     assignMentor: async (data) => {
         return await axios.post(`${api}/assign`, data);
     },
+    getInterests: async (studentId) => {
+        return await axios.get(`${api}/interests`, {
+            params: { studentId }
+        });
+    }
+
 };
 export const getApplicationStatistics = async (userId) => {
     try {
