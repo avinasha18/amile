@@ -16,7 +16,7 @@ const JobCard = ({ job }) => {
   };
 
   return (
-    <div className={`${isDarkMode ? 'bg-[#0f1011]' : 'bg-white'} rounded-lg shadow-md overflow-hidden`}>
+    <div className={`${isDarkMode ? 'bg-[#0f1011]' : 'bg-white'} rounded-lg shadow-md overflow-hidden h-[350px]`}>
       <div className="p-6">
         <div className="flex justify-between items-start mb-4">
           <div className="flex items-center">
