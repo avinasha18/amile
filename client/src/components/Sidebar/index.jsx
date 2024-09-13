@@ -102,7 +102,7 @@ const Sidebar = () => {
             icon={GoVerified}
             isDarkMode={isDarkMode}
             label="Public Internships"
-            to="/government"
+            to="/govt"
             isCollapsed={isCollapsed}
           />
            <SidebarItem

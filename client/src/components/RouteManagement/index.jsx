@@ -26,6 +26,9 @@ import ResumeBuilder from "../ResumeBuilder";
 import MentorMatching from "../MentorMatching";
 import ScrappedJobs  from "../OtherJobs/ScrappedJobs";
 import ScrappedDetailedPage from "../OtherJobs/DetailedCard";
+import GovtScrappedJobs from "../GovtScrapped";
+import SkillAssessment from "../Feedback";
+import AiBot from "../AIBot";
 export const RouteManagement = ({ islogin }) => {
   const location = useLocation(window.location);
 
@@ -70,12 +73,28 @@ export const RouteManagement = ({ islogin }) => {
               </ProtectedRoute>
             }
           />
+          <Route
+          path="/govt"
+          element={
+              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+                <GovtScrappedJobs />
+              </ProtectedRoute>
+            }
+          />
   
             <Route
             path="/"
             element={
               <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
                 <JobsPage  />
+              </ProtectedRoute>
+            }
+          />
+           <Route
+            path="/feedback"
+            element={
+              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+                <SkillAssessment  />
               </ProtectedRoute>
             }
           />
@@ -199,6 +218,7 @@ export const RouteManagement = ({ islogin }) => {
           />
         </Routes>
       </div>
+      <AiBot/>
     </div>
   );
 };
