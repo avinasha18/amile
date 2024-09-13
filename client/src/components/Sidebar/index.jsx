@@ -67,13 +67,6 @@ const Sidebar = () => {
             isCollapsed={isCollapsed}
           />
           <SidebarItem
-            icon={FaEnvelope}
-            label="Messages"
-            isDarkMode={isDarkMode}
-            to="/messages"
-            isCollapsed={isCollapsed}
-          />
-          <SidebarItem
             icon={FaClipboardList}
             label="Applied"
             isDarkMode={isDarkMode}

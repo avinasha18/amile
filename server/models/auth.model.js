@@ -21,7 +21,8 @@ const studentSchema = new mongoose.Schema({
   myPortfolioPlugin: { type: String },
   enrolledCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }]  ,
   mentor: { type: mongoose.Schema.Types.ObjectId, ref: "Mentor" }, // Reference to Mentor
-  neededMentor: { type: Boolean, default: true }
+  neededMentor: { type: Boolean, default: true },
+  selectedInterests: { type: [String] }
 });
 
 // Define the schema for a mentor
@@ -102,6 +103,7 @@ export const createUser = async (userData) => {
     github,
     linkedin,
     portfolio,
+    selectedInterests,
   } = userData;
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -120,6 +122,7 @@ export const createUser = async (userData) => {
     github,
     linkedin,
     portfolio,
+    selectedInterests,
   });
 
   await newUser.save();

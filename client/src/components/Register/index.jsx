@@ -33,8 +33,9 @@ const UserRegisterFlow = () => {
   const [searchParams] = useSearchParams();
   const refrelid = searchParams.get("refrelid");
   const navigate = useNavigate();
-  const steps = ["Select Account Type", "Basic Information", "Additional Information"];
-
+  const steps = ["Select Account Type", "Basic Information", "Additional Information", "Interests"];
+  const categories = ['Frontend Developer', 'Backend Developer', 'Full Stack Developer', 'Data Scientist', 'Data Analyst', 'VLSI Engineer'];
+  const [selectedInterests, setSelectedInterests] = useState([]);
   const isDarkMode = useSelector((state) => state.theme.isDarkMode);
 
   const handleNext = () => {
@@ -49,11 +50,11 @@ const UserRegisterFlow = () => {
 
   const validate = () => {
     const newErrors = {};
-  
+
     if (activeStep === 0 && !accountType) {
       newErrors.accountType = "Account type is required.";
     }
-  
+
     if (activeStep === 1) {
       // Email validation
       if (!email) {
@@ -61,19 +62,19 @@ const UserRegisterFlow = () => {
       } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
         newErrors.email = "Email must be a valid address.";
       }
-  
+
       // Username validation: only lowercase letters, numbers, underscores, and hyphens allowed, no spaces
       if (!username) {
         newErrors.username = "Username is required.";
       } else if (!/^[a-z0-9_-]+$/.test(username)) {
         newErrors.username = "Username can only contain lowercase letters, numbers, underscores, and hyphens.";
       }
-  
+
       // Name validation
       if (!name) {
         newErrors.name = "Name is required.";
       }
-  
+
       // Password validation: 6-20 characters with at least one lowercase letter, one uppercase letter, one number, and one special character
       if (!password) {
         newErrors.password = "Password is required.";
@@ -81,17 +82,17 @@ const UserRegisterFlow = () => {
       //  else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,20}$/.test(password)) {
       //   newErrors.password = "Password must be 6-20 characters long and include at least one lowercase letter, one uppercase letter, one number, and one special character.";
       // }
-      
+
     }
-  
+
     if (activeStep === 2 && !termsAccepted) {
       newErrors.termsAccepted = "You must accept the terms.";
     }
-  
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  
+
 
   const handleSubmit = async () => {
     if (!validate()) return;
@@ -107,6 +108,7 @@ const UserRegisterFlow = () => {
         linkedin,
         accountType,
         refrelid,
+        selectedInterests,
       });
 
       if (response.data.success) {
@@ -258,6 +260,13 @@ const UserRegisterFlow = () => {
                 termsAccepted={termsAccepted}
                 setTermsAccepted={setTermsAccepted}
                 error={errors.termsAccepted}
+              />
+            )}
+            {activeStep === 3 && (
+              <InterestStep
+                selectedInterests={selectedInterests}
+                setSelectedInterests={setSelectedInterests}
+                categories={categories}
               />
             )}
             <Box sx={{ display: "flex", justifyContent: "space-between", mt: 3 }}>
@@ -448,5 +457,74 @@ const AdditionalInfoStep = ({
     </Grid>
   </Grid>
 );
+
+const InterestStep = ({
+  selectedInterests,
+  setSelectedInterests,
+  categories,
+}) => {
+
+  // Function to handle selecting interest
+  const handleSelectInterest = (interest) => {
+  if (!selectedInterests.includes(interest)) {
+    setSelectedInterests((prevSelectedInterests) => [...prevSelectedInterests, interest]);
+  }
+};
+
+const handleRemoveInterest = (interest) => {
+  setSelectedInterests((prevSelectedInterests) =>
+    prevSelectedInterests.filter((i) => i !== interest)
+  );
+};
+
+  return (
+    <div className="p-4 flex flex-col gap-5">
+
+      {/* Selected interests display */}
+      <div>
+        <h3 className="text-lg font-semibold mb-2">You're interested in:</h3>
+        <div className="flex flex-wrap gap-2">
+          {selectedInterests.length === 0 ? (
+            <p className="text-sm">No interests selected yet.</p>
+          ) : (
+            selectedInterests.map((interest) => (
+              <div
+                key={interest}
+                className="px-3 py-1 rounded-full bg-gray-300 text-sm flex items-center"
+              >
+                {interest}
+                <button
+                  onClick={() => handleRemoveInterest(interest)}
+                  className="ml-2 text-red-600 hover:text-red-800"
+                >
+                  ✖
+                </button>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+
+      {/* Interest selection categories */}
+      <div>
+        <h2 className="text-xl font-bold mb-4">Select your interests:</h2>
+        <div className="flex flex-wrap gap-2 mb-4">
+          {categories.map((category) => (
+            <button
+              key={category}
+              onClick={() => handleSelectInterest(category)}
+              disabled={selectedInterests.includes(category)} // Disable the button if the category is selected
+              className={`px-3 py-2 rounded-full text-white text-sm cursor-pointer ${
+                selectedInterests.includes(category) ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'
+              }`}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default UserRegisterFlow;
