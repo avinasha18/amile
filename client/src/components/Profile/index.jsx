@@ -83,6 +83,9 @@ const ProfilePage = () => {
       console.log(response.data);
     }
   };
+  const createSlug = (interest) => {
+    return interest.toLowerCase().replace(/ /g, '-');
+  };
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -231,8 +234,9 @@ const ProfilePage = () => {
                       {user.selectedInterests.map((interest, index) => {
                         return (
                           <Link
+                            to={`/roadmap/${createSlug(interest)}`}
                             key={index}
-                            className={`text-lg font-medium bg-slate-700 p-1 px-4 rounded-2xl ${themeStyles.badge}`}
+                            className={`text-lg font-medium p-1 px-4 rounded-2xl ${themeStyles.skillTag}`}
                           >
                             {interest}
                           </Link>

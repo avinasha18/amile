@@ -92,13 +92,6 @@ const Sidebar = () => {
             gradient
           />
           <SidebarItem
-            icon={FaSearch}
-            isDarkMode={isDarkMode}
-            label="Find Internships"
-            to="/"
-            isCollapsed={isCollapsed}
-          />
-          <SidebarItem
             icon={GoVerified}
             isDarkMode={isDarkMode}
             label="Public Internships"

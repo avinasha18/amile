@@ -9,7 +9,7 @@ const Roadmap = () => {
     const { isDarkMode } = useTheme();
     const studentId = Cookies.get('userId');
     const [interests, setInterests] = useState([]);
-    const [loading, setLoading] = useState(true); // State to track loading
+    const [loading, setLoading] = useState(true);
 
     // Helper function to create slugs
     const createSlug = (interest) => {
@@ -18,7 +18,7 @@ const Roadmap = () => {
 
     useEffect(() => {
         const getInterests = async () => {
-            setLoading(true); // Start loading
+            setLoading(true); 
             try {
                 const response = await Actions.getInterests(studentId);
                 const interests = response.data;
@@ -26,7 +26,7 @@ const Roadmap = () => {
             } catch (error) {
                 console.error('Error fetching interests:', error);
             } finally {
-                setLoading(false); // Stop loading
+                setLoading(false);
             }
         };
 
@@ -39,9 +39,13 @@ const Roadmap = () => {
 
             <div className="flex flex-col p-10 gap-10">
                 {loading ? (
-                    <div className="flex flex-col items-center">
-                        <div className="w-10 h-10 border-4 border-t-blue-500 border-gray-300 rounded-full animate-spin"></div>
-                    </div>
+                    // Skeleton loader
+                    Array(4).fill().map((_, index) => (
+                        <div key={index} className="bg-gray-100 rounded-xl py-8 px-5 animate-pulse flex flex-row justify-between items-center">
+                            <div className="w-1/2 h-6 bg-gray-300 rounded"></div>
+                            <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
+                        </div>
+                    ))
                 ) : interests.length > 0 ? (
                     interests.map((interest, index) => (
                         <Link to={`/roadmap/${createSlug(interest)}`} key={index}>  
