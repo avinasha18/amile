@@ -13,6 +13,7 @@ import {
   reportIncident,
   uploadStudentProfile,
   getProfile,
+  getInterests,
 } from "../controllers/userController.js";
 import {
   connectPlugin,
@@ -39,7 +40,7 @@ router.post("/forgotpassword", forgotPassword);
 router.post("/upload-profile", upload.single("photo"), uploadStudentProfile);
 router.get("/userdata", CheckAuthorization, getUser);
 router.get("/profile/:filename", getProfile);
-
+router.get('/interests', getInterests);
 router.post("/connectplugin", CheckAuthorization, connectPlugin);
 router.post("/updateuser", CheckAuthorization, updateStudent);
 router.post("/disconnectplugin", disconnectPlugin);
