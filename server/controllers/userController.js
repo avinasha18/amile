@@ -17,8 +17,12 @@ import { handleReferral } from "./referalController.js";
 import { generateUniqueToken } from "../services/uniqueTokenGeneration.js";
 import { HtmlTemplates } from "../services/htmlTemplates.js";
 import { sendEmail } from "../services/mailServices.js";
+import {
+  deleteFileById,
+  getFileInfoById,
+  getFileStreamById,
+} from "../services/fileManagement.js";
 const JWT_SECRET = process.env.JWT_SECRET;
-
 
 export const registerStudent = async (req, res) => {
   const { username, password, email, ...otherDetails } = req.body;
@@ -73,23 +77,19 @@ export const AccountVerification = async (username, email) => {
   }
 };
 
-export const getUserSkills = async (req,res)=>{
-  console.log('in get skills')
-  const {id} = req.params
-  console.log(req.params,'params')
-  try{
-    const data = await Student.findOne({_id:id})
-    console.log(data)
-    res.status(200).json({skills : data.skills})
-
+export const getUserSkills = async (req, res) => {
+  console.log("in get skills");
+  const { id } = req.params;
+  console.log(req.params, "params");
+  try {
+    const data = await Student.findOne({ _id: id });
+    console.log(data);
+    res.status(200).json({ skills: data.skills });
+  } catch (e) {
+    console.log(e.message);
+    res.status(200).json({ message: "server error" });
   }
-  catch(e){
-    console.log(e.message)
-    res.status(200).json({message : 'server error'})
-
-  }
-
-}
+};
 
 export const resendVerification = async (req, res) => {
   const { username } = req.body;
@@ -135,19 +135,17 @@ export const resendVerification = async (req, res) => {
   }
 };
 export const VerifyUserAccountwithToken = async (req, res) => {
-  const { token , ismentor } = req.query;
+  const { token, ismentor } = req.query;
 
   try {
     const user = await findByToken(token);
 
     if (user) {
-      var updateResult ;
-      if(ismentor){
+      var updateResult;
+      if (ismentor) {
         updateResult = await updateAccountStatus(user.username, "mentor");
-
-      }else{
+      } else {
         updateResult = await updateAccountStatus(user.username);
-
       }
 
       if (updateResult.success) {
@@ -195,14 +193,19 @@ export const forgotPassword = async (req, res) => {
     const emailResponse = await sendEmail(userEmail, subject, htmlContent);
 
     if (emailResponse === "Error sending email") {
-      return res.json({ success: false, message: "Failed to send password reset email" });
+      return res.json({
+        success: false,
+        message: "Failed to send password reset email",
+      });
     }
 
     return res.json({ success: true, message: "Password reset email sent" });
-
   } catch (error) {
     console.error("Error in forgotPassword:", error);
-    return res.status(500).json({ success: false, message: "An error occurred during the password reset process" });
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred during the password reset process",
+    });
   }
 };
 
@@ -242,7 +245,10 @@ export const resetPassword = async (req, res) => {
     return res.json({ success: true, message: "Password reset successfully" });
   } catch (error) {
     console.error("Error during password reset:", error);
-    return res.status(500).json({ success: false, message: "An error occurred during the password reset process" });
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred during the password reset process",
+    });
   }
 };
 
@@ -270,8 +276,7 @@ export const loginUser = async (req, res) => {
       });
       // console.log(user)
       // res.json({ success: true, token, user: user.username });
-      res.json({ success: true, token, user : user,userId : user._id });
-
+      res.json({ success: true, token, user: user, userId: user._id });
     } else {
       return res.json({ success: false, message: "Invalid password" });
     }
@@ -284,26 +289,32 @@ export const reportIncident = async (req, res) => {
   const { token } = req.body;
 
   if (!token) {
-    return res.json({ success: false, message: 'Token is required' });
+    return res.json({ success: false, message: "Token is required" });
   }
 
   try {
     const result = await removeUserVerificationTokenbyToken(token);
     if (result.deletedCount) {
-      return res.json({ success: true, message: 'Incident reported successfully' });
+      return res.json({
+        success: true,
+        message: "Incident reported successfully",
+      });
     } else {
-      return res.json({ success: false, message: 'Incident Already Reported' });
+      return res.json({ success: false, message: "Incident Already Reported" });
     }
   } catch (error) {
-    console.error('Error reporting incident:', error);
-    return res.status(500).json({ success: false, message: 'An error occurred while reporting the incident' });
+    console.error("Error reporting incident:", error);
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred while reporting the incident",
+    });
   }
 };
 
 export const getUser = async (req, res) => {
   try {
     const { username } = req.body;
- 
+
     if (!username) {
       return res.json({ success: false, message: "Username is required" });
     }
@@ -320,11 +331,46 @@ export const getUser = async (req, res) => {
     return res.status(500).json({ success: false, message: e.message });
   }
 };
+export const getProfile = async (req, res) => {
+  try {
+    const { filename } = req.params;
+    // Fetch file information
+    const fileInfo = await getFileInfoById(filename);
+
+    if (!fileInfo) {
+      return res
+        .status(404)
+        .json({ success: false, message: "File not found" });
+    }
+
+    // Get file stream
+    const stream = await getFileStreamById(filename);
+
+    if (!stream) {
+      return res
+        .status(404)
+        .json({ success: false, message: "File stream not found" });
+    }
+
+    // Set the appropriate headers based on file information
+    res.setHeader("Content-Type", fileInfo.contentType); // Set the correct MIME type for the file
+    res.setHeader(
+      "Content-Disposition",
+      `inline; filename="${fileInfo.filename}"`
+    ); // Inline display or attachment
+
+    // Pipe the file stream to the response
+    stream.pipe(res);
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ success: false, message: e.message });
+  }
+};
 
 export const updateStudent = async (req, res) => {
   const { username, ...otherDetails } = req.body;
-  console.log('in upate user')
-  console.log(username,otherDetails)
+  console.log("in upate user");
+  console.log(username, otherDetails);
   try {
     const existingUser = await findUserByUsername(username, Student);
     if (!existingUser) {
@@ -349,43 +395,101 @@ export const AssignMentor = async (req, res) => {
 
   try {
     // Update the student with the assigned mentor
-    const student = await Student.findByIdAndUpdate(studentId, {
-      mentor: mentorId,
-      neededMentor: false
-    }, { new: true });
+    const student = await Student.findByIdAndUpdate(
+      studentId,
+      {
+        mentor: mentorId,
+        neededMentor: false,
+      },
+      { new: true }
+    );
 
     if (!student) {
-      return res.status(404).send('Student not found');
+      return res.status(404).send("Student not found");
     }
 
-    const mentor = await Mentor.findByIdAndUpdate(mentorId, {
-      $addToSet: { students: studentId } // Use $addToSet to avoid duplicate student IDs
-    }, { new: true });
+    const mentor = await Mentor.findByIdAndUpdate(
+      mentorId,
+      {
+        $addToSet: { students: studentId }, // Use $addToSet to avoid duplicate student IDs
+      },
+      { new: true }
+    );
 
     if (!mentor) {
-      return res.status(404).send('Mentor not found');
+      return res.status(404).send("Mentor not found");
     }
 
-    res.status(200).json({ message: 'Mentor assigned successfully', student, mentor });
+    res
+      .status(200)
+      .json({ message: "Mentor assigned successfully", student, mentor });
   } catch (error) {
-    console.log(error.message)
-    res.status(500).send('Server error');
+    console.log(error.message);
+    res.status(500).send("Server error");
   }
 };
-
 
 // Fetch student by ID
 export const checkStudentMentorStatus = async (req, res) => {
   try {
-    const student = await Student.findById(req.params.id).populate('mentor');
+    const student = await Student.findById(req.params.id).populate("mentor");
     if (!student) {
-      return res.status(404).send('Student not found');
+      return res.status(404).send("Student not found");
     }
 
     res.status(200).json(student);
   } catch (error) {
-    console.log(error.message)
-    res.status(500).send('Server error');
+    console.log(error.message);
+    res.status(500).send("Server error");
+  }
+};
+
+export const uploadStudentProfile = async (req, res) => {
+  try {
+    const { username } = req.body;
+    if (!req.file) {
+      return res.json({ message: "No file uploaded" });
+    }
+
+    const student = await Student.findOne({ username });
+
+    if (!student) {
+      return res.json({ message: "Student not found" });
+    }
+
+    if (student.profilePictureUrl) {
+      try {
+        const file = await getFileInfoById(student.profilePictureUrl);
+        await deleteFileById(file?._id);
+      } catch (err) {
+        console.error("Error removing existing profile picture:", err);
+      }
+    }
+
+    try {
+      const updatedStudent = await Student.findOneAndUpdate(
+        { username },
+        { $set: { profilePictureUrl: req.file.filename } },
+        { new: true }
+      );
+
+      return res.json({
+        success: true,
+        message: "Profile updated successfully",
+        student: updatedStudent,
+      });
+    } catch (updateErr) {
+      return res.json({
+        message: "Failed to update profile",
+        error: updateErr.message,
+      });
+    }
+  } catch (setupErr) {
+    console.log(setupErr);
+    return res.json({
+      message: "Error setting up file upload",
+      error: setupErr.message,
+    });
   }
 };
 
