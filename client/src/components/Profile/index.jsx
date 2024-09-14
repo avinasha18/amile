@@ -40,7 +40,10 @@ const ProfilePage = () => {
     };
 
     GetUser();
-  },  []);
+  }, []);
+
+
+
 
   const updateUser = async (data) => {
     try {
@@ -214,18 +217,7 @@ const ProfilePage = () => {
               {" "}
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center">
-                  <Avatar
-                    alt={user?.name?.toUpperCase()}
-                    src={user?.profile}
-                    className="w-24 h-24 rounded-full mr-6"
-                    sx={{
-                      width: 84,
-                      height: 84,
-                      bgcolor: isDarkMode ? "#fff" : "#000",
-                      color: isDarkMode ? "#000" : "#fff",
-                      fontSize: "60px",
-                    }}
-                  />
+                 <ProfileAvatar user={user}  isDarkMode={isDarkMode} setUser={setUser}/>
 
                   <div className="flex flex-col justify-center mt-2">
                     <h1 className={`text-2xl font-bold ${themeStyles.heading}`}>
@@ -233,7 +225,7 @@ const ProfilePage = () => {
                     </h1>
                     <div className="flex flex-row gap-3 items-center">
                       <p className="text-lg font-medium">You're interested in</p>
-                      {user.selectedInterests.map((interest, index) => {
+                      {user.selectedInterests?.map((interest, index) => {
                         return (
                           <Link
                             to={`/roadmap/${createSlug(interest)}`}

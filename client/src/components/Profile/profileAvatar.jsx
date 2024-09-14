@@ -11,17 +11,20 @@ import { setUserData } from "../../services/redux/AuthSlice";
 import { useDispatch } from "react-redux";
 import Cropper from "cropperjs";
 import "cropperjs/dist/cropper.css";
+import { CircularProgress } from "@mui/material";
 
 const ProfileAvatar = ({ user, isDarkMode, setUser }) => {
   const [open, setOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [cropper, setCropper] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [longPressTimer, setLongPressTimer] = useState(null); // Timer for long press
   const imageRef = useRef(null);
   const [error, setError] = useState(""); // For displaying errors
 
   const dispatch = useDispatch();
   const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB in bytes
+
   const handleClickOpen = () => setOpen(true);
   const handleClose = () => {
     setOpen(false);
@@ -89,6 +92,21 @@ const ProfileAvatar = ({ user, isDarkMode, setUser }) => {
     }
   };
 
+  // Handle long press for avatar
+  const handleLongPressStart = () => {
+    const timer = setTimeout(() => {
+      handleClickOpen(); // Open modal after long press
+    }, 800); // Long press duration (800ms)
+    setLongPressTimer(timer);
+  };
+
+  const handleLongPressEnd = () => {
+    if (longPressTimer) {
+      clearTimeout(longPressTimer); // Clear the timer if not completed
+      setLongPressTimer(null);
+    }
+  };
+
   return (
     <>
       <Badge
@@ -112,6 +130,11 @@ const ProfileAvatar = ({ user, isDarkMode, setUser }) => {
             color: isDarkMode ? "#000" : "#fff",
             fontSize: "60px",
           }}
+          onMouseDown={handleLongPressStart} 
+          onMouseUp={handleLongPressEnd}
+          onMouseLeave={handleLongPressEnd}
+          onTouchStart={handleLongPressStart}
+          onTouchEnd={handleLongPressEnd}
         />
       </Badge>
 
@@ -135,15 +158,16 @@ const ProfileAvatar = ({ user, isDarkMode, setUser }) => {
           }}
         >
           <h2 id="modal-title">Upload Profile Picture</h2>
-          {error && <p style={{ color: "red" }}>{error}</p>}{" "}
+          {error && <p style={{ color: "red" }}>{error}</p>}
           <input type="file" accept="image/*" onChange={handleFileChange} />
           <div style={{ width: "100%", height: "300px", marginTop: "10px" }}>
             <img
               ref={imageRef}
               alt="Crop preview"
+              src={api + "/profile/" + user?.profilePictureUrl}
               style={{
                 maxWidth: "100%",
-                display: selectedFile ? "block" : "none",
+                display: selectedFile || user?.profilePictureUrl ? "block" : "none",
               }}
             />
           </div>
@@ -154,7 +178,7 @@ const ProfileAvatar = ({ user, isDarkMode, setUser }) => {
             style={{ marginTop: "10px" }}
             disabled={loading}
           >
-            Save
+            {loading?<CircularProgress color="secondary" />:"Save"}
           </Button>
         </Box>
       </Modal>
