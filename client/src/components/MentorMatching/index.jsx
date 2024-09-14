@@ -435,7 +435,7 @@ const MentorMatching = () => {
                 <div>
                   <Typography variant="body1">
                     <strong>Skills:</strong>
-                    <ul className="flex flex-row gap-1">
+                    <ul className="flex flex-row gap-1 flex-wrap">
                       {mentor.skills?.map((each, index) => (
                         <li key={index}>{each}</li>
                       ))}
@@ -519,7 +519,7 @@ const MentorMatching = () => {
             exit={{ opacity: 0, y: -50 }}
             className="h-screen flex flex-col items-center justify-center p-4 md:p-8"
           >
-            <Typography variant="h4" component="h2" align="center" gutterBottom>
+            <Typography className="text-black" variant="h4" component="h2" align="center" gutterBottom>
               Mentor Matched Successfully!
             </Typography>
             <Typography variant="body1" align="center">

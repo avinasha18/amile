@@ -72,7 +72,7 @@ function Feedback() {
                 animation: 'backgroundShift 8s ease-in-out infinite alternate',
                 height: "100%"
             }}
-            className="interview-container"
+            className="interview-container w-full"
         >
             <Container maxWidth="xl">
                 <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>

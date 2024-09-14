@@ -24,13 +24,17 @@ import Course from "../Courses/Course";
 import Chatbot from "../Chatbot";
 import ResumeBuilder from "../ResumeBuilder";
 import MentorMatching from "../MentorMatching";
-
+import ScrappedJobs  from "../OtherJobs/ScrappedJobs";
+import ScrappedDetailedPage from "../OtherJobs/DetailedCard";
+import GovtScrappedJobs from "../GovtScrapped";
+import SkillAssessment from "../Feedback";
+import AiBot from "../AIBot";
 export const RouteManagement = ({ islogin }) => {
   const location = useLocation(window.location);
 
   const ProtectedRoute = ({ isLogin, children, nextPath }) => {
     if (!isLogin) {
-      return <Navigate to={`/land?nextpath=${nextPath}`} replace />;
+      return <Navigate to={`/login?nextpath=${nextPath}`} replace />;
     }
 
     return children;
@@ -52,12 +56,45 @@ export const RouteManagement = ({ islogin }) => {
               </ProtectedRoute>
             }
           />
+           <Route
+            path="/others"
+            element={
+              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+                <ScrappedJobs />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+          path="/scrappedDetailed/:id"
+          element={
+              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+                <ScrappedDetailedPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+          path="/govt"
+          element={
+              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+                <GovtScrappedJobs />
+              </ProtectedRoute>
+            }
+          />
   
             <Route
             path="/"
             element={
               <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
                 <JobsPage  />
+              </ProtectedRoute>
+            }
+          />
+           <Route
+            path="/feedback"
+            element={
+              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+                <SkillAssessment  />
               </ProtectedRoute>
             }
           />
@@ -181,6 +218,7 @@ export const RouteManagement = ({ islogin }) => {
           />
         </Routes>
       </div>
+      <AiBot/>
     </div>
   );
 };

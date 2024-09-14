@@ -3,7 +3,6 @@ import JobCard from '../JobCard';
 import { useTheme } from '../../context/ThemeContext';
 import Pagination from '@mui/material/Pagination';
 import { styled } from '@mui/material/styles';
-import { Oval } from 'react-loader-spinner';
 import Cookies from 'js-cookie';
 
 const CustomPagination = styled(Pagination)(({ theme }) => ({

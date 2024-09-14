@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useTheme } from '../../context/ThemeContext';
 import Pagination from '@mui/material/Pagination';
 import { styled } from '@mui/material/styles';
-import { Oval } from 'react-loader-spinner';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import AIJobCard from './JobCard';
@@ -50,7 +49,7 @@ const AIRecommendations = ({ filters, searchQuery }) => {
           console.log(skills)
       
         const response = await axios.post(
-            `http://127.0.0.1:5000/recommend`,
+            `http://127.0.0.1:5050/recommend`,
             { skills : 'html css' }, // Replace this with your actual data structure
             { headers: { 'Content-Type': 'application/json' } }
           );      

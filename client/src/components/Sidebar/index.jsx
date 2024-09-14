@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom"; // Import useLocation
 import { FaUser, FaClipboardList, FaEnvelope, FaSearch, FaBrain, FaBook, FaCog  , FaRobot , FaUserFriends
 } from "react-icons/fa";
 
-import { AiOutlineRobot } from 'react-icons/ai';
+import { AiOutlineRobot,AiOutlineEllipsis } from 'react-icons/ai';
 import { SiCompilerexplorer } from "react-icons/si";
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -109,7 +109,14 @@ const Sidebar = () => {
             icon={GoVerified}
             isDarkMode={isDarkMode}
             label="Public Internships"
-            to="/government"
+            to="/govt"
+            isCollapsed={isCollapsed}
+          />
+           <SidebarItem
+            icon={GoVerified}
+            isDarkMode={isDarkMode}
+            label="Other Internships"
+            to="/others"
             isCollapsed={isCollapsed}
           />
 

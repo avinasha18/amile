@@ -171,7 +171,7 @@ const Login = () => {
                     }
                     label="Student"
                   />
-                  <FormControlLabel
+                  {/* <FormControlLabel
                     value="mentor"
                     control={
                       <Radio
@@ -184,7 +184,7 @@ const Login = () => {
                       />
                     }
                     label="Mentor"
-                  />
+                  /> */}
                 </RadioGroup>
                 <label className="text-gray-800 text-sm mb-2 block">
                   User name
