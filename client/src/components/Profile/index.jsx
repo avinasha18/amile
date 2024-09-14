@@ -5,8 +5,9 @@ import { PluginConnectButton } from "../PluginButton";
 import { Actions } from "../../hooks/actions";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserData } from "../../services/redux/AuthSlice";
-import { Avatar, Box, Skeleton } from "@mui/material";
+import {  Box, Skeleton } from "@mui/material";
 import ProfileEditModal from "./ProfileEditModal";
+import ProfileAvatar from "./profileAvatar";
 
 const ProfilePage = () => {
   const { isDarkMode } = useTheme();
@@ -24,9 +25,6 @@ const ProfilePage = () => {
     "POR",
   ];
 
-
-
-
   useEffect(() => {
     const GetUser = async () => {
       try {
@@ -40,10 +38,8 @@ const ProfilePage = () => {
       }
     };
 
-    GetUser()
-  },[])
-
-
+    GetUser();
+  }, []);
 
   const updateUser = async (data) => {
     try {
@@ -153,7 +149,9 @@ const ProfilePage = () => {
           <div>
             {user?.workExperience?.map((experience, index) => (
               <div key={index} className="mb-4">
-                <h3 className="text-lg font-semibold">{experience?.position}</h3>
+                <h3 className="text-lg font-semibold">
+                  {experience?.position}
+                </h3>
                 <p>
                   {experience?.company}, {experience?.duration}
                 </p>
@@ -176,7 +174,9 @@ const ProfilePage = () => {
           <div>
             {user?.certifications?.map((certification, index) => (
               <div key={index} className="mb-4">
-                <h3 className="text-lg font-semibold">{certification?.title}</h3>
+                <h3 className="text-lg font-semibold">
+                  {certification?.title}
+                </h3>
                 <p>{certification?.description}</p>
                 <p>
                   {certification?.issuer}, {certification?.year}
@@ -202,24 +202,15 @@ const ProfilePage = () => {
     >
       <div className="max-w-6xl mx-auto flex lg:gap-5 flex-col lg:flex-row">
         {/* Profile Section */}
-        <div className={`${themeStyles.card} rounded-lg p-6 mb-8 lg:w-3/4 md:w-100 border-2 ${themeStyles.cardBorder}`} >
+        <div
+          className={`${themeStyles.card} rounded-lg p-6 mb-8 lg:w-3/4 md:w-100 border-2 ${themeStyles.cardBorder}`}
+        >
           {user?.name ? (
             <>
               {" "}
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center">
-                  <Avatar
-                    alt={user?.name?.toUpperCase()}
-                    src={user?.profile}
-                    className="w-24 h-24 rounded-full mr-6"
-                    sx={{
-                      width: 84,
-                      height: 84,
-                      bgcolor: isDarkMode ? "#fff" : "#000",
-                      color: isDarkMode ? "#000" : "#fff",
-                      fontSize: "60px",
-                    }}
-                  />
+                 <ProfileAvatar user={user}  isDarkMode={isDarkMode}/>
 
                   <div>
                     <h1 className={`text-2xl font-bold ${themeStyles.heading}`}>
@@ -241,7 +232,11 @@ const ProfilePage = () => {
                 <a href={user?.linkedin} className="text-blue-400">
                   <FaLinkedin size={24} />
                 </a>
-                <a href={`https://github.com/${user?.github}`} className={themeStyles.heading} target="_blank">
+                <a
+                  href={`https://github.com/${user?.github}`}
+                  className={themeStyles.heading}
+                  target="_blank"
+                >
                   <FaGithub size={24} />
                 </a>
                 <a href={user?.portfolio} className="text-green-400">
@@ -275,10 +270,11 @@ const ProfilePage = () => {
                 <li key={index} className="flex items-center justify-center">
                   <button
                     onClick={() => setActiveTab(tab)}
-                    className={`px-4 py-2 rounded-full text-sm ${activeTab === tab
-                      ? themeStyles.tabActive
-                      : themeStyles.tabInactive
-                      } text-[15px] ${themeStyles.text}`}
+                    className={`px-4 py-2 rounded-full text-sm ${
+                      activeTab === tab
+                        ? themeStyles.tabActive
+                        : themeStyles.tabInactive
+                    } text-[15px] ${themeStyles.text}`}
                   >
                     {tab}
                   </button>
@@ -290,7 +286,9 @@ const ProfilePage = () => {
         </div>
 
         {/* Right Side Section */}
-        <div className={`${themeStyles.card} rounded-lg p-6 mb-8  lg:w-1/4 border-2 ${themeStyles.cardBorder}`}>
+        <div
+          className={`${themeStyles.card} rounded-lg p-6 mb-8  lg:w-1/4 border-2 ${themeStyles.cardBorder}`}
+        >
           {/* Social */}
           <div className="mb-6">
             <h3 className={`text-lg font-semibold ${themeStyles.heading} mb-2`}>
@@ -298,13 +296,25 @@ const ProfilePage = () => {
             </h3>
             <div className="flex gap-4 mb-2">
               <>
-                <a href={user?.linkedin} target="_blank" className="text-blue-400">
+                <a
+                  href={user?.linkedin}
+                  target="_blank"
+                  className="text-blue-400"
+                >
                   <FaLinkedin size={24} />
                 </a>
-                <a href={`https://github.com/${user?.github}`} target="_blank" className={themeStyles.heading}>
+                <a
+                  href={`https://github.com/${user?.github}`}
+                  target="_blank"
+                  className={themeStyles.heading}
+                >
                   <FaGithub size={24} />
                 </a>
-                <a href={user?.portfolio} target="_blank" className="text-green-400">
+                <a
+                  href={user?.portfolio}
+                  target="_blank"
+                  className="text-green-400"
+                >
                   <FaGlobe size={24} />
                 </a>
                 <PluginConnectButton
@@ -316,7 +326,6 @@ const ProfilePage = () => {
               </>
             </div>
           </div>
-
 
           <div className="mb-6 ">
             <h3 className={`text-lg font-semibold ${themeStyles.heading} mb-2`}>
