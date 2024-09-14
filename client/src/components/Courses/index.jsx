@@ -54,6 +54,7 @@ const Courses = () => {
 
     return (
         <div className='overflow-y-auto'>
+            
             {sections.map((section, index) => (
                 <div key={index} className={`section w-full p-8 ${isDarkMode ? 'bg-slate-900' : 'bg-gray-50'} overflow-hidden`}>
                     <h1 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-black'}`}>{section == 1 ? 'Popular Courses for Data Scientists' : 'Featured courses for MERN Stack'}</h1>
