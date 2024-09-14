@@ -84,6 +84,8 @@ const ProfileAvatar = ({ user, isDarkMode, setUser }) => {
             dispatch(setUserData(res.data.student));
           }
         } catch (error) {
+          setError(error.message);
+
           console.error("Error uploading file:", error);
         } finally {
           setLoading(false);
