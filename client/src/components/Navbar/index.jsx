@@ -58,6 +58,7 @@ const Navbar = ({ isLogin }) => {
           <NavItem to="/">Jobs</NavItem>
           <NavItem to="/messages">Messages</NavItem>
           <NavItem to="/courses">Courses</NavItem>
+          <NavItem to="/roadmap">Roadmaps</NavItem>
         </nav>
 
         <div className="flex items-center space-x-4">

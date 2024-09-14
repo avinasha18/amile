@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { FaLinkedin, FaGithub, FaGlobe } from "react-icons/fa";
 import { useTheme } from "../../context/ThemeContext";
 import { PluginConnectButton } from "../PluginButton";
@@ -39,7 +40,7 @@ const ProfilePage = () => {
     };
 
     GetUser();
-  }, []);
+  },  []);
 
   const updateUser = async (data) => {
     try {
@@ -77,6 +78,9 @@ const ProfilePage = () => {
     } else {
       console.log(response.data);
     }
+  };
+  const createSlug = (interest) => {
+    return interest.toLowerCase().replace(/ /g, '-');
   };
 
   const renderTabContent = () => {
@@ -210,15 +214,37 @@ const ProfilePage = () => {
               {" "}
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center">
-                 <ProfileAvatar user={user}  isDarkMode={isDarkMode}/>
+                  <Avatar
+                    alt={user?.name?.toUpperCase()}
+                    src={user?.profile}
+                    className="w-24 h-24 rounded-full mr-6"
+                    sx={{
+                      width: 84,
+                      height: 84,
+                      bgcolor: isDarkMode ? "#fff" : "#000",
+                      color: isDarkMode ? "#000" : "#fff",
+                      fontSize: "60px",
+                    }}
+                  />
 
-                  <div>
+                  <div className="flex flex-col justify-center mt-2">
                     <h1 className={`text-2xl font-bold ${themeStyles.heading}`}>
                       {user.name}
                     </h1>
-
-                    <p>{user.title}</p>
-                    <p>{user.college}</p>
+                    <div className="flex flex-row gap-3 items-center">
+                      <p className="text-lg font-medium">You're interested in</p>
+                      {user.selectedInterests.map((interest, index) => {
+                        return (
+                          <Link
+                            to={`/roadmap/${createSlug(interest)}`}
+                            key={index}
+                            className={`text-lg font-medium p-1 px-4 rounded-2xl ${themeStyles.skillTag}`}
+                          >
+                            {interest}
+                          </Link>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
                 <button

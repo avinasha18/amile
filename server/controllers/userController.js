@@ -492,3 +492,22 @@ export const uploadStudentProfile = async (req, res) => {
     });
   }
 };
+
+export const getInterests = async (req, res) => {
+  try {
+    const { studentId } = req.query;
+    // Check if studentId is present before using it
+    if (!studentId) {
+      return res.status(400).json({ message: 'studentId is required' });
+    }
+
+    const student = await Student.findById(studentId);
+    if (!student) {
+      return res.status(404).send('Student not found');
+    }
+    res.status(200).json(student.selectedInterests);
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).send('Server error');
+  }
+}

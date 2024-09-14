@@ -67,13 +67,6 @@ const Sidebar = () => {
             isCollapsed={isCollapsed}
           />
           <SidebarItem
-            icon={FaEnvelope}
-            label="Messages"
-            isDarkMode={isDarkMode}
-            to="/messages"
-            isCollapsed={isCollapsed}
-          />
-          <SidebarItem
             icon={FaClipboardList}
             label="Applied"
             isDarkMode={isDarkMode}
@@ -97,13 +90,6 @@ const Sidebar = () => {
             to="/airecommendations"
             isCollapsed={isCollapsed}
             gradient
-          />
-          <SidebarItem
-            icon={FaSearch}
-            isDarkMode={isDarkMode}
-            label="Find Internships"
-            to="/"
-            isCollapsed={isCollapsed}
           />
           <SidebarItem
             icon={GoVerified}
