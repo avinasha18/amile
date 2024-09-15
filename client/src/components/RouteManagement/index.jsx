@@ -93,7 +93,7 @@ export const RouteManagement = ({ islogin }) => {
             }
           />
           <Route
-            path="/feedback"
+            path="/yourai"
             element={
               <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
                 <SkillAssessment  />

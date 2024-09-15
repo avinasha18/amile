@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { FaMoneyBillAlt, FaCalendarAlt, FaUser } from 'react-icons/fa';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useTheme } from '../../context/ThemeContext';
-import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import Cookies from 'js-cookie';
+import { FaMoneyBillAlt, FaCalendarAlt, FaUser } from "react-icons/fa";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useTheme } from "../../context/ThemeContext";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import Cookies from "js-cookie";
 
 const SkeletonCard = () => {
   const { isDarkMode } = useTheme();
-  
+
   return (
-    <div className={`${isDarkMode ? 'bg-[#0f1011]' : 'bg-white'} rounded-lg shadow-md overflow-hidden animate-pulse`}>
+    <div
+      className={`${
+        isDarkMode ? "bg-[#0f1011]" : "bg-white"
+      } rounded-lg shadow-md overflow-hidden animate-pulse`}
+    >
       <div className="p-6">
         <div className="flex justify-between items-start mb-4">
           <div className="flex items-center">
@@ -47,15 +51,19 @@ const JobCard = ({ job, onApply }) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [isApplied, setIsApplied] = useState(false);
-  const currentUser = Cookies.get('userId');
+  const currentUser = Cookies.get("userId");
   const location = useLocation();
 
   useEffect(() => {
     // Check if the user has already applied for this job
     const checkApplication = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/applications/student/${currentUser}`);
-        const appliedJobs = response?.data?.appliedInternshipsWithDetails.map(app => app._id);
+        const response = await axios.get(
+          `http://localhost:3000/applications/student/${currentUser}`
+        );
+        const appliedJobs = response?.data?.appliedInternshipsWithDetails.map(
+          (app) => app._id
+        );
         setIsApplied(appliedJobs.includes(job._id));
       } catch (error) {
         console.error("Error checking application status:", error);
@@ -71,15 +79,15 @@ const JobCard = ({ job, onApply }) => {
   }, []);
 
   const handleViewDetails = () => {
-    navigate('/jobDetail', { state: { job } });
+    navigate("/jobDetail", { state: { job } });
   };
 
   const handleApply = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/applications', {
+      const response = await axios.post("http://localhost:3000/applications", {
         internshipId: job._id,
         studentId: currentUser,
-        companyId: job.companyId
+        companyId: job.companyId,
       });
 
       if (response.status === 201) {
@@ -109,51 +117,92 @@ const JobCard = ({ job, onApply }) => {
   if (isApplied) return null; // Don't render the card if the user has already applied
 
   return (
-    <div className={`${isDarkMode ? 'bg-[#0f1011]' : 'bg-white'} rounded-lg shadow-md overflow-hidden`}>
+    <div
+      className={`${
+        isDarkMode ? "bg-[#0f1011]" : "bg-white"
+      } rounded-lg shadow-md overflow-hidden`}
+    >
       <div className="p-6">
         <div className="flex justify-between items-start mb-4">
           <div className="flex items-center">
-            <img src={job.logo} alt={`${job.companyName} logo`} className="w-12 h-12 rounded-full mr-4" />
+            {/* <img src={job.logo} alt={`${job.companyName} logo`} className="w-12 h-12 rounded-full mr-4" /> */}
+            <div
+              className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center text-white font-bold mr-4"
+              style={{ backgroundColor: "#000" }} // You can use any color you like
+            >
+              {job.companyName.charAt(0)}
+            </div>
             <div>
-              <h3 className={`${isDarkMode ? 'text-gray-300' : 'text-black'} text-xl font-bold`}>{job.role}</h3>
-              <p className="text-gray-500">{job.companyName} | {job.location}</p>
+              <h3
+                className={`${
+                  isDarkMode ? "text-gray-300" : "text-black"
+                } text-xl font-bold`}
+              >
+                {job.role}
+              </h3>
+              <p className="text-gray-500">
+                {job.companyName} | {job.location}
+              </p>
             </div>
           </div>
-          <span className={`px-3 py-1 rounded-full text-sm ${job.type === 'Full-Time' ? 'bg-blue-500 text-blue-100' : 'bg-green-500 text-green-100'}`}>
+          <span
+            className={`px-3 py-1 rounded-full text-sm ${
+              job.type === "Full-Time"
+                ? "bg-blue-500 text-blue-100"
+                : "bg-green-500 text-green-100"
+            }`}
+          >
             {job.type}
           </span>
         </div>
         <div className="flex flex-wrap gap-2 mb-4">
           {job.skillsRequired.map((skill, index) => (
-            <span key={index} className={`px-3 py-1 ${isDarkMode ? 'bg-gray-800' : 'bg-slate-300'} ${isDarkMode ? 'text-gray-300' : 'text-black'} rounded-full text-sm`}>
+            <span
+              key={index}
+              className={`px-3 py-1 ${
+                isDarkMode ? "bg-gray-800" : "bg-slate-300"
+              } ${
+                isDarkMode ? "text-gray-300" : "text-black"
+              } rounded-full text-sm`}
+            >
               {skill}
             </span>
           ))}
         </div>
         <div className="grid grid-cols-2 gap-4 mb-4 text-sm text-gray-500">
           <div className="flex items-center">
-            <FaMoneyBillAlt className="mr-2" /> {job.stipend ? `$${job.stipend.toLocaleString()}` : 'Unpaid'}
+            <FaMoneyBillAlt className="mr-2" />{" "}
+            {job.stipend ? `$${job.stipend.toLocaleString()}` : "Unpaid"}
           </div>
           <div className="flex items-center">
-            <FaCalendarAlt className="mr-2" /> Start Date: {new Date(job.startDate).toLocaleDateString()}
+            <FaCalendarAlt className="mr-2" /> Start Date:{" "}
+            {new Date(job.startDate).toLocaleDateString()}
           </div>
           <div className="flex items-center">
-            <FaCalendarAlt className="mr-2" /> End Date: {job.endDate ? new Date(job.endDate).toLocaleDateString() : 'N/A'}
+            <FaCalendarAlt className="mr-2" /> End Date:{" "}
+            {job.endDate ? new Date(job.endDate).toLocaleDateString() : "N/A"}
           </div>
           <div className="flex items-center">
             <FaUser className="mr-2" /> Experience: {job.experience}
           </div>
         </div>
         <div className="flex justify-between items-center">
-          <button onClick={handleViewDetails} className={`${isDarkMode ? 'bg-gray-800' : 'bg-gray-900'} text-gray-100 px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors`}>
+          <button
+            onClick={handleViewDetails}
+            className={`${
+              isDarkMode ? "bg-gray-800" : "bg-gray-900"
+            } text-gray-100 px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors`}
+          >
             View Details
           </button>
           <button
             onClick={handleApply}
-            className={`${isApplied ? 'bg-green-600' : 'bg-blue-600'} text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors`}
+            className={`${
+              isApplied ? "bg-green-600" : "bg-blue-600"
+            } text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors`}
             disabled={isApplied}
           >
-            {isApplied ? 'Applied' : 'Apply Now'}
+            {isApplied ? "Applied" : "Apply Now"}
           </button>
         </div>
       </div>

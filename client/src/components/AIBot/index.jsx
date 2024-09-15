@@ -9,7 +9,7 @@ const AiBot = () => {
 
   // Handler for navigating to the feedback page
   const handleBotClick = () => {
-    navigate('/feedback');
+    navigate('/yourai');
   };
 
   return (
