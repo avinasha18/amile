@@ -45,6 +45,7 @@ const courseSchema = new mongoose.Schema({
         type: String, 
         required: true
     },
+    category: { type: String, required: true },
     modules: [moduleSchema],
     courseThumbnail: { type: String, required: true } 
 });
