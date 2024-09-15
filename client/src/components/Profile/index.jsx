@@ -64,7 +64,7 @@ const ProfilePage = () => {
       const formData = new FormData();
       formData.append("resume", file);
       try {
-        const response = await axios.post('')
+        const response = await axios.post('http://127.0.0.1:5000/uploadresume', formData)
         if (response.data.success) {
           setResumeDetails(response.data.resumeDetails); // Set extracted resume details
         }
