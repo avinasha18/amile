@@ -7,6 +7,7 @@ import { Actions } from "../../hooks/actions";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserData } from "../../services/redux/AuthSlice";
 import {  Box, Skeleton } from "@mui/material";
+import axios from "axios";
 import ProfileEditModal from "./ProfileEditModal";
 import ProfileAvatar from "./profileAvatar";
 
@@ -16,6 +17,8 @@ const ProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const dispatch = useDispatch();
   const [user, setUser] = useState(useSelector((state) => state.auth.userData));
+  const [resumeFile, setResumeFile] = useState(null); // State to hold the uploaded resume file
+  const [resumeDetails, setResumeDetails] = useState(null);
 
   const tabs = [
     "Education",
@@ -42,9 +45,6 @@ const ProfilePage = () => {
     GetUser();
   }, []);
 
-
-
-
   const updateUser = async (data) => {
     try {
       const response = await Actions.UpdateStudent(data);
@@ -54,6 +54,23 @@ const ProfilePage = () => {
       }
     } catch (e) {
       console.log(e);
+    }
+  };
+
+  const handleResumeUpload = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setResumeFile(file);
+      const formData = new FormData();
+      formData.append("resume", file);
+      try {
+        const response = await axios.post('')
+        if (response.data.success) {
+          setResumeDetails(response.data.resumeDetails); // Set extracted resume details
+        }
+      } catch (e) {
+        console.error("Error uploading resume:", e);
+      }
     }
   };
 
@@ -261,6 +278,31 @@ const ProfilePage = () => {
                   <FaGlobe size={24} />
                 </a>
               </div>
+
+              {/* Resume Upload */}
+              <div className="mt-6">
+                <h3 className={`text-lg font-semibold ${themeStyles.heading}`}>
+                  Upload Resume
+                </h3>
+                <input
+                  type="file"
+                  accept=".pdf,.doc,.docx"
+                  onChange={handleResumeUpload}
+                  className="mt-2"
+                />
+              </div>
+
+              {/* Display Resume Details */}
+              {resumeDetails && (
+                <div className="mt-4">
+                  <h3 className={`text-lg font-semibold ${themeStyles.heading}`}>
+                    Extracted Resume Details:
+                  </h3>
+                  <pre className="mt-2 p-4 bg-gray-100 rounded-lg">
+                    {JSON.stringify(resumeDetails, null, 2)}
+                  </pre>
+                </div>
+              )}
             </>
           ) : (
             <>
