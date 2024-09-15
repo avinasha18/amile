@@ -6,7 +6,7 @@ import { PluginConnectButton } from "../PluginButton";
 import { Actions } from "../../hooks/actions";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserData } from "../../services/redux/AuthSlice";
-import {  Box, Skeleton } from "@mui/material";
+import { Box, Skeleton } from "@mui/material";
 import axios from "axios";
 import ProfileEditModal from "./ProfileEditModal";
 import ProfileAvatar from "./profileAvatar";
@@ -57,6 +57,8 @@ const ProfilePage = () => {
     }
   };
 
+  const [uploadSuccess, setUploadSuccess] = useState(false);  // Track success state
+
   const handleResumeUpload = async (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -64,16 +66,20 @@ const ProfilePage = () => {
       const formData = new FormData();
       formData.append("resume", file);
       try {
-        const response = await axios.post('http://127.0.0.1:5000/uploadresume', formData)
+        const response = await axios.post('http://127.0.0.1:5000/uploadresume', formData);
         if (response.data.success) {
-          setResumeDetails(response.data.resumeDetails); // Set extracted resume details
+          const resumeData = response.data.resumeDetails;
+          setUser((prevUser) => ({ ...prevUser, ...resumeData }));
+          setUploadSuccess(true);  // Set success to true
         }
       } catch (e) {
         console.error("Error uploading resume:", e);
+        setUploadSuccess(false);  // Handle errors
       }
     }
   };
 
+  console.log(user)
   const themeStyles = {
     background: isDarkMode ? "bg-black" : "bg-gray-100",
     text: isDarkMode ? "text-gray-300" : "text-gray-800",
@@ -234,7 +240,7 @@ const ProfilePage = () => {
               {" "}
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center">
-                 <ProfileAvatar user={user}  isDarkMode={isDarkMode} setUser={setUser}/>
+                  <ProfileAvatar user={user} isDarkMode={isDarkMode} setUser={setUser} />
 
                   <div className="flex flex-col justify-center mt-2">
                     <h1 className={`text-2xl font-bold ${themeStyles.heading}`}>
@@ -291,18 +297,6 @@ const ProfilePage = () => {
                   className="mt-2"
                 />
               </div>
-
-              {/* Display Resume Details */}
-              {resumeDetails && (
-                <div className="mt-4">
-                  <h3 className={`text-lg font-semibold ${themeStyles.heading}`}>
-                    Extracted Resume Details:
-                  </h3>
-                  <pre className="mt-2 p-4 bg-gray-100 rounded-lg">
-                    {JSON.stringify(resumeDetails, null, 2)}
-                  </pre>
-                </div>
-              )}
             </>
           ) : (
             <>
@@ -330,11 +324,10 @@ const ProfilePage = () => {
                 <li key={index} className="flex items-center justify-center">
                   <button
                     onClick={() => setActiveTab(tab)}
-                    className={`px-4 py-2 rounded-full text-sm ${
-                      activeTab === tab
-                        ? themeStyles.tabActive
-                        : themeStyles.tabInactive
-                    } text-[15px] ${themeStyles.text}`}
+                    className={`px-4 py-2 rounded-full text-sm ${activeTab === tab
+                      ? themeStyles.tabActive
+                      : themeStyles.tabInactive
+                      } text-[15px] ${themeStyles.text}`}
                   >
                     {tab}
                   </button>
@@ -409,7 +402,7 @@ const ProfilePage = () => {
         open={isEditing}
         onClose={() => setIsEditing(false)}
         user={user}
-        onSave={updateUser}
+        onSave={(data) => updateUser({ ...user, ...data })}
       />
     </div>
   );
