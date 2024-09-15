@@ -91,6 +91,7 @@ export const getStudentApplicationsController = async (req, res) => {
 
     res.status(200).json({ appliedInternshipsWithDetails, govtAppliedInternshipsWithDetails });
   } catch (error) {
+    console.log(error.message)
     res.status(500).send(`Error: ${error.message}`);
   }
 };
