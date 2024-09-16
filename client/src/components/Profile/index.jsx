@@ -10,6 +10,8 @@ import { Box, Skeleton } from "@mui/material";
 import axios from "axios";
 import ProfileEditModal from "./ProfileEditModal";
 import ProfileAvatar from "./profileAvatar";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ProfilePage = () => {
   const { isDarkMode } = useTheme();
@@ -19,6 +21,8 @@ const ProfilePage = () => {
   const [user, setUser] = useState(useSelector((state) => state.auth.userData));
   const [resumeFile, setResumeFile] = useState(null); // State to hold the uploaded resume file
   const [resumeDetails, setResumeDetails] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
 
   const tabs = [
     "Education",
@@ -57,24 +61,30 @@ const ProfilePage = () => {
     }
   };
 
-  const [uploadSuccess, setUploadSuccess] = useState(false);  // Track success state
-
   const handleResumeUpload = async (event) => {
     const file = event.target.files[0];
     if (file) {
       setResumeFile(file);
       const formData = new FormData();
       formData.append("resume", file);
+      setLoading(true); // Disable button while uploading
       try {
-        const response = await axios.post('http://127.0.0.1:5000/uploadresume', formData);
+        const response = await axios.post(
+          "http://127.0.0.1:5000/uploadresume",
+          formData
+        );
         if (response.data.success) {
           const resumeData = response.data.resumeDetails;
           setUser((prevUser) => ({ ...prevUser, ...resumeData }));
-          setUploadSuccess(true);  // Set success to true
+          setUploadSuccess(true);
+          toast.success("Resume uploaded successfully!"); // Show toast on success
         }
       } catch (e) {
         console.error("Error uploading resume:", e);
-        setUploadSuccess(false);  // Handle errors
+        toast.error("Error uploading resume!"); // Show toast on error
+        setUploadSuccess(false);
+      } finally {
+        setLoading(false); // Re-enable button after upload completes
       }
     }
   };
@@ -284,19 +294,6 @@ const ProfilePage = () => {
                   <FaGlobe size={24} />
                 </a>
               </div>
-
-              {/* Resume Upload */}
-              <div className="mt-6">
-                <h3 className={`text-lg font-semibold ${themeStyles.heading}`}>
-                  Upload Resume
-                </h3>
-                <input
-                  type="file"
-                  accept=".pdf,.doc,.docx"
-                  onChange={handleResumeUpload}
-                  className="mt-2"
-                />
-              </div>
             </>
           ) : (
             <>
@@ -378,6 +375,28 @@ const ProfilePage = () => {
                 />
               </>
             </div>
+            {/* Resume Upload */}
+          <div className="mt-6">
+            <h3 className={`text-lg font-semibold ${themeStyles.heading}`}>
+              Upload Resume
+            </h3>
+            <div className="flex items-center mt-2">
+              <input
+                type="file"
+                accept=".pdf,.doc,.docx"
+                onChange={handleResumeUpload}
+                id="resume-upload"
+                className="hidden"
+                disabled={loading} // Disable the input when uploading
+              />
+              <label
+                htmlFor="resume-upload"
+                className={`flex items-center justify-center px-4 py-1 ${loading ? "bg-gray-400" : "bg-slate-500"} text-white font-semibold rounded-2xl cursor-pointer hover:bg-blue-600`}
+              >
+                {loading ? "Uploading..." : "Choose File"}
+              </label>
+            </div>
+          </div>
           </div>
 
           <div className="mb-6 ">
@@ -404,7 +423,9 @@ const ProfilePage = () => {
         user={user}
         onSave={(data) => updateUser({ ...user, ...data })}
       />
-    </div>
+
+      <ToastContainer />
+    </div >
   );
 };
 
