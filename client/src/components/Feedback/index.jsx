@@ -34,7 +34,7 @@ const SkillAssessment = () => {
 
       {/* Header Section */}
       <div className={`${isDarkMode ? 'bg-gray-800 text-white' : 'bg-gray-100 text-slate-900'} p-4 shadow-md rounded-lg mb-6`}>
-        <h1 className="text-3xl font-bold">Welcome, John Doe</h1>
+        <h1 className="text-3xl font-bold">Welcome, Vigna Ramtej</h1>
         <p className="mt-2">Here's your personalized skill assessment and feedback from Amile.</p>
       </div>
 
