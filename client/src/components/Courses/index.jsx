@@ -26,50 +26,22 @@ const Courses = () => {
             webinarName: 'AI in Healthcare',
             presenter: 'Dr. Sarah Johnson',
             date: '2024-09-20',
-            webinarThumbnail: 'https://example.com/webinar1.jpg'
+            webinarThumbnail: 'https://th.bing.com/th/id/OIP.Qn7Hx7GsMIDSBLzu_FZixwHaEK?rs=1&pid=ImgDetMain'
         },
         {
             id: 2,
             webinarName: 'Introduction to Quantum Computing',
             presenter: 'Dr. Robert Smith',
             date: '2024-09-25',
-            webinarThumbnail: 'https://example.com/webinar2.jpg'
+            webinarThumbnail: 'https://th.bing.com/th/id/OIP.VweJuj7drkYkoR3bnj_v2QHaD3?rs=1&pid=ImgDetMain'
         },
         {
             id: 3,
             webinarName: 'Blockchain and Future Finance',
             presenter: 'Emily Davis',
             date: '2024-09-30',
-            webinarThumbnail: 'https://example.com/webinar3.jpg'
+            webinarThumbnail: 'https://miro.medium.com/v2/resize:fit:1200/1*OXlGmKVEwPNwkUiFvqWQhw.jpeg'
         },
-        {
-            id: 3,
-            webinarName: 'Blockchain and Future Finance',
-            presenter: 'Emily Davis',
-            date: '2024-09-30',
-            webinarThumbnail: 'https://example.com/webinar3.jpg'
-        },
-        {
-            id: 3,
-            webinarName: 'Blockchain and Future Finance',
-            presenter: 'Emily Davis',
-            date: '2024-09-30',
-            webinarThumbnail: 'https://example.com/webinar3.jpg'
-        },
-        {
-            id: 3,
-            webinarName: 'Blockchain and Future Finance',
-            presenter: 'Emily Davis',
-            date: '2024-09-30',
-            webinarThumbnail: 'https://example.com/webinar3.jpg'
-        },
-        {
-            id: 3,
-            webinarName: 'Blockchain and Future Finance',
-            presenter: 'Emily Davis',
-            date: '2024-09-30',
-            webinarThumbnail: 'https://example.com/webinar3.jpg'
-        }
     ];
 
     useEffect(() => {
