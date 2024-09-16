@@ -96,7 +96,13 @@ const Courses = () => {
         return <CoursesSkeleton />
     }
 
-    const sections = [1, 2]
+    const categorizedCourses = courses.reduce((acc, course) => {
+        if (!acc[course.category]) {
+            acc[course.category] = [];
+        }
+        acc[course.category].push(course);
+        return acc;
+    }, {});
 
     const handleCourseClick = (course) => {
         const title = course.courseName;
@@ -116,7 +122,7 @@ const Courses = () => {
     return (
         <div className={`overflow-y-auto ${isDarkMode ? 'bg-slate-900' : 'bg-gray-50'} w-full`}>
             <div className='p-8'>
-                <FormControl variant="outlined" sx={{ width: '20rem'}}>
+                <FormControl variant="outlined" sx={{ width: '20rem' }}>
                     <InputLabel id="select-label" style={{ color: isDarkMode ? 'white' : 'black' }}>Select</InputLabel>
                     <Select
                         labelId="select-label"
@@ -124,7 +130,9 @@ const Courses = () => {
                         value={selectedOption}
                         onChange={(e) => setSelectedOption(e.target.value)}
                         label="Select"
-                        style={{ color: isDarkMode ? 'white' : 'black', backgroundColor: isDarkMode ? '#424242' : 'white',
+                        style={{
+                            color: isDarkMode ? 'white' : 'black',
+                            backgroundColor: isDarkMode ? '#424242' : 'white',
                             borderRadius: '10px'
                         }}
                     >
@@ -135,17 +143,16 @@ const Courses = () => {
             </div>
 
             {selectedOption === 'courses' ? (
-                sections.map((section, index) => (
+                Object.keys(categorizedCourses).map((category, index) => (
                     <div key={index} className={`section w-full p-8 overflow-hidden`}>
-                        <h1 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-black'}`}>{section == 1 ? 'Popular Courses for Data Scientists' : 'Featured courses for MERN Stack'}</h1>
+                        <h1 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-black'}`}>{category}</h1>
                         <div className="mt-4 mx-5">
                             <Slider {...settings}>
-                                {courses.map((course) => (
+                                {categorizedCourses[category].map((course) => (
                                     <div key={course.id} className="bg-white h-[350px] text-black rounded-xl cursor-pointer" onClick={() => handleCourseClick(course)}>
                                         <div className='flex justify-center items-center rounded-t-xl'>
                                             <img src={course.courseThumbnail} alt="" className="h-44 w-full" />
                                         </div>
-
                                         <div className="flex flex-col p-4">
                                             <p className="text-lg font-bold">{course.courseName}</p>
                                             <p className='text-sm'>{course.teacher}</p>
