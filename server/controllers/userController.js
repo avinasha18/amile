@@ -13,6 +13,7 @@ import {
   findTokenByUsername,
   removeUserVerificationTokenbyToken,
 } from "../models/auth.model.js";
+import {CourseProgress} from '../models/track.model.js'
 import { handleReferral } from "./referalController.js";
 import { generateUniqueToken } from "../services/uniqueTokenGeneration.js";
 import { HtmlTemplates } from "../services/htmlTemplates.js";
@@ -511,3 +512,28 @@ export const getInterests = async (req, res) => {
     res.status(500).send('Server error');
   }
 }
+export const getStudentProgress = async (req, res) => {
+  const { studentId } = req.params;
+
+  try {
+    console.log('in get s p');
+
+    // Correctly populating the `courseId` within the courses array
+    const studentProgress = await CourseProgress.findOne({ studentId }).populate('courses.courseId');
+    
+    if (!studentProgress) {
+      return res.status(404).json({ message: 'Student progress not found' });
+    }
+
+    // Mapping the courses to extract the course name and total progress
+    const progressData = studentProgress.courses.map(course => ({
+      courseName: course.courseId.courseName, // Assuming courseId is populated correctly with the course schema
+      totalProgress: course.totalProgress,
+    }));
+
+    res.json(progressData);
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ message: 'Server error', error });
+  }
+};

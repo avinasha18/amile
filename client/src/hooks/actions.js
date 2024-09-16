@@ -88,3 +88,13 @@ export const getApplicationStatistics = async (userId) => {
         throw new Error('Failed to fetch application statistics');
     }
 };
+export const getStudentProgress = async (studentId) => {
+    try {
+      const response = await axios.get(`${api}/student/progress/${studentId}`);
+      return response.data;
+    } catch (error) {
+        console.log(error.message)
+      console.error('Error fetching student progress:', error);
+      throw error;
+    }
+  };

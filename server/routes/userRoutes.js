@@ -14,6 +14,7 @@ import {
   uploadStudentProfile,
   getProfile,
   getInterests,
+  getStudentProgress
 } from "../controllers/userController.js";
 import {
   connectPlugin,
@@ -44,5 +45,6 @@ router.get('/interests', getInterests);
 router.post("/connectplugin", CheckAuthorization, connectPlugin);
 router.post("/updateuser", CheckAuthorization, updateStudent);
 router.post("/disconnectplugin", disconnectPlugin);
+router.get('/student/progress/:studentId', getStudentProgress);
 
 export default router;
