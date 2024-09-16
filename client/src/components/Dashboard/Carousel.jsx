@@ -2,35 +2,52 @@ import React from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { Link } from 'react-router-dom';
 
 const carouselItems = [
   {
     type: "Certification courses",
-    title: "Master the in-demand skills!",
-    description: "Get govt.-accredited certification and level-up your resume.",
+    title: "Complete Generative AI Course",
+    description: "This course covers the fundamentals of Generative AI, including deep learning, NLP, and computer vision.",
     buttonText: "Know more",
     color: "#007bff",
-    icon: "🎓"
+    icon: "🤖",
+    rating: 4.7,
+    participants: 1756,
+    courseThumbnail: "https://ideausher.com/wp-content/uploads/2023/02/Generative-AI.webp"
   },
   {
     type: "Certification courses",
-    title: "Special offer for students pursuing your degree!",
-    description: "Get 55% + 10% OFF on online trainings",
+    title: "Natural Language Processing",
+    description: "This course covers the basics of Natural Language Processing, including tokenization, parsing, and machine translation.",
     buttonText: "Know more",
     color: "#17a2b8",
-    icon: "💼"
+    icon: "🧠",
+    rating: 4.7,
+    participants: 1750,
+    courseThumbnail: "https://th.bing.com/th/id/OIP.GL0v5xy4w0Im4swDBd2eigHaE8?w=1080&h=720&...",
   },
   {
-    type: "Campus Competition",
-    title: "PepShe Supply Chain",
-    description: "For female UG students across India",
-    buttonText: "Register now",
+    type: "Certification courses",
+    title: "Advanced Computer Vision",
+    description: "Dive deep into advanced topics in computer vision, including object detection, segmentation, and 3D reconstruction.",
+    buttonText: "Know more",
     color: "#28a745",
-    sponsor: "PEPSICO",
-    bulletPoints: [
-      "Chance to work for PepsiCo India",
-      "Meet & learn from FMCG leaders"
-    ]
+    icon: "👁️",
+    rating: 4.9,
+    participants: 1000,
+    courseThumbnail: "https://i.pcmag.com/imagery/articles/061CyMCZV6G2sXUmreKHvXS-1.fit_lim..."
+  },
+  {
+    type: "Certification courses",
+    title: "Big Data Analytics",
+    description: "Understand the techniques and tools for analyzing large datasets and extracting meaningful insights.",
+    buttonText: "Know more",
+    color: "#6c757d",
+    icon: "📊",
+    rating: 4.4,
+    participants: 1800,
+    courseThumbnail: "https://th.bing.com/th/id/OIP.oVoubtxh_jHCvkRcdMMUFAHaEK?rs=1&pid=ImgD..."
   }
 ];
 
@@ -56,7 +73,9 @@ const CarouselCard = ({ item }) => (
         </ul>
       )}
     </div>
-    <button className="mt-auto bg-white text-black rounded px-4 py-2 mt-4 hover:bg-gray-200">{item.buttonText}</button>
+    <Link to='/courses'>
+    <button className="mt-auto bg-white text-black rounded px-4 py-2 hover:bg-gray-200">{item.buttonText}</button>
+    </Link>
     {item.icon && <span className="card-icon text-3xl">{item.icon}</span>}
     {item.sponsor && <span className="card-sponsor mt-2 text-xs text-gray-500">{item.sponsor}</span>}
   </div>
