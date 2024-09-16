@@ -61,9 +61,9 @@ const Course = () => {
     };
 
     return (
-        <div className='h-full w-full overflow-auto'>
+        <div className='w-full overflow-hidden'>
             {/* Course Details */}
-            <div className='z-0'>
+            <div className='z-0 h-full'>
                 <div className={`h-1/2 ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'} px-40 py-20 shadow-2xl`}>
                     <div className='flex flex-col w-1/2 gap-y-4'>
                         <p className='text-3xl font-bold'>{course.courseName}</p>
@@ -79,7 +79,7 @@ const Course = () => {
                 </div>
 
                 {/* Related Topics */}
-                <div className={`px-40 py-10 ${isDarkMode ? 'bg-white text-black' : 'bg-black text-white'} flex flex-col gap-4`}>
+                <div className={`px-40 py-10 ${isDarkMode ? 'bg-white text-black' : 'bg-black text-white'} flex flex-col gap-4 h-full`}>
                     <h1 className='text-2xl font-bold'>Explore related topics</h1>
                     <div className='flex flex-row gap-3'>
                         {course.relatedTopics.map((topic, index) => (
@@ -91,7 +91,7 @@ const Course = () => {
 
             {/* Enrollment Section */}
             <div className='absolute top-36 right-36 w-96 bg-white z-10 flex flex-col gap-4'>
-                <video className='border border-black w-full'></video>
+                <img src={course.courseThumbnail} className='border border-black w-full' />
                 <div className='p-8 text-black flex flex-col shadow-xl'>
                     <button
                         className={`px-10 py-2 w-fit text-lg rounded-lg ${isEnrolled ? 'bg-gray-500' : 'bg-stone-900'} text-white`}

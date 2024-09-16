@@ -2,52 +2,25 @@ import mongoose from "mongoose";
 import { stringify } from "uuid";
 
 const moduleSchema = new mongoose.Schema({
-    title: {
-        type: String,
-        required: true
-    },
-    duration: {
-        type: String,
-        required: true
-    },
-    details: {
-        type: String,
-        required: true
-    },
-    included: {
-        type: [String], 
-        required: true
-    }
+    step: { type: String, required: true },
+    title: { type: String, required: true },
+    topics: [{ type: String, required: true }]
 });
 
 const courseSchema = new mongoose.Schema({
-    title: {
-        type: String,
-        required: true
-    },
-    description: {
-        type: String,
-        required: true
-    },
-    lastUpdated: {
-        type: String, 
-        required: true
-    },
-    language: {
-        type: String,
-        required: true
-    },
-    rating: {
-        type: String,
-        required: true
-    },
-    students: {
-        type: String, 
-        required: true
-    },
+    courseName: { type: String, required: true },
     modules: [moduleSchema],
-    courseThumbnail: { type: String, required: true } 
+    teacher: { type: String, required: true },
+    rating: { type: Number, required: true, min: 0, max: 5 },
+    participants: { type: Number, required: true },
+    bestseller: { type: Boolean, default: false },
+    description: { type: String, required: true },
+    relatedTopics: [{ type: String }],
+    durationHours: { type: Number, required: true },
+    sections: { type: Number, required: true },
+    lectures: { type: Number, required: true },
+    courseThumbnail: { type: String, required: true },
+    category: { type: String, required: true }
 });
 
 export const Course = mongoose.model('Course', courseSchema);
-

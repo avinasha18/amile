@@ -6,9 +6,12 @@ import { PluginConnectButton } from "../PluginButton";
 import { Actions } from "../../hooks/actions";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserData } from "../../services/redux/AuthSlice";
-import {  Box, Skeleton } from "@mui/material";
+import { Box, Skeleton } from "@mui/material";
+import axios from "axios";
 import ProfileEditModal from "./ProfileEditModal";
 import ProfileAvatar from "./profileAvatar";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ProfilePage = () => {
   const { isDarkMode } = useTheme();
@@ -16,6 +19,10 @@ const ProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const dispatch = useDispatch();
   const [user, setUser] = useState(useSelector((state) => state.auth.userData));
+  const [resumeFile, setResumeFile] = useState(null); // State to hold the uploaded resume file
+  const [resumeDetails, setResumeDetails] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
 
   const tabs = [
     "Education",
@@ -42,9 +49,6 @@ const ProfilePage = () => {
     GetUser();
   }, []);
 
-
-
-
   const updateUser = async (data) => {
     try {
       const response = await Actions.UpdateStudent(data);
@@ -57,6 +61,35 @@ const ProfilePage = () => {
     }
   };
 
+  const handleResumeUpload = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setResumeFile(file);
+      const formData = new FormData();
+      formData.append("resume", file);
+      setLoading(true); // Disable button while uploading
+      try {
+        const response = await axios.post(
+          "http://127.0.0.1:5000/uploadresume",
+          formData
+        );
+        if (response.data.success) {
+          const resumeData = response.data.resumeDetails;
+          setUser((prevUser) => ({ ...prevUser, ...resumeData }));
+          setUploadSuccess(true);
+          toast.success("Resume uploaded successfully!"); // Show toast on success
+        }
+      } catch (e) {
+        console.error("Error uploading resume:", e);
+        toast.error("Error uploading resume!"); // Show toast on error
+        setUploadSuccess(false);
+      } finally {
+        setLoading(false); // Re-enable button after upload completes
+      }
+    }
+  };
+
+  console.log(user)
   const themeStyles = {
     background: isDarkMode ? "bg-black" : "bg-gray-100",
     text: isDarkMode ? "text-gray-300" : "text-gray-800",
@@ -217,7 +250,7 @@ const ProfilePage = () => {
               {" "}
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center">
-                 <ProfileAvatar user={user}  isDarkMode={isDarkMode} setUser={setUser}/>
+                  <ProfileAvatar user={user} isDarkMode={isDarkMode} setUser={setUser} />
 
                   <div className="flex flex-col justify-center mt-2">
                     <h1 className={`text-2xl font-bold ${themeStyles.heading}`}>
@@ -288,11 +321,10 @@ const ProfilePage = () => {
                 <li key={index} className="flex items-center justify-center">
                   <button
                     onClick={() => setActiveTab(tab)}
-                    className={`px-4 py-2 rounded-full text-sm ${
-                      activeTab === tab
-                        ? themeStyles.tabActive
-                        : themeStyles.tabInactive
-                    } text-[15px] ${themeStyles.text}`}
+                    className={`px-4 py-2 rounded-full text-sm ${activeTab === tab
+                      ? themeStyles.tabActive
+                      : themeStyles.tabInactive
+                      } text-[15px] ${themeStyles.text}`}
                   >
                     {tab}
                   </button>
@@ -343,6 +375,28 @@ const ProfilePage = () => {
                 />
               </>
             </div>
+            {/* Resume Upload */}
+          <div className="mt-6">
+            <h3 className={`text-lg font-semibold ${themeStyles.heading}`}>
+              Upload Resume
+            </h3>
+            <div className="flex items-center mt-2">
+              <input
+                type="file"
+                accept=".pdf,.doc,.docx"
+                onChange={handleResumeUpload}
+                id="resume-upload"
+                className="hidden"
+                disabled={loading} // Disable the input when uploading
+              />
+              <label
+                htmlFor="resume-upload"
+                className={`flex items-center justify-center px-4 py-1 ${loading ? "bg-gray-400" : "bg-slate-500"} text-white font-semibold rounded-2xl cursor-pointer hover:bg-blue-600`}
+              >
+                {loading ? "Uploading..." : "Choose File"}
+              </label>
+            </div>
+          </div>
           </div>
 
           <div className="mb-6 ">
@@ -367,9 +421,11 @@ const ProfilePage = () => {
         open={isEditing}
         onClose={() => setIsEditing(false)}
         user={user}
-        onSave={updateUser}
+        onSave={(data) => updateUser({ ...user, ...data })}
       />
-    </div>
+
+      <ToastContainer />
+    </div >
   );
 };
 
