@@ -85,7 +85,7 @@ const ScrappedJobs = () => {
   return (
     <div className={`min-h-screen w-full overflow-y-auto ${isDarkMode ? 'bg-gray-900 text-gray-300' : 'bg-gray-100 text-gray-900'}`}>
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-6">Scrapped Job Postings</h1>
+        <h1 className="text-3xl font-bold mb-6">Private Jobs</h1>
         <input
           type="text"
           placeholder="Search jobs..."
