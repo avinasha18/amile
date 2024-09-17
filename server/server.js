@@ -26,9 +26,9 @@ const io = new Server(server, {
 });
 
 
-
+const origins = ["http://localhost:5173", "http://localhost:5174","http://localhost:5175", "https://amile-spey.vercel.app","https://amile-qxg8.vercel.app/","https://amile-company.vercel.app/" ]
 app.use(cors({
-  origin: ["http://localhost:5173", "http://localhost:5174"],
+  origin: origins,
   methods: ["GET", "POST","DELETE","PUT"],
 
 }));
