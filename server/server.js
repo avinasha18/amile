@@ -18,15 +18,16 @@ import { VerifyMentorAccountwithToken } from './controllers/mentorController.js'
 import mentorStudentChatRoutes from './routes/mentorStudentChatRoutes.js';
 const app = express();
 const server = http.createServer(app);
+const origins = ["http://localhost:5173", "http://localhost:5174","http://localhost:5175", "https://amile-spey.vercel.app","https://amile-qxg8.vercel.app/","https://amile-company.vercel.app/" ]
+
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173", "http://localhost:5174"],
+    origin: origins,
     methods: ["GET", "POST"],
   }
 });
 
 
-const origins = ["http://localhost:5173", "http://localhost:5174","http://localhost:5175", "https://amile-spey.vercel.app","https://amile-qxg8.vercel.app/","https://amile-company.vercel.app/" ]
 app.use(cors({
   origin: origins,
   methods: ["GET", "POST","DELETE","PUT"],
