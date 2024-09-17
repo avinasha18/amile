@@ -7,7 +7,7 @@ import { Chart as ChartJS, CategoryScale, ArcElement, LinearScale, BarElement, T
 import { useTheme } from '../../context/ThemeContext';
 import { getApplicationStatistics, getStudentProgress } from '../../hooks/actions';
 import Cookies from 'js-cookie';
-import DashboardSkeleton from './DashboardSkeleton';
+import DashboardSkeleton from './Dashboardskeleton';
 
 ChartJS.register(CategoryScale, LinearScale, ArcElement, BarElement, Title, Tooltip, Legend);
 
