@@ -17,7 +17,7 @@ import {
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Actions } from "../../hooks/actions";
-
+import { api } from "../../hooks/apis";
 const UserRegisterFlow = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [accountType, setAccountType] = useState("");

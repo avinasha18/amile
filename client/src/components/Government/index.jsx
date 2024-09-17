@@ -4,6 +4,7 @@ import { useTheme } from '../../context/ThemeContext';
 import { motion } from 'framer-motion';
 import GovtJobCard from '../GovernmentJobCard';
 import Cookies from 'js-cookie'; // Import Cookies for managing user data
+import { api } from '../../hooks/apis';
 
 const GovernmentJobsPage = () => {
   const [jobs, setJobs] = useState([]);
@@ -27,7 +28,7 @@ const GovernmentJobsPage = () => {
       }
 
       try {
-        const response = await axios.get(`http://localhost:3000/government?userId=${userId}`);
+        const response = await axios.get(`${api}/government?userId=${userId}`);
 
         setJobs(response.data);
         console.log(response.data)

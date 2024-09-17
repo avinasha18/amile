@@ -24,7 +24,7 @@ import TwitterIcon from '@mui/icons-material/Twitter';
 import EmailIcon from '@mui/icons-material/Email';
 import ShareIcon from '@mui/icons-material/Share';
 import { useSelector } from "react-redux";
-
+import { api } from "../../hooks/apis";
 const MyReferals = () => {
   const [referals, setReferals] = useState([]);
   const [loading, setLoading] = useState(true);

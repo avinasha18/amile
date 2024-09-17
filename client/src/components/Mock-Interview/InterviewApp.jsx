@@ -12,7 +12,7 @@ import aiImage from '../../assets/195.jpg';
 import VideocamOffIcon from '@mui/icons-material/VideocamOff';
 import VideocamIcon from '@mui/icons-material/Videocam';
 const flask_domain = 'http://127.0.0.1:8080';
-
+import { api } from '../../hooks/apis';
 function InterviewApp() {
   const [showAnimation, setShowAnimation] = useState(true);
   const [question, setQuestion] = useState('');

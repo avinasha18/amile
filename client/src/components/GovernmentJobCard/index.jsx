@@ -55,7 +55,7 @@ const GovtJobCard = ({ job }) => {
   useEffect(() => {
     const checkApplication = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/government/applications/${currentUser}`);
+        const response = await axios.get(`${api}/government/applications/${currentUser}`);
         const appliedJobs = response.data.map(app => app._id);
         setIsApplied(appliedJobs.includes(job._id));
       } catch (error) {
@@ -74,7 +74,7 @@ const GovtJobCard = ({ job }) => {
 
   const handleApply = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/government/apply', {
+      const response = await axios.post('${api}/government/apply', {
         internshipId: job._id,
         studentId: currentUser,
         companyId: job.companyId

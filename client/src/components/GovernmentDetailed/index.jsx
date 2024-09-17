@@ -5,6 +5,7 @@ import { useTheme } from '../../context/ThemeContext';
 import { FaArrowLeft, FaMapMarkerAlt, FaMoneyBillWave, FaCalendarAlt, FaClock, FaUsers, FaGraduationCap } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
+import { api } from '../../hooks/apis';
 
 const GovernmentDetailedPage = () => {
   const { id } = useParams();
@@ -18,7 +19,7 @@ const GovernmentDetailedPage = () => {
   useEffect(() => {
     const fetchJob = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/government/${id}`);
+        const response = await axios.get(`${api}/government/${id}`);
         setJob(response.data);
         setLoading(false);
       } catch (error) {
@@ -33,7 +34,7 @@ const GovernmentDetailedPage = () => {
   useEffect(() => {
     const checkApplication = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/government/applications/${currentUser.id}`);
+        const response = await axios.get(`${api}/government/applications/${currentUser.id}`);
         console.log(response)
         const appliedJobs = response.data.map(app => app._id);
         setIsApplied(appliedJobs.includes(job?._id));
@@ -49,7 +50,7 @@ const GovernmentDetailedPage = () => {
 
   const handleApply = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/government/apply', {
+      const response = await axios.post(`${api}/government/apply`, {
         internshipId: job._id,
         studentId: currentUser,
         companyId: job.companyId

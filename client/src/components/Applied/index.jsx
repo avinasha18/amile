@@ -7,6 +7,7 @@ import Cookies from 'js-cookie';
 import { useTheme } from '../../context/ThemeContext'; // Adjust the import path as needed
 import socket from '../../hooks/socket';
 import { useSelector } from 'react-redux';
+import { api } from '../../hooks/apis';
 
 const AppliedInternships = () => {
   const [appliedInternships, setAppliedInternships] = useState([]);
@@ -29,7 +30,7 @@ const AppliedInternships = () => {
 
     if (currentUser) {
       axios
-        .get(`http://localhost:3000/applications/student/${currentUser}`)
+        .get(`${api}/applications/student/${currentUser}`)
         .then((response) => {
           setAppliedInternships(response.data.appliedInternshipsWithDetails);
           setGovtAppliedInternships(response.data.govtAppliedInternshipsWithDetails);

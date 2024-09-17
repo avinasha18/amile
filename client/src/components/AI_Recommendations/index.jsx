@@ -5,6 +5,7 @@ import { styled } from '@mui/material/styles';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import AIJobCard from './JobCard';
+import { api } from '../../hooks/apis';
 
 const CustomPagination = styled(Pagination)(({ theme }) => ({
   '& .MuiPaginationItem-root': {
@@ -44,7 +45,7 @@ const AIRecommendations = ({ filters, searchQuery }) => {
     });
 
     try {
-        const skill = await axios.get(`http://localhost:3000/getSkills/${currentUserId}`)
+        const skill = await axios.get(`${api}/getSkills/${currentUserId}`)
         const skills = skill.data.skills.join(' ');
           console.log(skills)
       

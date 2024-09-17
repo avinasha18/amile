@@ -5,7 +5,7 @@ import { useTheme } from "../../context/ThemeContext";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import Cookies from "js-cookie";
-
+import { api } from "../../hooks/apis";
 const SkeletonCard = () => {
   const { isDarkMode } = useTheme();
 
@@ -59,7 +59,7 @@ const JobCard = ({ job, onApply }) => {
     const checkApplication = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/applications/student/${currentUser}`
+          `${api}/applications/student/${currentUser}`
         );
         const appliedJobs = response?.data?.appliedInternshipsWithDetails.map(
           (app) => app._id
@@ -84,7 +84,7 @@ const JobCard = ({ job, onApply }) => {
 
   const handleApply = async () => {
     try {
-      const response = await axios.post("http://localhost:3000/applications", {
+      const response = await axios.post("${api}/applications", {
         internshipId: job._id,
         studentId: currentUser,
         companyId: job.companyId,

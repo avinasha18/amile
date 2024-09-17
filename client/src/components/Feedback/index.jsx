@@ -5,6 +5,7 @@ import { MdOutlineTrendingUp, MdOutlineWork } from 'react-icons/md';
 import { useTheme } from '../../context/ThemeContext';
 import Cookies from 'js-cookie';
 import { Actions } from '../../hooks/actions';
+import { api } from '../../hooks/apis';
 const SkillAssessment = () => {
   const { isDarkMode } = useTheme(); // ThemeContext hook
   const [feedback, setFeedback] = useState([]);
@@ -24,7 +25,7 @@ const SkillAssessment = () => {
 
   const fetchProgressData = useCallback(async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/course-progress/${userData._id}`);
+      const response = await axios.get(`${api}/course-progress/${userData._id}`);
       setProgress(response.data);
     } catch (error) {
       console.error("Error fetching progress data:", error);

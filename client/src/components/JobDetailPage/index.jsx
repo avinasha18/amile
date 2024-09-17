@@ -24,7 +24,7 @@ const JobDetailPage = () => {
 
   const handleApply = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/applications', {
+      const response = await axios.post('${api}/applications', {
         internshipId: job._id,
         studentId: currentUser,
         companyId: job.companyId

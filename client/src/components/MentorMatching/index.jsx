@@ -31,6 +31,7 @@ import animationData2 from "./animation2.json";
 import animationData3 from "./animation3.json";
 import { useTheme } from "../../context/ThemeContext";
 import { Actions } from "../../hooks/actions";
+import { api } from "../../hooks/apis";
 // Styled components
 const StyledModal = styled(Modal)({
   display: "flex",
@@ -98,7 +99,7 @@ const MentorMatching = () => {
     const checkMentorNeeded = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/student-mentor/${studentId}`
+          `${api}/student-mentor/${studentId}`
         );
         const data = response.data;
         if (data.skills.length === 0) {
@@ -130,7 +131,7 @@ const MentorMatching = () => {
 
       if (mentorUsername) {
         const mentorResponse = await axios.get(
-          `http://localhost:3000/mentor/mentordata/${mentorUsername}`
+          `${api}/mentor/mentordata/${mentorUsername}`
         );
         console.log(mentorResponse.data.data);
         console.log(mentorResponse.data.data, count, "->count");
@@ -224,7 +225,7 @@ const MentorMatching = () => {
 
   const handleChooseMentor = async () => {
     try {
-      await axios.post("http://localhost:3000/assign-mentor", {
+      await axios.post("${api}/assign-mentor", {
         studentId,
         mentorId: mentor._id,
       });

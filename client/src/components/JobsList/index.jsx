@@ -4,7 +4,7 @@ import { useTheme } from '../../context/ThemeContext';
 import Pagination from '@mui/material/Pagination';
 import { styled } from '@mui/material/styles';
 import Cookies from 'js-cookie';
-
+import { api } from '../../hooks/apis';
 const CustomPagination = styled(Pagination)(({ theme }) => ({
   '& .MuiPaginationItem-root': {
     color: theme.palette.mode === 'dark' ? '#ffffff' : '#000000',
@@ -43,7 +43,7 @@ const JobList = ({ filters, searchQuery }) => {
     });
 
     try {
-      const response = await fetch(`http://localhost:3000/internships?${queryParams.toString()}`);
+      const response = await fetch(`${api}/internships?${queryParams.toString()}`);
       const data = await response.json();
       setJobs(data.internships || []);
       setIsLoading(false)

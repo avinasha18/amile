@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import io from 'socket.io-client';
-
-const socket = io('http://localhost:3000', {
+import { api, socketApi } from '../../hooks/apis';
+const socket = io(`${socketApi}`, {
   transports: ['websocket'],
   cors: {
     origin: 'http://localhost:5173',
@@ -33,7 +33,7 @@ function StartChat() {
   const handleStartChat = async () => {
     try {
       console.log('in handle');
-      const response = await axios.get(`http://localhost:3000/company/${companyId}/student/${studentId}`);
+      const response = await axios.get(`${api}/company/${companyId}/student/${studentId}`);
       setChat(response.data);
       console.log(response, 'res');
       setMessages(response.data.messages);
@@ -57,7 +57,7 @@ function StartChat() {
         sender: 'company',
       };
 
-      const response = await axios.post('http://localhost:3000/send', newMessage);
+      const response = await axios.post('${api}/send', newMessage);
       setMessages(response.data.messages);
       setMessage('');
 

@@ -7,6 +7,7 @@ import { logout } from "../../services/redux/AuthSlice";
 import { Button } from "@mui/material";
 import "./index.css";
 import { setAuthToken } from "../../hooks/golbalAuth";
+import { api } from "../../hooks/apis";
 
 const Navbar = ({ isLogin }) => {
   const dispatch = useDispatch();

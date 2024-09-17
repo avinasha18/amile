@@ -7,7 +7,7 @@ function ShortlistedStudents({ companyId, onStartChat }) {
   useEffect(() => {
     const fetchShortlistedStudents = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/company/${companyId}/shortlisted-students`);
+        const response = await axios.get(`${api}/company/${companyId}/shortlisted-students`);
         setStudents(response.data);
       } catch (error) {
         console.error('Error fetching shortlisted students:', error);
