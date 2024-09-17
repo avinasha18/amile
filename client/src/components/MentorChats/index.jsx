@@ -6,6 +6,7 @@ import { useTheme } from '../../context/ThemeContext';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Cookies from 'js-cookie';
+import { api } from '../../hooks/apis';
 
 function MentorChats() {
   const [chats, setChats] = useState([]);
@@ -46,7 +47,7 @@ function MentorChats() {
   useEffect(() => {
     const fetchMentorData = async () => {
       try {
-        const response = await axios.post('${api}/mentordata', {
+        const response = await axios.post(`${api}/mentordata`, {
           username: 'avinasha'
         });
         setMentorData(response.data.data);
@@ -73,7 +74,7 @@ function MentorChats() {
   const sendMessage = (message) => {
     if (activeChat) {
       axios
-        .post('${api}/mentor/send', {
+        .post(`${api}/mentor/send`, {
           mentorId: activeChat.mentorId,
           studentId: activeChat.studentId,
           text: message,

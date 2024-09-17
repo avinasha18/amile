@@ -84,7 +84,7 @@ const JobCard = ({ job, onApply }) => {
 
   const handleApply = async () => {
     try {
-      const response = await axios.post("${api}/applications", {
+      const response = await axios.post(`${api}/applications`, {
         internshipId: job._id,
         studentId: currentUser,
         companyId: job.companyId,

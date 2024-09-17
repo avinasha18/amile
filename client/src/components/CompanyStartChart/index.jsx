@@ -57,7 +57,7 @@ function StartChat() {
         sender: 'company',
       };
 
-      const response = await axios.post('${api}/send', newMessage);
+      const response = await axios.post(`${api}/send`, newMessage);
       setMessages(response.data.messages);
       setMessage('');
 

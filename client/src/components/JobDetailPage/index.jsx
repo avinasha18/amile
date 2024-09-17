@@ -5,6 +5,7 @@ import { useTheme } from '../../context/ThemeContext'; // Import the theme conte
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
+import { api } from '../../hooks/apis';
 
 const JobDetailPage = () => {
   const { isDarkMode } = useTheme(); // Get the theme context
@@ -24,7 +25,7 @@ const JobDetailPage = () => {
 
   const handleApply = async () => {
     try {
-      const response = await axios.post('${api}/applications', {
+      const response = await axios.post(`${api}/applications`, {
         internshipId: job._id,
         studentId: currentUser,
         companyId: job.companyId
