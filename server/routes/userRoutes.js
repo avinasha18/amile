@@ -48,5 +48,7 @@ router.post("/connectplugin", CheckAuthorization, connectPlugin);
 router.post("/updateuser", CheckAuthorization, updateStudent);
 router.post("/disconnectplugin", disconnectPlugin);
 router.get('/student/progress/:studentId', getStudentProgress);
-
+router.get('/', (req,res)=> {
+  return res.send('Working')
+})
 export default router;

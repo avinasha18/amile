@@ -11,7 +11,7 @@ import animationData from './animations/animation.json';
 import aiImage from '../../assets/195.jpg'; 
 import VideocamOffIcon from '@mui/icons-material/VideocamOff';
 import VideocamIcon from '@mui/icons-material/Videocam';
-const flask_domain = 'http://127.0.0.1:5000';
+const flask_domain = 'http://127.0.0.1:8080';
 
 function InterviewApp() {
   const [showAnimation, setShowAnimation] = useState(true);

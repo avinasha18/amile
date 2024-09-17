@@ -43,7 +43,7 @@ const Courses = () => {
             webinarThumbnail: 'https://miro.medium.com/v2/resize:fit:1200/1*OXlGmKVEwPNwkUiFvqWQhw.jpeg'
         },
     ];
-
+    
     useEffect(() => {
         const fetchCourses = async () => {
             setLoading(true);

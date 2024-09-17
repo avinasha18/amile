@@ -49,8 +49,8 @@ const AIRecommendations = ({ filters, searchQuery }) => {
           console.log(skills)
       
         const response = await axios.post(
-            `http://127.0.0.1:5050/recommend`,
-            { skills : 'html css' }, // Replace this with your actual data structure
+            `http://127.0.0.1:9000/recommend`,
+            { skills : 'html css javascript react node express' }, // Replace this with your actual data structure
             { headers: { 'Content-Type': 'application/json' } }
           );      
       const data = response.data;
