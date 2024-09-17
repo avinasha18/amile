@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import ResumeEditor from './ResumeEditor';
-import ResumePreview from './ResumePreview';
+import ResumeEditor from './resumeEditor';
+import ResumePreview from './resumePreview';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { useSelector } from 'react-redux';
 
