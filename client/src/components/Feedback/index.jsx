@@ -1,40 +1,83 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import axios from 'axios';
 import { FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
 import { MdOutlineTrendingUp, MdOutlineWork } from 'react-icons/md';
 import { useTheme } from '../../context/ThemeContext';
-
+import Cookies from 'js-cookie';
+import { Actions } from '../../hooks/actions';
 const SkillAssessment = () => {
-  const { isDarkMode, toggleTheme } = useTheme(); // ThemeContext hook
+  const { isDarkMode } = useTheme(); // ThemeContext hook
+  const [feedback, setFeedback] = useState([]);
+  const [userData, setUserData] = useState({});
+  const [progress, setProgress] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const [feedback, setFeedback] = useState([
-    {
-      area: 'JavaScript',
-      status: 'Excellent',
-      icon: <FaCheckCircle className="text-green-500" />,
-      nextStep: 'Start learning advanced React patterns.',
-    },
-    {
-      area: 'CSS Grid & Flexbox',
-      status: 'Needs Improvement',
-      icon: <FaExclamationCircle className="text-red-500" />,
-      nextStep: 'Complete the "CSS Mastery" course.',
-    },
-    {
-      area: 'Python (Machine Learning)',
-      status: 'Trending Skill',
-      icon: <MdOutlineTrendingUp className="text-blue-500" />,
-      nextStep: 'Focus on hands-on ML projects.',
-    },
-  ]);
+  const fetchUserData = useCallback(async () => {
+    try {
+      const response = await Actions.fetchUser();
+      console.log(response)
+      setUserData(response.data.data);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  }, []);
+
+  const fetchProgressData = useCallback(async () => {
+    try {
+      const response = await axios.get(`http://localhost:3000/course-progress/${userData._id}`);
+      setProgress(response.data);
+    } catch (error) {
+      console.error("Error fetching progress data:", error);
+    }
+  }, [userData._id]);
+
+  useEffect(() => {
+    fetchUserData();
+  }, [fetchUserData]);
+
+  useEffect(() => {
+    if (userData._id) {
+      fetchProgressData();
+    }
+  }, [fetchProgressData, userData._id]);
+
+  useEffect(() => {
+    // Generate feedback based on user data
+    if (userData.skills && progress.length) {
+      const skillFeedback = userData.skills.map(skill => {
+        const progressItem = progress.find(p => p.courseName === skill);
+
+        let status = 'Needs Improvement';
+        let nextStep = 'Consider taking relevant courses or practicing more.';
+
+        if (progressItem) {
+          status = progressItem.totalProgress > 75 ? 'Excellent' : 'Needs Improvement';
+          nextStep = `Complete more exercises in ${progressItem.courseName}.`;
+        }
+
+        return {
+          area: skill,
+          status,
+          icon: status === 'Excellent' ? <FaCheckCircle className="text-green-500" /> : <FaExclamationCircle className="text-red-500" />,
+          nextStep
+        };
+      });
+
+      setFeedback(skillFeedback);
+    }
+    setLoading(false);
+  }, [userData, progress]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className={`${isDarkMode ? 'bg-black text-gray-200' : 'bg-white text-slate-900'} p-6 w-full overflow-y-auto min-h-screen transition-colors duration-500`}>
       
-
       {/* Header Section */}
       <div className={`${isDarkMode ? 'bg-gray-800 text-white' : 'bg-gray-100 text-slate-900'} p-4 shadow-md rounded-lg mb-6`}>
-        <h1 className="text-3xl font-bold">Welcome, John Doe</h1>
+        <h1 className="text-3xl font-bold">Welcome, {userData.name || 'John Doe'}</h1>
         <p className="mt-2">Here's your personalized skill assessment and feedback from Amile.</p>
       </div>
 
@@ -74,9 +117,9 @@ const SkillAssessment = () => {
       <div className={`${isDarkMode ? 'bg-gray-800 text-gray-200' : 'bg-gray-100 text-slate-900'} mt-6 p-6 shadow-md rounded-lg`}>
         <h2 className="text-2xl font-bold mb-4">Progress on Updating Skills</h2>
         <div className="bg-gray-200 dark:bg-gray-700 rounded-full h-4">
-          <div className="bg-blue-600 h-4 rounded-full" style={{ width: '60%' }}></div>
+          <div className="bg-blue-600 h-4 rounded-full" style={{ width: `${progress.reduce((acc, course) => acc + course.totalProgress, 0) / progress.length || 0}%` }}></div>
         </div>
-        <p className="mt-2">60% completed in updating outdated skills.</p>
+        <p className="mt-2">{progress.length ? `Progress updated based on ${progress.length} courses.` : 'No course progress data available.'}</p>
       </div>
 
       {/* Next Steps Section */}

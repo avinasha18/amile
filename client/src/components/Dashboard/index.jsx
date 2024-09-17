@@ -5,11 +5,9 @@ import Carousel from './Carousel';
 import { Bar, Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, ArcElement, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { useTheme } from '../../context/ThemeContext';
-import { getApplicationStatistics } from '../../hooks/actions';
+import { getApplicationStatistics, getStudentProgress } from '../../hooks/actions';
 import Cookies from 'js-cookie';
-import { CircularProgress } from '@mui/material';
 import DashboardSkeleton from './DashboardSkeleton';
-import { getStudentProgress } from '../../hooks/actions';
 
 ChartJS.register(CategoryScale, LinearScale, ArcElement, BarElement, Title, Tooltip, Legend);
 
@@ -17,6 +15,8 @@ const Dashboard = () => {
   const { isDarkMode } = useTheme();
   const [statistics, setStatistics] = useState(null);
   const [barChartStatistics, setBarChartStatistics] = useState(null);
+  const [error, setError] = useState(null);
+  const [loadingBarData, setLoadingBarData] = useState(true);
 
   useEffect(() => {
     const fetchStatistics = async () => {
@@ -24,27 +24,42 @@ const Dashboard = () => {
         const currentUserId = Cookies.get('userId');
         const data = await getApplicationStatistics(currentUserId);
         setStatistics(data);
-        const barData = await getStudentProgress(currentUserId);
-        setBarChartStatistics(barData);
-        console.log(barData);
       } catch (error) {
         console.error(error);
       }
     };
 
+    const fetchBarChartData = async () => {
+      try {
+        const currentUserId = Cookies.get('userId');
+        const barData = await getStudentProgress(currentUserId);
+        if (barData.message === 'Student progress not found') {
+          setError('No courses enrolled');
+        } else {
+          setBarChartStatistics(barData);
+        }
+      } catch (error) {
+        console.error(error);
+        setError('Error fetching course data');
+      } finally {
+        setLoadingBarData(false);
+      }
+    };
+
     fetchStatistics();
+    fetchBarChartData();
   }, []);
 
-  if (!statistics || !barChartStatistics) {
+  if (!statistics) {
     return <DashboardSkeleton isDarkMode={isDarkMode} />;
   }
 
   // Dynamic data for Bar chart (Course progress)
   const barChartData = {
-    labels: barChartStatistics.map((entry) => entry.courseName), // Course names as labels
+    labels: barChartStatistics ? barChartStatistics.map((entry) => entry.courseName) : [],
     datasets: [
       {
-        data: barChartStatistics.map((entry) => entry.totalProgress), // Progress as bar data
+        data: barChartStatistics ? barChartStatistics.map((entry) => entry.totalProgress) : [],
         backgroundColor: (context) => {
           const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#FF8000', '#00FF80', '#F0EF22'];
           return colors[context.dataIndex % colors.length];
@@ -143,7 +158,15 @@ const Dashboard = () => {
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">Course Progress</h2>
           </div>
-          <Bar data={barChartData} options={barChartOptions} />
+          {loadingBarData ? (
+            <div className="flex justify-center items-center">
+              <CircularProgress />
+            </div>
+          ) : error ? (
+            <div className="text-center text-gray-500">{error}</div>
+          ) : (
+            <Bar data={barChartData} options={barChartOptions} />
+          )}
         </div>
 
         <div className={`rounded-lg shadow-lg p-6 ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>

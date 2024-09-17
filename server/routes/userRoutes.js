@@ -40,6 +40,8 @@ router.post("/assign-mentor", AssignMentor);
 router.post("/forgotpassword", forgotPassword);
 router.post("/upload-profile",CheckAuthorization, upload.single("photo"), uploadStudentProfile);
 router.get("/userdata", CheckAuthorization, getUser);
+router.get("/getuser", getUser);
+
 router.get("/profile/:filename", getProfile);
 router.get('/interests', getInterests);
 router.post("/connectplugin", CheckAuthorization, connectPlugin);

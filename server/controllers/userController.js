@@ -512,17 +512,17 @@ export const getInterests = async (req, res) => {
     res.status(500).send('Server error');
   }
 }
+
 export const getStudentProgress = async (req, res) => {
   const { studentId } = req.params;
-
+console.log('in ps ')
   try {
-    console.log('in get s p');
 
     // Correctly populating the `courseId` within the courses array
     const studentProgress = await CourseProgress.findOne({ studentId }).populate('courses.courseId');
     
     if (!studentProgress) {
-      return res.status(404).json({ message: 'Student progress not found' });
+      return res.json({ message: 'Student progress not found' });
     }
 
     // Mapping the courses to extract the course name and total progress
