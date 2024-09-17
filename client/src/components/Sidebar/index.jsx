@@ -137,12 +137,12 @@ const Sidebar = () => {
             to="/chatbot"
             isCollapsed={isCollapsed}
           />
-          <SidebarItem
+          {/* <SidebarItem
             icon={FaCog}
             label="Settings"
             to="/settings"
             isCollapsed={isCollapsed}
-          />
+          /> */}
         </SidebarSection>
       </div>
     </nav>
