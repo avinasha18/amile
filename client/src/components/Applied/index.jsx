@@ -20,7 +20,6 @@ const AppliedInternships = () => {
   useEffect(() => {
     const userCookie = Cookies.get('userId');
     if (userCookie) {
-     
       setCurrentUser(userCookie);
     } else {
       navigate('/login');
@@ -42,10 +41,6 @@ const AppliedInternships = () => {
     }
   }, [currentUser, navigate]);
 
-
-
-
-
   const startChat = (companyId) => {
     socket.emit('startChat', { companyId, studentId}, (response) => {
         console.log(response);
@@ -56,16 +51,6 @@ const AppliedInternships = () => {
       }
     });
   };
-
-
-
-
-
-
-
-
-
-
 
   return (
     <div className={`p-6 h-full w-full overflow-y-auto ${isDarkMode ? 'bg-black text-white' : 'bg-gray-100 text-gray-900'}`}>
