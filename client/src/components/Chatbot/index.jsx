@@ -27,7 +27,7 @@ const Chatbot = () => {
     setIsTyping(true);
 
     try {
-      const response = await axios.post("http://127.0.0.1:5050/chat", {
+      const response = await axios.post("https://amile-chat-bot-help.onrender.com/chat", {
         question: text,
       });
       const botMessage = { sender: "bot", text: response.data.answer };

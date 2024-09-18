@@ -117,18 +117,59 @@ export const getCompanyApplicantsController = async (req, res) => {
 export const updateApplicationStatusController = async (req, res) => {
   const { applicationId } = req.params;
   const { status } = req.body;
-
+  console.log(status)
   try {
+    const application = await Application.findById(applicationId).populate(
+      "studentId internshipId companyId", 
+      "name email companyName role as jobTitle"
+    );
+
+    if (!application) {
+      return res.json({success:true,message:'Application not found'});
+    }
+
+    if (application.status === status) {
+      return res.json({success:false,message:'Status is already up-to-date'});
+    }
+
+    // Update the application status
     const updatedApplication = await Application.findByIdAndUpdate(
       applicationId,
       { status },
       { new: true }
     );
+     
+    console.log(application);
+    const {
+      studentId: { email, name },
+      internshipId: { role: jobTitle },
+      companyId: { companyName }
+    } = application;
+    
+
+    let subject = '';
+    let emailTemplate = '';
+
+    if (status === 'selected') {
+      subject = 'Congratulations! You have been selected';
+      emailTemplate = HtmlTemplates.appliedInternship(name, jobTitle, companyName);
+    } else if (status === 'rejected') {
+      subject = 'Application Status: Rejected';
+      emailTemplate = HtmlTemplates.rejectedInternship(name, jobTitle, companyName);
+    }
+
+    // Send the email only if there's a matching status
+    if (emailTemplate) {
+      await sendEmail(email, subject, emailTemplate);
+    }
+
+    // Respond with the updated application details
     res.status(200).json(updatedApplication);
   } catch (error) {
     res.status(500).send(`Error: ${error.message}`);
   }
 };
+
 
 
 export const getApplicationStatistics = async (req, res) => {
