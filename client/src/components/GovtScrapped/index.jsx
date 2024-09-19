@@ -18,7 +18,7 @@ const GovtScrappedJobs = () => {
       setLoading(true);
 
       try {
-        const response = await axios.get(`http://127.0.0.1:7000/?page=${currentPage}`);
+        const response = await axios.get(`https://web-scraps.onrender.com/?page=${currentPage}`);
         setJobs(response.data.jobs);
         setFilteredJobs(response.data.jobs);
         setTotalPages(Math.ceil(response.data.total_jobs / response.data.per_page));

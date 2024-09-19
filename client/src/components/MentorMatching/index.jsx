@@ -225,7 +225,7 @@ const MentorMatching = () => {
 
   const handleChooseMentor = async () => {
     try {
-      await axios.post("${api}/assign-mentor", {
+      await axios.post(`${api}/assign-mentor`, {
         studentId,
         mentorId: mentor._id,
       });
