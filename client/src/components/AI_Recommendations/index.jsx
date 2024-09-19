@@ -50,7 +50,7 @@ const AIRecommendations = ({ filters, searchQuery }) => {
           console.log(skills)
       
         const response = await axios.post(
-            `http://127.0.0.1:9000/recommend`,
+            `https://amile-job-recommendations.onrender.com/recommend`,
             { skills : 'html css javascript react node express' }, // Replace this with your actual data structure
             { headers: { 'Content-Type': 'application/json' } }
           );      
