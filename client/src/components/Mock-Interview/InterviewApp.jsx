@@ -121,7 +121,7 @@ function InterviewApp() {
         const newResponse = res.data.audio;
         setResponse(newResponse);
         setGotResponse(true);
-        typeText(newResponse, () => setRecordingState('idle')); // Apply typing effect to the response and then idle state
+        typeText(res.data.response, () => setRecordingState('idle')); // Apply typing effect to the response and then idle state
 
         const newHistory = [
           ...conversationHistory,
@@ -229,7 +229,7 @@ function InterviewApp() {
                 <h2 className="text-xl font-semibold text-gray-800 mb-2">Response</h2>
                 {gotResponse ? (
                   <Typography variant="body1" className="text-gray-700">
-                    {displayText}
+                    {response}
                   </Typography>
                 ) : (
                   <Skeleton animation="wave" height={60} />
