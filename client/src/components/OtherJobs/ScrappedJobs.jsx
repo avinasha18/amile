@@ -19,7 +19,7 @@ const ScrappedJobs = () => {
       setLoading(true);
 
       try {
-        const response = await axios.get(`https://web-scraps.onrender.com/?page=${currentPage}`);
+        const response = await axios.get(`https://web-scraps.onrender.com/geeksgod/?page=${currentPage}`);
         setJobs(response.data.jobs);
         setFilteredJobs(response.data.jobs);
         setTotalPages(Math.ceil(response.data.total_jobs / response.data.per_page));
