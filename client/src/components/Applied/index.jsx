@@ -61,7 +61,7 @@ const AppliedInternships = () => {
         isDarkMode ? "bg-black text-white" : "bg-gray-100 text-gray-900"
       }`}
     >
-      <header className="flex items-center justify-between mb-6">
+      <header className="flex items-center justify-between mb-4 mt-4">
         <h1 className="text-3xl font-bold">Applied Internships</h1>
       </header>
       {currentUser ? (
@@ -143,16 +143,22 @@ const AppliedInternships = () => {
                     key={internship._id}
                     className={`bg-${
                       isDarkMode ? "gray-900" : "white"
-                    } shadow-lg rounded-lg p-6 transition-transform duration-300 ease-in-out transform hover:scale-105`}
+                    } shadow-lg rounded-lg p-6 transition-transform duration-300 ease-in-out transform hover:scale-105 mt-4`}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
                     <div className="flex items-center mb-4">
-                      <img
+                      {/* <img
                         src={internship[0].companyLogo}
                         alt={internship[0].companyName}
                         className="w-12 h-12 mr-4"
-                      />
+                      /> */}
+                       <div
+                        className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center text-white font-bold mr-4"
+                        style={{ backgroundColor: "#000" }} // You can use any color you like
+                      >
+                        {internship[0].companyName.charAt(0)}
+                      </div>
                       <div>
                         <h3 className="text-xl font-semibold mb-1">
                           {internship[0].jobTitle}
