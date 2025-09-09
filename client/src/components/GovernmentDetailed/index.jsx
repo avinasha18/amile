@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useTheme } from '../../context/ThemeContext';
-import { Oval } from 'react-loader-spinner';
 import { FaArrowLeft, FaMapMarkerAlt, FaMoneyBillWave, FaCalendarAlt, FaClock, FaUsers, FaGraduationCap } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
+import { api } from '../../hooks/apis';
 
 const GovernmentDetailedPage = () => {
   const { id } = useParams();
@@ -19,7 +19,7 @@ const GovernmentDetailedPage = () => {
   useEffect(() => {
     const fetchJob = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/government/${id}`);
+        const response = await axios.get(`${api}/government/${id}`);
         setJob(response.data);
         setLoading(false);
       } catch (error) {
@@ -34,7 +34,7 @@ const GovernmentDetailedPage = () => {
   useEffect(() => {
     const checkApplication = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/government/applications/${currentUser.id}`);
+        const response = await axios.get(`${api}/government/applications/${currentUser.id}`);
         console.log(response)
         const appliedJobs = response.data.map(app => app._id);
         setIsApplied(appliedJobs.includes(job?._id));
@@ -50,7 +50,7 @@ const GovernmentDetailedPage = () => {
 
   const handleApply = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/government/apply', {
+      const response = await axios.post(`${api}/government/apply`, {
         internshipId: job._id,
         studentId: currentUser,
         companyId: job.companyId
@@ -77,15 +77,48 @@ const GovernmentDetailedPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Oval
-          height={80}
-          width={80}
-          color={isDarkMode ? '#ffffff' : '#000000'}
-          secondaryColor={isDarkMode ? '#ffffff' : '#000000'}
-          ariaLabel="loading"
-        />
-      </div>
+     
+        <div className={`${isDarkMode ? 'bg-[#0f1011]' : 'bg-white'} rounded-lg shadow-md overflow-hidden animate-pulse w-full`}>
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center">
+                <div className="w-16 h-16 rounded-full bg-gray-300 mr-4"></div>
+                <div>
+                  <div className="h-6 bg-gray-300 rounded w-48 mb-2"></div>
+                  <div className="h-4 bg-gray-300 rounded w-32"></div>
+                </div>
+              </div>
+              <div className="h-6 bg-gray-300 rounded-full w-24"></div>
+            </div>
+            <div className="mb-4">
+              <div className="h-4 bg-gray-300 rounded w-full mb-2"></div>
+              <div className="h-4 bg-gray-300 rounded w-full mb-2"></div>
+              <div className="h-4 bg-gray-300 rounded w-full mb-2"></div>
+              <div className="h-4 bg-gray-300 rounded w-full mb-2"></div>
+            </div>
+            <div className="flex flex-col lg:flex-row gap-8 h-auto">
+              <div className="lg:w-2/3">
+                <div className={`rounded-lg p-6 mb-8 shadow-lg ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+                  <div className="h-6 bg-gray-300 rounded w-48 mb-4"></div>
+                  <div className="h-4 bg-gray-300 rounded w-full mb-2"></div>
+                  <div className="h-4 bg-gray-300 rounded w-full mb-2"></div>
+                  <div className="h-4 bg-gray-300 rounded w-full mb-2"></div>
+                  <div className="h-4 bg-gray-300 rounded w-full mb-2"></div>
+                </div>
+              </div>
+              <div className="lg:w-1/3">
+                <div className={`rounded-lg p-6 mb-8 shadow-lg sticky top-8 ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+                  <div className="h-6 bg-gray-300 rounded w-48 mb-4"></div>
+                  <div className="h-4 bg-gray-300 rounded w-full mb-2"></div>
+                  <div className="h-4 bg-gray-300 rounded w-full mb-2"></div>
+                  <div className="h-4 bg-gray-300 rounded w-full mb-2"></div>
+                  <div className="h-10 bg-gray-300 rounded w-full mt-6"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      
     );
   }
 

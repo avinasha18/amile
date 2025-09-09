@@ -7,6 +7,7 @@ import { logout } from "../../services/redux/AuthSlice";
 import { Button } from "@mui/material";
 import "./index.css";
 import { setAuthToken } from "../../hooks/golbalAuth";
+import { api } from "../../hooks/apis";
 
 const Navbar = ({ isLogin }) => {
   const dispatch = useDispatch();
@@ -57,6 +58,8 @@ const Navbar = ({ isLogin }) => {
           <NavItem to="/dashboard">Dashboard</NavItem>
           <NavItem to="/">Jobs</NavItem>
           <NavItem to="/messages">Messages</NavItem>
+          <NavItem to="/courses">Courses</NavItem>
+          <NavItem to="/roadmap">Roadmaps</NavItem>
         </nav>
 
         <div className="flex items-center space-x-4">

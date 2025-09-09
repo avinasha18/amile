@@ -1,6 +1,8 @@
 import { Route, Routes, Navigate, useLocation } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth.jsx";
 
-
+import MyCourses from "../Courses/MyCourses";
+import EnrolledCourses from "../Courses/EnrolledCourses";
 import Navbar from "../Navbar";
 import Sidebar from "../Sidebar";
 import JobsPage from "../Jobs";
@@ -21,12 +23,40 @@ import AIRecommendations from "../AI_Recommendations";
 import Courses from "../Courses";
 import Course from "../Courses/Course";
 import Chatbot from "../Chatbot";
-import MentorChats from "../MentorChats";
-
+import ResumeBuilder from "../ResumeBuilder";
+import MentorMatching from "../MentorMatching";
+import ScrappedJobs  from "../OtherJobs/ScrappedJobs";
+import ScrappedDetailedPage from "../OtherJobs/DetailedCard";
+import GovtScrappedJobs from "../GovtScrapped";
+import SkillAssessment from "../Feedback";
+import AiBot from "../AIBot";
+import Roadmap from "../Roadmap";
+import RoadmapPage from "../Roadmap/RoadmapPage";
 export const RouteManagement = ({ islogin }) => {
   const location = useLocation(window.location);
+  const { isAuthenticated, isInitialized } = useAuth();
+
+  // Debug logging
+  console.log('RouteManagement - Auth State:', {
+    isAuthenticated,
+    isInitialized,
+    currentPath: location.pathname
+  });
 
   const ProtectedRoute = ({ isLogin, children, nextPath }) => {
+    // Show loading while auth is being initialized
+    if (!isInitialized) {
+      return (
+        <div className="flex items-center justify-center min-h-screen bg-gray-900">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-4 text-gray-300">Loading...</p>
+          </div>
+        </div>
+      );
+    }
+
+    // Only redirect to login if auth is initialized and user is not authenticated
     if (!isLogin) {
       return <Navigate to={`/login?nextpath=${nextPath}`} replace />;
     }
@@ -35,41 +65,67 @@ export const RouteManagement = ({ islogin }) => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-900 text-gray-100">
-      <Navbar isLogin={islogin} />
+    <div className="flex flex-col h-screen bg-gray-900 text-gray-100 w-full">
+      <Navbar isLogin={isAuthenticated} />
       <div className={`h-screen flex flex-1 overflow-hidden no-scrollbar`}>
-        <Sidebar isLogin={islogin} />
+        <Sidebar isLogin={isAuthenticated} />
         <Routes>
           {/* <Route path="/" element={<JobsPage />} />
           <Route path="/dashboard" element={<Dashboard />} /> */}
           <Route
             path="/messages"
             element={
-              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+              <ProtectedRoute isLogin={isAuthenticated} nextPath={location.pathname}>
                 <Messages />
               </ProtectedRoute>
             }
           />
-           <Route
-            path="/mentorchats"
+           {/* <Route
+            path="/others"
             element={
-              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
-                <MentorChats />
+              <ProtectedRoute isLogin={isAuthenticated} nextPath={location.pathname}>
+                <ScrappedJobs />
               </ProtectedRoute>
             }
-          />
+          /> */}
+
+          {/* <Route
+          path="/scrappedDetailed/:id"
+          element={
+              <ProtectedRoute isLogin={isAuthenticated} nextPath={location.pathname}>
+                <ScrappedDetailedPage />
+              </ProtectedRoute>
+            }
+          /> */}
+          {/* <Route
+          path="/govt"
+          element={
+              <ProtectedRoute isLogin={isAuthenticated} nextPath={location.pathname}>
+                <GovtScrappedJobs />
+              </ProtectedRoute>
+            }
+          /> */}
+  
             <Route
             path="/"
             element={
-              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
-                <JobsPage />
+              <ProtectedRoute isLogin={isAuthenticated} nextPath={location.pathname}>
+                <JobsPage  />
               </ProtectedRoute>
             }
           />
-            <Route
+          <Route
+            path="/yourai"
+            element={
+              <ProtectedRoute isLogin={isAuthenticated} nextPath={location.pathname}>
+                <SkillAssessment  />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/dashboard"
             element={
-              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+              <ProtectedRoute isLogin={isAuthenticated} nextPath={location.pathname}>
                 <Dashboard />
               </ProtectedRoute>
             }
@@ -77,97 +133,118 @@ export const RouteManagement = ({ islogin }) => {
           <Route
             path="/jobdetail"
             element={
-              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+              <ProtectedRoute isLogin={isAuthenticated} nextPath={location.pathname}>
                 <JobDetailPage />
               </ProtectedRoute>
             }
           />
+          
           <Route
             path="/profile"
             element={
-              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+              <ProtectedRoute isLogin={isAuthenticated} nextPath={location.pathname}>
                 <ProfilePage />
               </ProtectedRoute>
             }
           />
-              <Route
+            <Route
+            path="/mentormatching"
+            element={
+              <ProtectedRoute isLogin={isAuthenticated} nextPath={location.pathname}>
+                <MentorMatching />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/myreferals"
             element={
-              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+              <ProtectedRoute isLogin={isAuthenticated} nextPath={location.pathname}>
                 <MyReferals />
               </ProtectedRoute>
             }
           />
 
-           <Route
+          <Route
             path="/applied"
             element={
-              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+              <ProtectedRoute isLogin={isAuthenticated} nextPath={location.pathname}>
                 <AppliedInternships />
               </ProtectedRoute>
             }
           />
-             <Route
+          <Route
             path="/government"
             element={
-              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+              <ProtectedRoute isLogin={isAuthenticated} nextPath={location.pathname}>
                 <GovernmentJobsPage />
               </ProtectedRoute>
             }
           />
-              <Route
+          <Route
             path="/governmentDetailed/:id"
             element={
-              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+              <ProtectedRoute isLogin={isAuthenticated} nextPath={location.pathname}>
                 <GovernmentDetailedPage />
               </ProtectedRoute>
             }
           />
-           <Route
+          <Route
             path="/aimock"
             element={
-              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+              <ProtectedRoute isLogin={isAuthenticated} nextPath={location.pathname}>
                 <InterviewApp />
               </ProtectedRoute>
             }
           />
-           <Route
+          <Route
             path="/airecommendations"
             element={
-              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+              <ProtectedRoute isLogin={isAuthenticated} nextPath={location.pathname}>
                 <AIRecommendations />
               </ProtectedRoute>
             }
           />
-               <Route
+          <Route
             path="/feedback"
             element={
-              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+              <ProtectedRoute isLogin={isAuthenticated} nextPath={location.pathname}>
                 <Feedback />
               </ProtectedRoute>
             }
           />
-           <Route
+          <Route
             path="/chatbot"
             element={
-              <ProtectedRoute isLogin={islogin} nextPath={location.pathname}>
+              <ProtectedRoute isLogin={isAuthenticated} nextPath={location.pathname}>
                 <Chatbot />
               </ProtectedRoute>
             }
           />
-               <Route
+          <Route
             path="/*"
             element={
-              <PageNotFound/>
+              <PageNotFound />
             }
           />
           <Route path="/companyChat" element={< CompanyChatStart />} />
+          <Route path="/resumebuilder" element={<ResumeBuilder />} />
           <Route path="/compiler" element={< Compiler />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/course/:id" element={<Course />} />
-
+          <Route path="/my-courses" element={<MyCourses />} />
+          <Route
+            path="/course/:id/learn"
+            element={
+              <ProtectedRoute isLogin={isAuthenticated} nextPath={location.pathname}>
+                <EnrolledCourses /> {/* or the component you want to render for this route */}
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/roadmap" element={<Roadmap />} />
+          <Route path="/roadmap/:id" element={<RoadmapPage />} />
         </Routes>
       </div>
+      <AiBot/>
     </div>
   );
 };

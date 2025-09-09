@@ -12,6 +12,7 @@ export const authenticateToken = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
     req.companyId = decoded.id;
+    console.log(decoded.id)
     next();
   } catch (error) {
     res.status(400).json({ message: 'Invalid token' });

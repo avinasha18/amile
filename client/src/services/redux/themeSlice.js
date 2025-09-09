@@ -1,8 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit';
 import Cookies from 'js-cookie'; 
 
+const getInitialTheme = () => {
+  try {
+    const theme = Cookies.get('theme');
+    return theme === 'true';
+  } catch (error) {
+    console.error('Error reading theme from cookies:', error);
+    return false;
+  }
+};
+
 const initialState = {
-  isDarkMode: Cookies.get('theme') === 'true' ? true : false, 
+  isDarkMode: getInitialTheme(), 
 };
 
 const themeSlice = createSlice({
@@ -11,7 +21,11 @@ const themeSlice = createSlice({
   reducers: {
     toggleTheme(state) {
       state.isDarkMode = !state.isDarkMode;
-      Cookies.set('theme', state.isDarkMode, { expires: 7 }); 
+      try {
+        Cookies.set('theme', state.isDarkMode, { expires: 7 }); 
+      } catch (error) {
+        console.error('Error setting theme cookie:', error);
+      }
     },
   },
 });

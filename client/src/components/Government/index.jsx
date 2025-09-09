@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useTheme } from '../../context/ThemeContext';
-import { Oval } from 'react-loader-spinner';
 import { motion } from 'framer-motion';
 import GovtJobCard from '../GovernmentJobCard';
 import Cookies from 'js-cookie'; // Import Cookies for managing user data
+import { api } from '../../hooks/apis';
 
 const GovernmentJobsPage = () => {
   const [jobs, setJobs] = useState([]);
@@ -28,8 +28,10 @@ const GovernmentJobsPage = () => {
       }
 
       try {
-        const response = await axios.get(`http://localhost:3000/government?userId=${userId}`);
+        const response = await axios.get(`${api}/government?userId=${userId}`);
+
         setJobs(response.data);
+        console.log(response.data)
         setFilteredJobs(response.data);
         setLoading(false);
       } catch (error) {

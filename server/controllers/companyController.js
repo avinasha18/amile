@@ -16,7 +16,34 @@ const createToken = (company) => {
 // Sign up a new company
 export const signupCompany = async (req, res) => {
   try {
-    console.log(req.body);
+    console.log('Company registration request:', req.body);
+    
+    // Check if company already exists
+    const existingCompany = await Company.findOne({ 
+      $or: [
+        { email: req.body.email },
+        { crnNumber: req.body.crnNumber }
+      ]
+    });
+    
+    if (existingCompany) {
+      if (existingCompany.email === req.body.email) {
+        return res.status(400).json({ 
+          success: false, 
+          message: 'Company with this email already exists' 
+        });
+      }
+      if (existingCompany.crnNumber === req.body.crnNumber) {
+        return res.status(400).json({ 
+          success: false, 
+          message: 'Company with this CRN number already exists' 
+        });
+      }
+    }
+
+    // Generate verification token
+    const verificationToken = generateUniqueToken();
+    
     const companyData = {
       ...req.body,
       // Ensure that nested objects are correctly assigned
@@ -28,16 +55,58 @@ export const signupCompany = async (req, res) => {
         country: req.body.address.country
       },
       contactPerson: req.body.contactPerson,
-      branches: req.body.branches || []
+      branches: req.body.branches || [],
+      verificationToken: verificationToken,
+      status: 'pending'
     };
 
-    // Validate companyData before saving
+    // Create and save company
     const company = new Company(companyData);
     await company.save();
-    res.status(201).json({ success: true, message: 'Company registered successfully.' });
+    
+    console.log('Company saved successfully:', company._id);
+
+    // Send verification email
+    try {
+      const subject = "Verify Your Company Account - AMILE";
+      const emailSent = await sendEmail(
+        company.email, 
+        subject, 
+        HtmlTemplates.CompanyAccountVerification(verificationToken)
+      );
+      
+      console.log('Verification email sent:', emailSent);
+      
+      res.status(201).json({ 
+        success: true, 
+        message: 'Company registered successfully. Please check your email to verify your account.',
+        companyId: company._id
+      });
+    } catch (emailError) {
+      console.error('Email sending failed:', emailError);
+      // Still return success but mention email issue
+      res.status(201).json({ 
+        success: true, 
+        message: 'Company registered successfully, but verification email could not be sent. Please contact support.',
+        companyId: company._id
+      });
+    }
   } catch (error) {
-    console.error(error.message);
-    res.status(400).json({ success: false, message: error.message });
+    console.error('Company registration error:', error);
+    
+    // Handle specific MongoDB errors
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyPattern)[0];
+      return res.status(400).json({ 
+        success: false, 
+        message: `Company with this ${field} already exists` 
+      });
+    }
+    
+    res.status(400).json({ 
+      success: false, 
+      message: error.message || 'Failed to register company' 
+    });
   }
 };
 
@@ -45,33 +114,106 @@ export const signupCompany = async (req, res) => {
 export const verifyEmail = async (req, res) => {
   const { token } = req.query;
   try {
+    console.log('Email verification request for token:', token);
+    
+    if (!token) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Verification token is required' 
+      });
+    }
+
     const company = await Company.findOne({ verificationToken: token });
-    if (!company) return res.json({ success: false, message: 'Invalid or expired token' });
+    if (!company) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Invalid or expired verification token' 
+      });
+    }
+
+    if (company.status === 'active') {
+      return res.status(200).json({ 
+        success: true, 
+        message: 'Email already verified' 
+      });
+    }
 
     company.status = 'active';
     company.verificationToken = undefined;
     await company.save();
-    res.json({ success: true, message: 'Email verified successfully' });
+    
+    console.log('Company email verified successfully:', company._id);
+    
+    res.status(200).json({ 
+      success: true, 
+      message: 'Email verified successfully. You can now login to your account.',
+      companyId: company._id
+    });
   } catch (error) {
-    res.json({ success: false, message: error.message });
+    console.error('Email verification error:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Internal server error during verification' 
+    });
   }
 };
 
 // Login an existing company
 export const loginCompany = async (req, res) => {
   const { email, password } = req.body;
+
   try {
+    console.log('Company login attempt for email:', email);
+    
     const company = await Company.findOne({ email });
-    if (!company || !(await company.isPasswordValid(password))) {
-      throw new Error('Incorrect email or password');
+    if (!company) {
+      return res.status(401).json({ 
+        success: false, 
+        message: 'Company not found with this email' 
+      });
     }
+
+    const isPasswordValid = await company.isPasswordValid(password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ 
+        success: false, 
+        message: 'Incorrect password' 
+      });
+    }
+
     if (company.status !== 'active') {
-      throw new Error('Account is not verified. Please check your email.');
+      return res.status(403).json({ 
+        success: false, 
+        message: 'Account is not verified. Please check your email and verify your account.',
+        needsVerification: true
+      });
     }
+
     const token = createToken(company);
-    res.status(200).json({ success: true, token, company });
+    
+    // Remove sensitive data from response
+    const companyResponse = {
+      _id: company._id,
+      companyName: company.companyName,
+      email: company.email,
+      status: company.status,
+      dateOfRegistration: company.dateOfRegistration
+    };
+    
+    console.log('Company login successful:', company._id);
+    
+    res.status(200).json({ 
+      success: true, 
+      message: 'Login successful',
+      token, 
+      company: companyResponse 
+    });
   } catch (error) {
-    res.status(400).json({ success: false, message: error.message });
+    console.error('Company login error:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Internal server error during login' 
+    });
   }
 };
 
@@ -178,9 +320,12 @@ export const updateCompanyDetails = async (req, res) => {
 
 // Get the authenticated company details
 export const getCompanyDetails = async (req, res) => {
-  const { companyId } = req.body; // Ensure `companyId` is sent in the request body
+  const { companyId } = req.params; 
+  // Ensure `companyId` is sent in the request body
+  console.log(companyId)
   try {
     const company = await Company.findById(companyId);
+    console.log(company)
     if (!company) {
       return res.status(404).json({ success: false, message: 'Company not found' });
     }

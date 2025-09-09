@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom"; // Import useLocation
 import { FaUser, FaClipboardList, FaEnvelope, FaSearch, FaBrain, FaBook, FaCog  , FaRobot , FaUserFriends
 } from "react-icons/fa";
-import { AiOutlineRobot } from 'react-icons/ai';
+
+import { AiOutlineRobot,AiOutlineEllipsis } from 'react-icons/ai';
 import { SiCompilerexplorer } from "react-icons/si";
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -12,6 +13,7 @@ import { useTheme } from "../../context/ThemeContext";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar } from "../../services/redux/sideBarToggleSlice";
 import { IconButton } from "@mui/material";
+import { TbFileCv } from "react-icons/tb";
 
 const Sidebar = () => {
   const { isDarkMode } = useTheme();
@@ -34,7 +36,7 @@ const Sidebar = () => {
 
   return (
     <nav
-      className={`overflow-hidden ${
+      className={`overflow-y-scroll no-scrollbar ${
         isDarkMode ? "bg-black text-gray-100" : "bg-white text-gray-800"
       } ${
         isCollapsed ? "w-20" : "w-64"
@@ -43,18 +45,17 @@ const Sidebar = () => {
       } transition-all duration-300`}
     >
       <div className={isCollapsed ? "p-2" : "p-4"}>
-        <div className={`flex ${!isCollapsed ? "justify-between" : "justify-center"}`}>
-          {!isCollapsed && <h1 className="font-bold">User</h1>}
-          <button
+        <div className={`flex align-middle ${!isCollapsed ? "justify-between" : "justify-center"}`}>
+          {!isCollapsed && <h1 className="font-bold align-middle">User</h1>}
+          <IconButton 
             onClick={switchSidebar}
-            className={`focus:outline-none mb-4 ${
+            style={{ color: isDarkMode ? "#fff" : "#000" }}
+            className={`focus:outline-none ${
               isDarkMode ? "text-gray-100" : "text-gray-800"
             }`}
           >
-            <IconButton style={{ color: isDarkMode ? "#fff" : "#000" }}>
-              {isCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-            </IconButton>
-          </button>
+            {isCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+          </IconButton>
         </div>
         <SidebarSection isCollapsed={isCollapsed}>
           <SidebarItem
@@ -65,13 +66,6 @@ const Sidebar = () => {
             isCollapsed={isCollapsed}
           />
           <SidebarItem
-            icon={FaEnvelope}
-            label="Messages"
-            isDarkMode={isDarkMode}
-            to="/messages"
-            isCollapsed={isCollapsed}
-          />
-          <SidebarItem
             icon={FaClipboardList}
             label="Applied"
             isDarkMode={isDarkMode}
@@ -79,10 +73,10 @@ const Sidebar = () => {
             isCollapsed={isCollapsed}
           />
            <SidebarItem
-            icon={FaUserFriends}
-            label="Mentor Chat"
+            icon={TbFileCv}
+            label="Resume Builder"
             isDarkMode={isDarkMode}
-            to="/mentorchats"
+            to="/resumebuilder"
             isCollapsed={isCollapsed}
           />
         </SidebarSection>
@@ -96,20 +90,20 @@ const Sidebar = () => {
             isCollapsed={isCollapsed}
             gradient
           />
-          <SidebarItem
-            icon={FaSearch}
-            isDarkMode={isDarkMode}
-            label="Find Internships"
-            to="/"
-            isCollapsed={isCollapsed}
-          />
-          <SidebarItem
+          {/* <SidebarItem
             icon={GoVerified}
             isDarkMode={isDarkMode}
             label="Public Internships"
-            to="/government"
+            to="/govt"
             isCollapsed={isCollapsed}
           />
+           <SidebarItem
+            icon={GoVerified}
+            isDarkMode={isDarkMode}
+            label="Other Internships"
+            to="/others"
+            isCollapsed={isCollapsed}
+          /> */}
 
           <SidebarItem
             icon={FaBrain}
@@ -130,8 +124,8 @@ const Sidebar = () => {
         <SidebarSection title="Courses" isCollapsed={isCollapsed}>
           <SidebarItem
             icon={FaBook}
-            label="Courses"
-            to="/courses"
+            label="Your Courses"
+            to="/my-courses"
             isCollapsed={isCollapsed}
           />
         </SidebarSection>
@@ -142,12 +136,12 @@ const Sidebar = () => {
             to="/chatbot"
             isCollapsed={isCollapsed}
           />
-          <SidebarItem
+          {/* <SidebarItem
             icon={FaCog}
             label="Settings"
             to="/settings"
             isCollapsed={isCollapsed}
-          />
+          /> */}
         </SidebarSection>
       </div>
     </nav>
@@ -155,9 +149,9 @@ const Sidebar = () => {
 };
 
 const SidebarSection = ({ title, children, isCollapsed }) => (
-  <div className="mb-6">
+  <div className="mb-5">
     {!isCollapsed && (
-      <h6 className="text-gray-250 text-sm font-semibold mb-2">{title}</h6>
+      <h6 className="text-gray-250 text-sm font-semibold mb-0">{title}</h6>
     )}
     <ul>{children}</ul>
   </div>

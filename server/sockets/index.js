@@ -2,13 +2,11 @@ import { Server } from 'socket.io';
 import chatHandlers from './chatHandlers.js';
 // import userHandlers from './userHandlers.js';
 
-const initializeSocket = (server) => {
-  const io = new Server(server);
+const initializeSocket = (io, userSocketMap) => {
 
   io.on('connection', (socket) => {
     console.log('A user connected:', socket.id);
-
-    chatHandlers(io, socket);
+    chatHandlers(io, socket, userSocketMap);
 
     // userHandlers(io, socket);
 

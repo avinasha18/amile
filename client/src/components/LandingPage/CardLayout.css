@@ -1,0 +1,103 @@
+.card-layout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.card-container {
+    position: relative;
+    width: 800px;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card {
+    width: 300px;
+    height: 200px;
+    padding: 20px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-right: -80px; /* Adjust margin if needed */
+    cursor: pointer;
+    position: relative;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+}
+
+.card.active {
+    width: 400px;
+    height: 250px;
+    z-index: 10;
+    opacity: 1;
+}
+
+.card.inactive {
+    opacity: 0.3; /* Reduced opacity for inactive cards */
+}
+
+.card1 {
+    background: linear-gradient(135deg, #8e2de2, #4a00e0); /* Violet to deep purple gradient */
+}
+
+.card2 {
+    background: linear-gradient(135deg, #ff0081, #ff8c00); /* Pink to orange gradient */
+}
+
+.card3 {
+    background: linear-gradient(135deg, #00c6ff, #0072ff); /* Green-blue gradient */
+}
+
+.card4 {
+    background: linear-gradient(135deg, #d53369, #cbad6c); /* Vibrant pink to warm beige gradient */
+}
+
+.card h3 {
+    font-weight: bold;
+}
+
+.card svg {
+    color: #fff; /* Default icon color */
+}
+
+.card.active svg {
+    color: #ffeb3b; /* Highlight color for the active card */
+    transform: scale(1.2); /* Slightly larger icon on active card */
+}
+
+.arrow-button {
+    background:transparent;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    cursor: pointer;
+    transition: background 0.3s;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 20;
+}
+
+.arrow-button:hover {
+    background: #1a5fb5;
+}
+
+.arrow-prev {
+    left: 150px; /* Position the previous arrow to the left of the container */
+}
+
+.arrow-next {
+    right: 90px; /* Position the next arrow to the right of the container */
+}

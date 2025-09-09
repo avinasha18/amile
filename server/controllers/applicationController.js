@@ -91,12 +91,13 @@ export const getStudentApplicationsController = async (req, res) => {
 
     res.status(200).json({ appliedInternshipsWithDetails, govtAppliedInternshipsWithDetails });
   } catch (error) {
+    console.log(error.message)
     res.status(500).send(`Error: ${error.message}`);
   }
 };
 
 export const getCompanyApplicantsController = async (req, res) => {
-  const { companyId } = req.params;
+  const { companyId } = req;
 
   try {
     const applications = await Application.find({

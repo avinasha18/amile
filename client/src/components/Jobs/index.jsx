@@ -6,7 +6,6 @@ const JobsPage = () => {
   const { isDarkMode } = useTheme();
   const [filters, setFilters] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
-
   const handleApplyFilters = (newFilters) => {
     setFilters(newFilters);
   };

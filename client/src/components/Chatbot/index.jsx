@@ -12,10 +12,10 @@ const Chatbot = () => {
   const { isDarkMode } = useTheme();
   const userName = Cookies.get('user')
   const suggestedPrompts = [
-    "Suggest beautiful places to see on an upcoming road trip",
-    "What are tips to improve public speaking skills?",
-    "Help me write an out-of-office email",
-    "Teach me the concept of game theory in simple terms",
+    "who developed amile ?",
+    "How does AMILE personalize the interview experience?",
+    "how can i apply for jobs?",
+    "Does AMILE support text, voice, and video interactions?",
   ];
 
   const sendMessage = async (text) => {
@@ -27,7 +27,7 @@ const Chatbot = () => {
     setIsTyping(true);
 
     try {
-      const response = await axios.post("http://127.0.0.1:5000/chat", {
+      const response = await axios.post("http://127.0.0.1:5050/chat", {
         question: text,
       });
       const botMessage = { sender: "bot", text: response.data.answer };

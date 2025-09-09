@@ -11,15 +11,16 @@ import {
   resendVerification
 } from '../controllers/companyController.js';
 import { authenticateToken } from '../middleware/companyAuthMiddleware.js';
+import { validateCompanyRegistration } from '../middleware/companyValidation.js';
 import { createInternshipController, getAllInternshipsByCompany } from '../controllers/internshipController.js';
 import { getCompanyApplicantsController, updateApplicationStatusController } from '../controllers/applicationController.js';
 
 const router = express.Router();
 
 // Signup route
-router.post('/register', signupCompany);
+router.post('/register', validateCompanyRegistration, signupCompany);
 
-router.post('/verifyaccount', verifyEmail);
+router.get('/verifyaccount', verifyEmail);
 router.post('/resendverification', resendVerification);
 
 
@@ -38,12 +39,10 @@ router.get('/applications',authenticateToken, getCompanyApplicantsController);
 router.post('/applications/:applicationId',authenticateToken, updateApplicationStatusController);
 
 
-router.post('/getcompanydata',getCompanyDetails)
-
-
+router.get('/getcompanydata/:companyId',getCompanyDetails)
 // Protected routes
 router.get('/search', authenticateToken, findCompaniesByName);
 router.put('/update', authenticateToken, updateCompanyDetails);
-router.get('/me', authenticateToken, getCompanyDetails);
+router.get('/me/:companyId', authenticateToken, getCompanyDetails);
 
 export default router;

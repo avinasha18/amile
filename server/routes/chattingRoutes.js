@@ -42,7 +42,20 @@ export default (io) => {
     }
   });
   
-
+  router.get('/mentor/:mentorId/student/:studentId', async (req, res) => {
+    const { mentorId, studentId } = req.params;
+    try {
+      let chat = await MentorChat.findOne({ mentorId, studentId });
+      if (!chat) {
+        chat = new MentorChat({ mentorId, studentId, messages: [] });
+        await chat.save();
+      }
+      res.json(chat);
+    } catch (err) {
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+  
   router.get('/company/:companyId', async (req, res) => {
     try {
       const chats = await Chat.find({ companyId: req.params.companyId });

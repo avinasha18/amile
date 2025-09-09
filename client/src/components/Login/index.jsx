@@ -4,13 +4,14 @@ import "react-toastify/dist/ReactToastify.css";
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { FaUser, FaEye, FaEyeSlash } from "react-icons/fa"; // Importing React Icons
+import { FaUser, FaEye, FaEyeSlash } from "react-icons/fa";
 import { styled, ThemeProvider, createTheme } from "@mui/material/styles";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess } from "../../services/redux/AuthSlice";
 import Cookies from "js-cookie";
 import { Actions } from "../../hooks/actions";
+import ButtonLoader from "../Loaders/ButtonLoader";
 
 const useStyles = styled((theme) => ({
   root: {
@@ -71,14 +72,18 @@ const Login = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [userType, setUserType] = useState("student"); // Initial value set to "student"
+  const [userType, setUserType] = useState("student");
   const [rememberMe, setRememberMe] = useState(false);
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const nav = useNavigate();
   const dispatch = useDispatch();
-  const [params] = useSearchParams();
+  const [searchParams] = useSearchParams();
+  const nextPath = searchParams.get('nextpath') || '/mentormatching';
+  
+  console.log('Login component - nextPath:', nextPath);
 
   const validateForm = () => {
     let isValid = true;
@@ -106,28 +111,38 @@ const Login = () => {
       return;
     }
 
+    setIsLoading(true);
     try {
       const response = await Actions.Login({
         username: email.trim(),
         password,
-        userType, // Include the selected userType in the request
+        userType,
       });
+
       if (response.data.success) {
         const cookieExpires = rememberMe ? 10 : 1;
+        
+        console.log('Login response data:', response.data.data);
+        console.log('Dispatching loginSuccess with:', {
+          token: response.data.data.token ? 'present' : 'missing',
+          user: response.data.data.user,
+          userId: response.data.data.userId,
+          cookieExpires
+        });
+        
         dispatch(
           loginSuccess({
-            token: response.data.token,
-            user: response.data.user,
+            token: response.data.data.token,
+            user: response.data.data.user,
+            userId: response.data.data.userId,
             cookieExpires,
           })
         );
 
-        const isnext = params.get("nextpath");
-
         if (userType === "mentor") {
-          nav("/mentor/", { replace: true });
+          window.location.href = "http://localhost:5174/mentor/";
         } else {
-          nav("/", { replace: true });
+          nav(nextPath, { replace: true });
         }
 
         toast.success("Login successful");
@@ -135,8 +150,14 @@ const Login = () => {
         toast.error(response.data.message || "Login failed");
       }
     } catch (err) {
-      toast.error("An error occurred. Please try again.");
+      if (err.response?.data?.message) {
+        toast.error(err.response.data.message);
+      } else {
+        toast.error("An error occurred. Please try again.");
+      }
       console.error(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -155,37 +176,37 @@ const Login = () => {
                   aria-labelledby="demo-row-radio-buttons-group-label"
                   name="row-radio-buttons-group"
                   className="mb-3"
-                  value={userType} // Bind to userType state
-                  onChange={(e) => setUserType(e.target.value)} // Update userType state on change
+                  value={userType}
+                  onChange={(e) => setUserType(e.target.value)}
                 >
                   <FormControlLabel
                     value="student"
                     control={
                       <Radio
                         sx={{
-                          color: 'black', // Unchecked color
+                          color: 'black',
                           '&.Mui-checked': {
-                            color: '#1976d2', // Checked color (blue)
+                            color: '#1976d2',
                           },
                         }}
                       />
                     }
                     label="Student"
                   />
-                  <FormControlLabel
+                  {/* <FormControlLabel
                     value="mentor"
                     control={
                       <Radio
                         sx={{
-                          color: 'black', // Unchecked color
+                          color: 'black',
                           '&.Mui-checked': {
-                            color: '#1976d2', // Checked color (blue)
+                            color: '#1976d2',
                           },
                         }}
                       />
                     }
                     label="Mentor"
-                  />
+                  /> */}
                 </RadioGroup>
                 <label className="text-gray-800 text-sm mb-2 block">
                   User name
@@ -195,6 +216,7 @@ const Login = () => {
                     name="username"
                     type="text"
                     required
+                    autoComplete="username"
                     className={`w-full text-${isDarkMode ? 'black' : 'gray-800'} text-sm border border-gray-300 px-4 py-3 rounded-md outline-blue-600`}
                     placeholder="Enter user name"
                     value={email}
@@ -213,6 +235,7 @@ const Login = () => {
                     name="password"
                     type={showPassword ? "text" : "password"}
                     required
+                    autoComplete="current-password"
                     className={`w-full text-${isDarkMode ? 'black' : 'gray'} text-sm border border-gray-300 px-4 py-3 rounded-md outline-blue-600`}
                     placeholder="Enter password"
                     value={password}
@@ -258,9 +281,10 @@ const Login = () => {
               <div className="!mt-8">
                 <button
                   type="submit"
-                  className="w-full py-3 px-4 text-sm tracking-wide rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none"
+                  disabled={isLoading}
+                  className="w-full py-3 px-4 text-sm tracking-wide rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                 >
-                  Sign in
+                  {isLoading ? <ButtonLoader size={20} color="inherit" /> : "Sign in"}
                 </button>
               </div>
               <p className={`text-${isDarkMode ? 'white' : 'gray-800'} text-sm !mt-8 text-center`}>
@@ -275,7 +299,18 @@ const Login = () => {
             </form>
           </div>
         </div>
-        <ToastContainer position="bottom-center" autoClose={5000} />
+        <ToastContainer 
+          position="bottom-center" 
+          autoClose={5000}
+          theme="light"
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
       </div>
     </ThemeProvider>
   );

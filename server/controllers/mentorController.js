@@ -1,21 +1,39 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken"
-import { AccountVerification ,VerifyUserAccountwithToken} from "./userController.js";
 import {
-    findUserByUsername, Mentor,
+    AccountVerification,
+    VerifyUserAccountwithToken,
+} from "./userController.js";
+import {
+    findUserByUsername,
+    Mentor,
     addUserVerificationToken,
     findTokenByUsername,
     removeUserVerificationToken,
-    
-
-} from '../models/auth.model.js';
-import { findByToken , updateAccountStatus,removeUserVerificationTokenbyToken } from "../models/auth.model.js";
+    Student,
+} from "../models/auth.model.js";
+import {
+    findByToken,
+    updateAccountStatus,
+    removeUserVerificationTokenbyToken,
+} from "../models/auth.model.js";
 import { generateUniqueToken } from "../services/uniqueTokenGeneration.js";
-import Company from '../models/company.model.js'
+import Company from "../models/company.model.js";
 import { HtmlTemplates } from "../services/htmlTemplates.js";
 import { sendEmail } from "../services/mailServices.js";
-const JWT_SECRET = process.env.JWT_SECRET;
+import { 
+  handleMongoError, 
+  createErrorResponse, 
+  createSuccessResponse,
+  handleAsyncError 
+} from "../utils/errorHandler.js";
+import { 
+  validateRegistrationData, 
+  validateLoginData, 
+  sanitizeInput 
+} from "../utils/validation.js";
 
+const JWT_SECRET = process.env.JWT_SECRET;
 
 export const updateUserMentor = async (userData) => {
     const {
@@ -44,7 +62,7 @@ export const updateUserMentor = async (userData) => {
     );
 
     return updatedUser;
-}
+};
 export const createMentor = async (mentorData) => {
     const {
         email,
@@ -78,91 +96,125 @@ export const createMentor = async (mentorData) => {
 
 export const VerifyMentorAccountwithToken = async (req, res) => {
     const { token } = req.query;
-    console.log('in mentor verificaion')
-    console.log(token)
+    console.log("in mentor verificaion");
+    console.log(token);
 
     try {
-      const user = await findByToken(token);
-  
-      if (user) {
-        const updateResult = await updateAccountStatus(user.username,'mentor');
-  
-        if (updateResult.success) {
-          await removeUserVerificationToken(user.username);
-  
-          return res.json({
-            success: true,
-            message: "Account verified successfully",
-          });
+        const user = await findByToken(token);
+
+        if (user) {
+            const updateResult = await updateAccountStatus(user.username, 'mentor');
+
+            if (updateResult.success) {
+                await removeUserVerificationToken(user.username);
+
+                return res.json({
+                    success: true,
+                    message: "Account verified successfully",
+                });
+            } else {
+                return res.json({ success: false, message: updateResult.message });
+            }
         } else {
-          return res.json({ success: false, message: updateResult.message });
+            return res.json({ success: false, message: "Invalid or expired token" });
         }
-      } else {
-        return res.json({ success: false, message: "Invalid or expired token" });
-      }
     } catch (error) {
-      console.error("Error during account verification:", error);
-      return res.json({
-        success: false,
-        message: "An error occurred during account verification",
-      });
-    }
-  };
-
-
-export const registerMentor = async (req, res) => {
-    const { email, username, ...otherDetails } = req.body;
-  
-    try {
-      if (!email) {
-        return res.status(400).send('Email is required');
-      }
-  
-      const existingMentor = await Mentor.findOne({ username });
-      if (existingMentor) {
-        return res.status(400).send('Mentor already exists');
-      }
-  
-      // Create a token and send verification email for the mentor
-      const verificationResult = await AccountVerificationMentor(username,email);
-      if (verificationResult.status === "error") {
+        console.error("Error during account verification:", error);
         return res.json({
-          success: false,
-          message: "Verification email failed to send",
+            success: false,
+            message: "An error occurred during account verification",
         });
+    }
+};
+
+export const registerMentor = handleAsyncError(async (req, res) => {
+    const { email, username, ...otherDetails } = req.body;
+
+    // Validate input data
+    const validation = validateRegistrationData({ username, email, ...otherDetails });
+    if (!validation.isValid) {
+      return res.status(400).json(createErrorResponse(validation.errors.join(', ')));
+    }
+
+    // Sanitize inputs
+    const sanitizedData = {
+      username: sanitizeInput(username),
+      email: sanitizeInput(email),
+      name: sanitizeInput(otherDetails.name),
+      ...otherDetails
+    };
+
+    try {
+      // Check for existing username
+      const existingMentorByUsername = await findUserByUsername(sanitizedData.username, Mentor);
+      if (existingMentorByUsername) {
+        return res.status(409).json(createErrorResponse(
+          `Username '${sanitizedData.username}' is already taken. Please choose a different username.`
+        ));
       }
 
-  
-      await createMentor({ email, username, ...otherDetails });
-      res.status(200).send({ success: true, message: 'Mentor registered successfully' });
-    } catch (e) {
-      console.log(e);
-      res.status(500).send('Server error');
+      // Check for existing email
+      const existingMentorByEmail = await Mentor.findOne({ email: sanitizedData.email });
+      if (existingMentorByEmail) {
+        return res.status(409).json(createErrorResponse(
+          `Email '${sanitizedData.email}' is already registered. Please use a different email or try logging in.`
+        ));
+      }
+
+      // Create a token and send verification email for the mentor
+      const verificationResult = await AccountVerificationMentor(sanitizedData.username, sanitizedData.email);
+      if (verificationResult.status === "error") {
+        return res.status(500).json(createErrorResponse(
+          "Account creation failed due to email service error. Please try again later."
+        ));
+      }
+
+      await createMentor({ 
+        email: sanitizedData.email, 
+        username: sanitizedData.username, 
+        ...sanitizedData 
+      });
+      
+      res.status(201).json(createSuccessResponse(
+        "Mentor registered successfully! Please check your email to verify your account.",
+        { email: sanitizedData.email }
+      ));
+    } catch (error) {
+      console.error('Mentor registration error:', error);
+      
+      if (error.code === 11000) {
+        const handled = handleMongoError(error);
+        return res.status(handled.statusCode).json(createErrorResponse(handled.message));
+      }
+      
+      res.status(500).json(createErrorResponse(
+        "Registration failed due to a server error. Please try again later."
+      ));
     }
-  };
-  
+});
+
 // Account verification same for both Student and Mentor
 export const AccountVerificationMentor = async (username, email) => {
     try {
-      const token = generateUniqueToken();
-  
-      await addUserVerificationToken(username, token);
-  
-      const html = HtmlTemplates.AccountVerificationMentor(token);
-      const subject = "AMILE ACCOUNT VERIFICATION - Mentor";
-      const emailResult = await sendEmail(email, subject, html);
-  
-      if (emailResult === "Error sending email") {
-        return { status: "error", message: "Failed to send verification email" };
-      }
-  
-      return { status: "success", message: "Verification email sent" };
+        const token = generateUniqueToken();
+
+        await addUserVerificationToken(username, token);
+
+        const html = HtmlTemplates.AccountVerificationMentor(token);
+        const subject = "AMILE ACCOUNT VERIFICATION - Mentor";
+        const emailResult = await sendEmail(email, subject, html);
+
+        if (emailResult === "Error sending email") {
+            return { status: "error", message: "Failed to send verification email" };
+        }
+
+        return { status: "success", message: "Verification email sent" };
     } catch (error) {
-      console.log(error);
-      return { status: "error", message: error.message };
+        console.log(error);
+        return { status: "error", message: error.message };
     }
-  };
-  
+};
+
 export const resendVerification = async (req, res) => {
     const { username } = req.body;
 
@@ -207,14 +259,13 @@ export const resendVerification = async (req, res) => {
     }
 };
 
-// Verify user account token is also same 
+// Verify user account token is also same
 
 export const forgotPassword = async (req, res) => {
-    const { username, accountType } = req.body;
+    const { username } = req.body;
 
     try {
-        const Schema = accountType === "Mentor" ? Mentor : Mentor;
-        const user = await findUserByUsername(username, Schema);
+        const user = await findUserByUsername(username, Mentor);
         if (!user) {
             return res.json({ success: false, message: "User not found" });
         }
@@ -232,14 +283,21 @@ export const forgotPassword = async (req, res) => {
         const emailResponse = await sendEmail(userEmail, subject, htmlContent);
 
         if (emailResponse === "Error sending email") {
-            return res.json({ success: false, message: "Failed to send password reset email" });
+            return res.json({
+                success: false,
+                message: "Failed to send password reset email",
+            });
         }
 
         return res.json({ success: true, message: "Password reset email sent" });
-
     } catch (error) {
         console.error("Error in forgotPassword:", error);
-        return res.status(500).json({ success: false, message: "An error occurred during the password reset process" });
+        return res
+            .status(500)
+            .json({
+                success: false,
+                message: "An error occurred during the password reset process",
+            });
     }
 };
 
@@ -279,7 +337,12 @@ export const resetPassword = async (req, res) => {
         return res.json({ success: true, message: "Password reset successfully" });
     } catch (error) {
         console.error("Error during password reset:", error);
-        return res.status(500).json({ success: false, message: "An error occurred during the password reset process" });
+        return res
+            .status(500)
+            .json({
+                success: false,
+                message: "An error occurred during the password reset process",
+            });
     }
 };
 
@@ -311,6 +374,7 @@ export const loginUser = async (req, res) => {
             return res.json({ success: false, message: "Invalid password" });
         }
     } catch (e) {
+        console.log(e.message)
         res.status(500).send("Server error");
     }
 };
@@ -319,23 +383,32 @@ export const reportIncident = async (req, res) => {
     const { token } = req.body;
 
     if (!token) {
-        return res.json({ success: false, message: 'Token is required' });
+        return res.json({ success: false, message: "Token is required" });
     }
 
     try {
         const result = await removeUserVerificationTokenbyToken(token);
         if (result.deletedCount) {
-            return res.json({ success: true, message: 'Incident reported successfully' });
+            return res.json({
+                success: true,
+                message: "Incident reported successfully",
+            });
         } else {
-            return res.json({ success: false, message: 'Incident Already Reported' });
+            return res.json({ success: false, message: "Incident Already Reported" });
         }
     } catch (error) {
-        console.error('Error reporting incident:', error);
-        return res.status(500).json({ success: false, message: 'An error occurred while reporting the incident' });
+        console.error("Error reporting incident:", error);
+        return res
+            .status(500)
+            .json({
+                success: false,
+                message: "An error occurred while reporting the incident",
+            });
     }
 };
 
 export const getUser = async (req, res) => {
+    console.log('in get mentor')
     try {
         const { username } = req.body;
         if (!username) {
@@ -346,13 +419,29 @@ export const getUser = async (req, res) => {
         if (!userdata) {
             return res.json({ success: false, message: "User not found" });
         }
-
+        console.log(userdata)
         return res.json({ success: true, data: userdata });
     } catch (e) {
         console.error(e);
         return res.status(500).json({ success: false, message: e.message });
     }
 };
+
+export const getStudentData = async (req, res) => {
+    const { username } = req.body
+    try {
+        const studentData = await findUserByUsername(username, Student)
+        if (!studentData) {
+            return res.json({ success: false, message: "User not found" });
+        }
+        console.log(studentData)
+        return res.json({ success: true, data: studentData });
+    }
+    catch (e) {
+        console.log(e.message)
+        return res.status(500).json({ success: false, message: e.message });
+    }
+}
 
 export const updateMentor = async (req, res) => {
     const { username, ...otherDetails } = req.body;
@@ -373,5 +462,86 @@ export const updateMentor = async (req, res) => {
     } catch (e) {
         console.log(e);
         res.status(500).send("Server error");
+    }
+};
+
+export const assignStudents = async (req, res) => {
+    const { mentorUsername, studentUsernames } = req.body;
+    console.log(req.body)
+
+    try {
+        // Find the mentor by username
+        const mentor = await Mentor.findOne({ username: mentorUsername });
+
+        if (!mentor) {
+            return res.status(404).json({ success: false, message: "Mentor not found" });
+        }
+
+        // Find all students by their usernames
+        const students = await Student.find({ username: { $in: studentUsernames } });
+
+        if (students.length !== studentUsernames.length) {
+            return res.status(404).json({ success: false, message: "One or more students not found" });
+        }
+
+        // Filter out students already assigned to this mentor
+        const newStudents = students.filter(student => !mentor.students.includes(student._id));
+
+        if (newStudents.length === 0) {
+            return res.status(200).json({ success: false, message: "All students are already assigned to this mentor" });
+        }
+
+        // Assign mentor to each new student and update the mentor's students array
+        await Promise.all(newStudents.map(async (student) => {
+            student.mentor = mentor._id;
+            await student.save();
+        }));
+
+        mentor.students = [...mentor.students, ...newStudents.map(student => student._id)];
+        await mentor.save();
+
+        return res.status(200).json({ success: true, message: "Students successfully assigned to mentor" });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).send("Server error");
+    }
+}
+
+export const getStudents = async (req, res) => {
+    try {
+        const { username } = req.body;
+        console.log(username)
+        const mentor = await Mentor.findOne({ username: username });
+        if (!mentor) {
+            return res.status(404).json({ success: false, message: "Mentor not found" });
+        }
+
+
+        if (mentor.students && mentor.students.length > 0) {
+            const students = await Student.find({ _id: { $in: mentor.students } });
+
+            return res.status(200).json({ success: true, studentUsernames: students });
+        } else {
+            return res.status(200).json({ success: false, message: "No students assigned to this mentor" });
+        }
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send("Server error");
+    }
+}
+
+
+export const getMentorData = async (req, res) => {
+    try {
+        const { id } = req.params;
+        console.log(req.params)
+        const mentor = await findUserByUsername(id, Mentor);
+        if (!mentor) {
+            return res.json({ success: false, message: "User not found" });
+        }
+        return res.json({ success: true, data: mentor });
+    } catch (e) {
+        console.error(e);
+        return res.status(500).json({ success: false, message: e.message });
     }
 };

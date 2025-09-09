@@ -3,9 +3,9 @@ import JobCard from '../JobCard';
 import { useTheme } from '../../context/ThemeContext';
 import Pagination from '@mui/material/Pagination';
 import { styled } from '@mui/material/styles';
-import { Oval } from 'react-loader-spinner';
 import Cookies from 'js-cookie';
-
+import { api } from '../../hooks/apis';
+import PageLoader from '../Loaders/PageLoader';
 const CustomPagination = styled(Pagination)(({ theme }) => ({
   '& .MuiPaginationItem-root': {
     color: theme.palette.mode === 'dark' ? '#ffffff' : '#000000',
@@ -35,6 +35,7 @@ const JobList = ({ filters, searchQuery }) => {
   }, []);
 
   const fetchInternships = async (pageNumber) => {
+    setIsLoading(true);
     const queryParams = new URLSearchParams({
       ...filters,
       page: pageNumber,
@@ -44,13 +45,15 @@ const JobList = ({ filters, searchQuery }) => {
     });
 
     try {
-      const response = await fetch(`http://localhost:3000/internships?${queryParams.toString()}`);
+      const response = await fetch(`${api}/internships?${queryParams.toString()}`);
       const data = await response.json();
       setJobs(data.internships || []);
-      setIsLoading(false)
       setTotalPages(data.totalPages || 1);
     } catch (error) {
       console.error('Error fetching internships:', error.message);
+      setJobs([]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -72,19 +75,39 @@ const JobList = ({ filters, searchQuery }) => {
 
   return (
     <div className={`bg-${isDarkMode ? 'black' : 'gray-100'} p-6`}>
-      <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6`}>
-        {jobs.map(job => (
-          <JobCard key={job._id} job={job} onApply={handleApply} />
-        ))}
-      </div>
-      <div className="mt-4 mb-9 flex justify-center">
-        <CustomPagination
-          count={totalPages}
-          page={page}
-          onChange={handlePageChange}
-          color={isDarkMode ? 'secondary' : 'primary'}
-        />
-      </div>
+      {isLoading ? (
+        <PageLoader message="Loading internships..." />
+      ) : (
+        <>
+          <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6`}>
+            {jobs.length > 0 ? (
+              jobs.map(job => (
+                <JobCard key={job._id} job={job} onApply={handleApply} />
+              ))
+            ) : (
+              <div className="text-center py-12">
+                <h3 className="text-xl font-semibold text-gray-600 mb-2">
+                  No internships found
+                </h3>
+                <p className="text-gray-500">
+                  Try adjusting your search criteria or check back later for new opportunities.
+                </p>
+              </div>
+            )}
+          </div>
+          
+          {jobs.length > 0 && (
+            <div className="mt-4 mb-9 flex justify-center">
+              <CustomPagination
+                count={totalPages}
+                page={page}
+                onChange={handlePageChange}
+                color={isDarkMode ? 'secondary' : 'primary'}
+              />
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 };
